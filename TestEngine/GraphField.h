@@ -9,6 +9,8 @@
 #include <functional>
 #include <thread>
 #include <chrono>
+#include <string>
+#include <fstream>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -42,8 +44,11 @@ private:
 public:
 	Field(sf::RenderWindow & W, size_t field_size, size_t cell_size);
 
+	void load_from_file(std::string filename);
 	void generate_field();
 	void step();
+	void draw();
+	void draw_force();
 };
 
 #endif // GRAPHFIELD_H_INCLUDED

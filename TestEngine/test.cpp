@@ -8,8 +8,9 @@ void Thread(sf::Window & W, Field & F)
 	W.setActive(true);
 	while(W.isOpen())
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		F.step();
+		F.draw();
         W.display();
 	}
 }
@@ -17,9 +18,9 @@ void Thread(sf::Window & W, Field & F)
 int main(int argc, char** argv, char** env)
 {
 	// Field size (in cells)
-	const int Fsize = 300;
+	const int Fsize = 50;
 	// Cell size (in pixels)
-	const int Csize = 2;
+	const int Csize = 10;
 
 	srand(time(0));
 
@@ -28,7 +29,10 @@ int main(int argc, char** argv, char** env)
 	W.clear(sf::Color::White);
 
 	Field F(W, Fsize, Csize);
+	//F.load_from_file("field.txt");
 	F.generate_field();
+	F.draw_force();
+	W.display();
 
 	W.setActive(false);
 	std::thread T(Thread, std::ref(W), std::ref(F));
