@@ -1,5 +1,5 @@
 Примитивный клеточный движок для тестирования алгоритмов поведения объектов. 
 ---------------------------------
-GraphField.cpp: Field::generate() - алгоритм генерации поля
-GraphField.cpp: Field::step() - один игровой шаг
-GraphField.cpp: Cell::cell_type_t - типы возможных состояний клеток на поле
+GraphField.cpp: Field::generate() - алгоритм генерации поля  
+GraphField.cpp: Field::step() - один игровой шаг  
+GraphField.cpp: Cell::cell_type_t - типы возможных состояний клеток на поле  
