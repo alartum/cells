@@ -1,4 +1,6 @@
 # Compiled Object files
+TestEngine/obj/*
+TestEngine/bin/*
 *.slo
 *.lo
 *.o
