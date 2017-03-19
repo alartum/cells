@@ -1,0 +1,4 @@
+[Project]
+Name=cells_kdevelop
+Manager=KDevCMakeManager
+VersionControl=
