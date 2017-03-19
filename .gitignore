@@ -32,3 +32,5 @@ TestEngine/bin/*
 
 # User files
 *.pro.user
+*.cbp
+*.layout

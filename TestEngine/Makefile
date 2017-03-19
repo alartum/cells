@@ -1,7 +1,7 @@
 COMPILER = g++
 COPTIONS = -Wall -Wpedantic -O3 -fopenmp -std=c++11 -c
 LINKER = g++
-LOPTIONS = -lsfml-window -lsfml-system -lsfml-graphics -lgomp
+LOPTIONS = -lsfml-window -lsfml-system -lsfml-graphics -lgomp -lX11
 OBJ = obj/
 BIN = bin/
 

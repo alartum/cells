@@ -2,6 +2,7 @@
 #include <ctime>
 #include <thread>
 #include <mutex>
+#include <X11/Xlib.h>
 
 void Thread(sf::Window & W, Field & F)
 {
@@ -24,6 +25,7 @@ int main(int argc, char** argv, char** env)
 
 	srand(time(0));
 
+    XInitThreads();
 	sf::RenderWindow W(sf::VideoMode(Fsize * Csize, Fsize * Csize), "Cells");
 	W.setPosition(sf::Vector2i(200, 0));
 	W.clear(sf::Color::White);
@@ -37,9 +39,7 @@ int main(int argc, char** argv, char** env)
 	W.setActive(false);
 	std::thread T(Thread, std::ref(W), std::ref(F));
 
-
-	while(W.isOpen()) {
-
+	while(W.isOpen()){
 		sf::Event event;
         while(W.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
