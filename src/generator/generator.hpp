@@ -7,7 +7,6 @@
 #include <SFML/Graphics.hpp>
 
 #include "../object/object.hpp"
-#include "../field/field.hpp"
 
 // Абстрактный генератор карт
 class FieldGenerator
@@ -15,21 +14,21 @@ class FieldGenerator
 protected:
     sf::Vector2u fSize;
 public:
-    FieldGenerator(sf::Vector2u fSize);
+    FieldGenerator();
     // Генерация поля
-    virtual void generate (std::vector< Object > & R) = 0;
+    virtual void generate (sf::Vector2u fSize, std::vector< Object* > & R) = 0;
 };
 
 // Генератор некоего ландшафта
 class LandscapeGenerator : public FieldGenerator
 {
 private:
-    double waterRadius;
-    int waterCount;
+    int grassCount;
+    double grassRadius;
 public:
-    LandscapeGenerator(sf::Vector2u fSize, int waterCount, double waterRadius);
+    LandscapeGenerator(int grassCount, double grassRadius);
     // Генерация поля на матрице R
-    void generate (std::vector< Object > & R);
+    void generate (sf::Vector2u fSize, std::vector< Object* > & R);
 };
 
 #endif

@@ -13,16 +13,21 @@
 class Field 
 {
 private:
-    // Матрица клеток
-    std::vector< Object > fObjects;
+    // Массив указателей на объекты с поля
+    std::vector< Object* > fObjects;
     // Ширина и высота поля в пикселах
     sf::Vector2u fSize;
     // Ссылка на окно отрисовки
     sf::RenderWindow & W;
+    // Цвет фона поля
+    sf::Color fBackgroundColor;
     
 public:    
     // Конструктор W - окно отрисовки, fSize - вектор размера
-    Field(sf::RenderWindow & W, sf::Vector2u fSize);
+    Field(sf::RenderWindow & W, sf::Vector2u fSize, sf::Color fBackgroundColor);
+    
+    // Деструктор
+    ~Field();
     
     // Вывести на W все объекты (вызвать draw(W) для них)
     void draw();
@@ -31,7 +36,15 @@ public:
     void generate(FieldGenerator & G);
 
     // Функция пересчета состояния поля на один игровой шаг
-    int action(StepAlgorithm & S);   
+    // int action(StepAlgorithm & S);   
+    
+    // Оператор вывода в поток
+    friend std::ostream& operator<< (std::ostream& ostr, Field & F) {
+        ostr << "Field: (" << F.fSize.x << ", " << F.fSize.y << ")" << std::endl;
+        for (auto & iterator: F.fObjects)
+            ostr << "      " << (*iterator) << std::endl;
+        return ostr;
+    }
 };
 
 #endif

@@ -4,45 +4,29 @@
 #include <cstdlib>
 
 #include "field/field.hpp"
-#include <X11/Xlib.h>
-
-void Thread(sf::Window & W, Field & F, StepAlgorithm & L)
-{
-        W.setActive(true);
-        while(W.isOpen())
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            F.step(L);
-            F.draw();
-            W.display();
-        }
-}
+#include "generator/generator.hpp"
 
 int main(int argc, char** argv, char** env)
 {
-        //Field size (in cells)
-        const sf::Vector2u Fsize(200, 200);
-        // Cell size (in pixels)
-        const int Csize = 3;
+        //Field size (in pixels)
+        const sf::Vector2u Fsize(500, 500);
 
         srand(time(NULL));
 
-        XInitThreads();
-        sf::RenderWindow W(sf::VideoMode(Fsize.x * Csize, Fsize.y * Csize), "Cells");
+        sf::RenderWindow W(sf::VideoMode(Fsize.x, Fsize.y), "Cells");
         W.setPosition(sf::Vector2i(200, 0));
         W.clear(sf::Color::White);
         
-        UniformRandomFieldGenerator G(Fsize, 0.3);
-        LifeAlgorithm L;
-        
-        Field F(W, Fsize, Csize);
+    
+        Field F(W, Fsize, sf::Color::White);
+        LandscapeGenerator L(20, 10);
 
-        F.generate(G);
-        F.draw_forced();
+        F.generate(L);
+        std::cout << F << std::endl;
+        F.draw();
+
         W.display();
 
-        W.setActive(false);
-        std::thread T(Thread, std::ref(W), std::ref(F), std::ref(L));
 
         while(W.isOpen()){
             sf::Event event;
@@ -54,7 +38,6 @@ int main(int argc, char** argv, char** env)
             }
         }
 
-        T.join(); 
-        //*/
+       
         return 0;
 }

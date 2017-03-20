@@ -1,26 +1,39 @@
-/*#include "generator.hpp"
+#include "generator.hpp"
 
 #include <random>
 #include <set>
+#include <ctime>
+#include <cstdlib>
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-FieldGenerator::FieldGenerator(sf::Vector2u fSize) : fSize(fSize)
+FieldGenerator::FieldGenerator()
 {
+    ;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////
-UniformRandomFieldGenerator::UniformRandomFieldGenerator (sf::Vector2u fSize, double probability ) 
-    : FieldGenerator ( fSize ), probability(probability)
-{
-    if (probability > 1 || probability < 0)
-        throw std::invalid_argument("probability mustn't be greater then 1 and less then 0");
+LandscapeGenerator::LandscapeGenerator ( int grassCount, double grassRadius ) 
+    : grassCount(grassCount), grassRadius(grassRadius) {
 }
 
-void UniformRandomFieldGenerator::generate(Matrix< Cell > & R) {
-    R.setSize(fSize.x, fSize.y);
-    for (unsigned i = 1; i + 1 < fSize.y; i++)
-        for (unsigned j = 1; j + 1 < fSize.x; j++)
-            R.at(i, j) = Cell( ((double)rand() / RAND_MAX) < probability ? Cell::Live : Cell::Clear );
-    return;
+void LandscapeGenerator::generate ( sf::Vector2u fSize, std::vector< Object* >& R ) {
+    std::normal_distribution< double > xDistribution((double)fSize.x / 2, (double)fSize.x / 2);
+    std::normal_distribution< double > yDistribution((double)fSize.y / 2, (double)fSize.x / 2);
+    std::normal_distribution< double > rDistribution(grassRadius, grassRadius / 2);
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    
+    R.clear();
+    for (int i = 0; i < grassCount; i++) {
+        int x = -1;
+        while (x >= fSize.x || x < 0)
+            x = static_cast< int >(xDistribution(generator));
+        int y = -1;
+        while (y >= fSize.y || y < 0)
+            y = static_cast< int >(yDistribution(generator));
+        double r = rDistribution(generator);
+        
+        Grass* G = new Grass(sf::Vector2u(x, y), r);
+        R.push_back(G);
+    }
 }
-////////////////////////////////////////////////////////////////////////////////////////////////
-*/
