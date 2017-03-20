@@ -4,7 +4,7 @@
 class Cell
 {
 public:
-    enum cell_type_t {Clear, Live};
+    enum cell_type_t {Clear, Live, Water, Green};
     
 private:
     cell_type_t cType;
