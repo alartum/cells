@@ -7,12 +7,28 @@ Field::Field(sf::RenderWindow & W, sf::Vector2u fSize, sf::Color fBackgroundColo
 {
 }
 
+// Деструктор
 Field::~Field() {
     for (auto iter: fObjects)
         delete iter;
 }
 
-    
+// Открыто ли привязанное окно
+bool Field::isWindowOpen() {
+    return W.isOpen();
+}
+
+// Активность привязанного окна
+void Field::setActive( bool status ) {
+    W.setActive(status);
+}
+
+// Вызвать метод display привязанного окна
+void Field::display() {
+    W.display();
+}
+
+
 // Вывести на W состояния клеток, не выполняется для тех клеток, для которых cType == cPrevType (которые не изменили тип)
 void Field::draw()
 {
@@ -28,7 +44,7 @@ void Field::generate(FieldGenerator & G)
 }
 
 // Функция пересчета состояния поля на один игровой шаг
-//int Field::step(StepAlgorithm & S)
-//{
-//    return S.step(fObjects);
-//}
+int Field::action (StepAlgorithm & S)
+{
+    return S.action(fObjects);
+}

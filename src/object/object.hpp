@@ -4,6 +4,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <iostream>
+#include <cmath>
 
 // Абстрактный класс, представляющий объект с поля
 class Object 
@@ -16,9 +17,7 @@ protected:
     object_type_t oType;
     
 public:
-    //Object();
-    //Object(Object& Other);
-    //Object(Object&& Other);
+    virtual ~Object();
     
     // Нарисовать объект в окне W
     virtual void draw(sf::RenderWindow & W) = 0;
@@ -39,20 +38,24 @@ public:
 // Класс круглого куска травы
 class Grass : public Object
 {
-protected:
+public:
     // Расположение и радиус куска травы
-    sf::Vector2u gLocation;
+    sf::Vector2i gLocation;
     double gRadius;
 public:
     // Конструктор по расположению и радиусу
-    Grass(sf::Vector2u gLocation, double gRadius);
-    
+    Grass(sf::Vector2i gLocation, double gRadius);
     // Копирующие конструкторы
     Grass(Grass& Other);
     Grass(Grass&& Other);
+    //Деструктор
+    ~Grass();
     
     // Нарисовать объект в окне W
     void draw(sf::RenderWindow& W);
+    
+    // Проверка пересечения
+    bool isIntersect( Grass& Other );
     
     // Операторы присваивания
     Grass& operator = (Grass const & Other);

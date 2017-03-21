@@ -29,14 +29,23 @@ public:
     // Деструктор
     ~Field();
     
+    // Открыто ли привязанное окно
+    bool isWindowOpen();
+    
+    // Активность привязанного окна
+    void setActive( bool status );
+
     // Вывести на W все объекты (вызвать draw(W) для них)
     void draw();
+    
+    // Вызвать метод display привязанного окна
+    void display();
         
     // Функция генерации поля, принимает ссылку на генератор
     void generate(FieldGenerator & G);
 
     // Функция пересчета состояния поля на один игровой шаг
-    // int action(StepAlgorithm & S);   
+    int action(StepAlgorithm & S);   
     
     // Оператор вывода в поток
     friend std::ostream& operator<< (std::ostream& ostr, Field & F) {

@@ -2,6 +2,7 @@
 #define HEADER_STEP_ALGORITHM_HPP_INCLUDED
 
 #include <vector>
+#include <random>
 
 #include "../object/object.hpp"
 
@@ -11,17 +12,16 @@ class StepAlgorithm
 public:
     StepAlgorithm();
     // Функция шага
-    virtual int step (std::vector< Object > & M) = 0;
+    virtual int action (std::vector< Object* > & M) = 0;
 };
-/*
-// Наследник StepAlgorithm, реализующий игру "Жизнь"
-class LifeAlgorithm : public StepAlgorithm
+
+class RandomMoving : public StepAlgorithm
 {
+private:
+    sf::Vector2i fSize;
 public:
-    LifeAlgorithm();
-    // Функция шага
-    int step (std::vector< Object > & M);
+    RandomMoving( sf::Vector2i fSize );
+    int action (std::vector< Object* > & M);
 };
-*/
 
 #endif

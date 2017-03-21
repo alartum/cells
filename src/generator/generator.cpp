@@ -26,14 +26,14 @@ void LandscapeGenerator::generate ( sf::Vector2u fSize, std::vector< Object* >& 
     R.clear();
     for (int i = 0; i < grassCount; i++) {
         int x = -1;
-        while (x >= fSize.x || x < 0)
+        while (x >= (int)fSize.x || x < 0)
             x = static_cast< int >(xDistribution(generator));
         int y = -1;
-        while (y >= fSize.y || y < 0)
+        while (y >= (int)fSize.y || y < 0)
             y = static_cast< int >(yDistribution(generator));
         double r = rDistribution(generator);
         
-        Grass* G = new Grass(sf::Vector2u(x, y), r);
+        Grass* G = new Grass(sf::Vector2i(x, y), r);
         R.push_back(G);
     }
 }
