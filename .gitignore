@@ -1,6 +1,6 @@
 # Compiled Object files
-TestEngine/obj/*
-TestEngine/bin/*
+*/obj/*
+*/bin/*
 *.slo
 *.lo
 *.o
@@ -33,4 +33,15 @@ TestEngine/bin/*
 # User files
 *.pro.user
 *.cbp
+*.depend
+
+#CodeLite
+*.workspace
+*.project
 *.layout
+*.codelite/*
+
+ngine/bin/Cells
+	new file:   X11Test/X11Test.depend
+	new file:   X11Test/x11test.cpp
+
