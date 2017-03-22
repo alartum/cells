@@ -4,11 +4,16 @@
 TestEngine/obj/*
 TestEngine/bin/*
 src/build
-src/CMakeFiles
+
 *.slo
 *.lo
 *.o
 *.obj
+
+# CMake
+*.cmake
+*/CMakeFiles
+CMakeCache.txt
 
 # Precompiled Headers
 *.gch
@@ -44,3 +49,6 @@ src/CMakeFiles
 *.project
 *.layout
 *.codelite/*
+
+#KDevelop
+*.kdev4
