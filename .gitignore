@@ -1,6 +1,10 @@
 # Compiled Object files
 */obj/*
 */bin/*
+TestEngine/obj/*
+TestEngine/bin/*
+src/build
+src/CMakeFiles
 *.slo
 *.lo
 *.o
@@ -40,8 +44,3 @@
 *.project
 *.layout
 *.codelite/*
-
-ngine/bin/Cells
-	new file:   X11Test/X11Test.depend
-	new file:   X11Test/x11test.cpp
-
