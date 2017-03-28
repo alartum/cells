@@ -20,7 +20,7 @@ void LandscapeGenerator::generate ( sf::Vector2u fSize, std::vector< Object* >& 
     std::normal_distribution< double > xDistribution((double)fSize.x / 2, (double)fSize.x / 2);
     std::normal_distribution< double > yDistribution((double)fSize.y / 2, (double)fSize.x / 2);
     std::normal_distribution< double > rDistribution(grassRadius, grassRadius / 2);
-    std::random_device rd;
+    std::random_device rd; //
     std::mt19937 generator(rd());
     
     R.clear();

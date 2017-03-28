@@ -27,7 +27,7 @@ int main(int argc, char** argv, char** env)
 {
     XInitThreads();
     //Field size (in pixels)
-    const sf::Vector2i Fsize(500, 500);
+    const sf::Vector2i Fsize(800, 800);
         
     srand(time(NULL));
 
@@ -36,7 +36,7 @@ int main(int argc, char** argv, char** env)
     W.clear(sf::Color::White);
     
     Field F(W, sf::Vector2u(Fsize.x, Fsize.y), sf::Color::White);
-    LandscapeGenerator L(40, 10);
+    LandscapeGenerator L(500, 5);
     RandomMoving S(Fsize);
     
     F.generate(L);

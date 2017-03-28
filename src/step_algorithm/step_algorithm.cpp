@@ -49,8 +49,8 @@ int RandomMoving::action ( std::vector< Object* >& M ) {
     
     for (int i = 0; i < (int)M.size(); i++) {
         Grass* pt = (Grass*)M[i];
-        pt->gLocation.x += (int)(ds[i].x * 10 / sqrt(pt->gRadius + 1));
-        pt->gLocation.y += (int)(ds[i].y * 10 / sqrt(pt->gRadius + 1));
+        pt->gLocation.x += (int)(ds[i].x * 20 / sqrt(pt->gRadius + 1));
+        pt->gLocation.y += (int)(ds[i].y * 20 / sqrt(pt->gRadius + 1));
         
         if (pt->gLocation.x >= fSize.x)
             pt->gLocation.x = fSize.x;
@@ -74,7 +74,14 @@ int RandomMoving::action ( std::vector< Object* >& M ) {
                 pt1->gRadius = newR;
             }
         }
+    
+    for (int i = 0; i < (int)M.size(); i++) {
+        Grass* pt = (Grass*)M[i];
+        if (pt->gRadius > 20 && rand() % 8 == 0)
+            pt->gRadius = pt->gRadius * 0.98;
         
+    }
+    
     return M.size();
 }
 
