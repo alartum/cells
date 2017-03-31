@@ -1,26 +1,29 @@
-#ifndef HEADER_GENERATOR_HPP_INCLUDED
-#define HEADER_GENERATOR_HPP_INCLUDED
-
 #include <exception>
 #include <stdexcept>
 
 #include <SFML/Graphics.hpp>
 
+#include "../matrix/matrix.hpp"
 #include "../object/object.hpp"
+#include "../tile/tile.hpp"
+
+
+#ifndef HEADER_GENERATEOBJECTS_HPP_INCLUDED
+#define HEADER_GENERATEOBJECTS_HPP_INCLUDED
 
 // Абстрактный генератор карт
-class FieldGenerator
+class GenerateObjects
 {
 protected:
-    sf::Vector2u fSize;
+    sf::Vector2u mSize;
 public:
-    FieldGenerator();
+    GenerateObjects();
     // Генерация поля
-    virtual void generate (sf::Vector2u fSize, std::vector< Object* > & R) = 0;
+    virtual void operator () (const Matrix<Tile>& map, std::vector< Object* >& R);
 };
 
 // Генератор некоего ландшафта
-class LandscapeGenerator : public FieldGenerator
+class LandscapeGenerator : public GenerateObjects
 {
 private:
     int grassCount;
@@ -28,7 +31,7 @@ private:
 public:
     LandscapeGenerator(int grassCount, double grassRadius);
     // Генерация поля на матрице R
-    void generate (sf::Vector2u fSize, std::vector< Object* > & R);
+    void operator () (const Matrix<Tile>& map, std::vector< Object* > & R);
 };
 
 #endif

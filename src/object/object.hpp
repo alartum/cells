@@ -1,10 +1,10 @@
-#ifndef HEADER_OBJECT_HPP_INCLUDED
-#define HEADER_OBJECT_HPP_INCLUDED
-
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <iostream>
 #include <cmath>
+
+#ifndef HEADER_OBJECT_HPP_INCLUDED
+#define HEADER_OBJECT_HPP_INCLUDED
 
 // Абстрактный класс, представляющий объект с поля
 class Object 

@@ -1,27 +1,27 @@
-#ifndef HEADER_STEP_ALGORITHM_HPP_INCLUDED
-#define HEADER_STEP_ALGORITHM_HPP_INCLUDED
-
 #include <vector>
 #include <random>
-
 #include "../object/object.hpp"
 
+#ifndef HEADER_DOSTEP_HPP_INCLUDED
+#define HEADER_DOSTEP_HPP_INCLUDED
+
+
 // Абстрактный класс алгоритма обработки поля для следующего шага
-class StepAlgorithm
+class DoStep
 {
 public:
-    StepAlgorithm();
+    DoStep();
     // Функция шага
-    virtual int action (std::vector< Object* > & M) = 0;
+    virtual void operator () (std::vector< Object* > & M);
 };
 
-class RandomMoving : public StepAlgorithm
+class RandomMoving : public DoStep
 {
 private:
     sf::Vector2i fSize;
 public:
     RandomMoving( sf::Vector2i fSize );
-    int action (std::vector< Object* > & M);
+    void operator () (std::vector< Object* >& M);
 };
 
 #endif

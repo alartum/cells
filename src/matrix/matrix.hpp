@@ -1,6 +1,3 @@
-#ifndef HEADER_MATRIX_HPP_INCLUDED
-#define HEADER_MATRIX_HPP_INCLUDED
-
 #include <vector>
 #include <functional>
 #include <stdexcept>
@@ -8,6 +5,9 @@
 #include <iterator>
 #include <iomanip>
 #include <algorithm>
+
+#ifndef HEADER_MATRIX_HPP_INCLUDED
+#define HEADER_MATRIX_HPP_INCLUDED
 
 template <typename T>
 class Matrix

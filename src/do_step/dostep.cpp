@@ -1,14 +1,20 @@
-#include "step_algorithm.hpp"
+#include "dostep.hpp"
 ////////////////////////////////////////////////////////////////////////////////////////////////
-StepAlgorithm::StepAlgorithm() 
+void DoStep::operator () (std::vector< Object* > & M)
+{
+}
+
+DoStep::DoStep()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-RandomMoving::RandomMoving ( sf::Vector2i fSize ) : StepAlgorithm(), fSize(fSize) {
+RandomMoving::RandomMoving ( sf::Vector2i fSize ) :
+    fSize(fSize)
+{
 }
 
-int RandomMoving::action ( std::vector< Object* >& M ) {
+void RandomMoving::operator () ( std::vector< Object* >& M ) {
     std::uniform_int_distribution< int > distr(-2, 2);
     std::random_device rd;
     std::mt19937 generator(rd());
@@ -81,9 +87,4 @@ int RandomMoving::action ( std::vector< Object* >& M ) {
             pt->gRadius = pt->gRadius * 0.98;
         
     }
-    
-    return M.size();
 }
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////

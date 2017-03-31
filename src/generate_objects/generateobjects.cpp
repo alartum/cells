@@ -1,4 +1,4 @@
-#include "generator.hpp"
+#include "generateobjects.hpp"
 
 #include <random>
 #include <set>
@@ -7,16 +7,21 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-FieldGenerator::FieldGenerator()
+GenerateObjects::GenerateObjects()
 {
-    ;
 }
+
+void GenerateObjects::operator () (const Matrix<Tile>& map, std::vector< Object* > & R)
+{
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 LandscapeGenerator::LandscapeGenerator ( int grassCount, double grassRadius ) 
     : grassCount(grassCount), grassRadius(grassRadius) {
 }
 
-void LandscapeGenerator::generate ( sf::Vector2u fSize, std::vector< Object* >& R ) {
+void LandscapeGenerator::operator ()(const Matrix<Tile>& map, std::vector< Object* >& R ) {
+    sf::Vector2u fSize(map.getWidth(), map.getHeight());
     std::normal_distribution< double > xDistribution((double)fSize.x / 2, (double)fSize.x / 2);
     std::normal_distribution< double > yDistribution((double)fSize.y / 2, (double)fSize.x / 2);
     std::normal_distribution< double > rDistribution(grassRadius, grassRadius / 2);

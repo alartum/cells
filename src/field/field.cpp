@@ -2,49 +2,84 @@
 
 
  // Конструктор W - окно отрисовки, fSize - вектор размера, fCellSize - размер клетки
-Field::Field(sf::RenderWindow & W, sf::Vector2u fSize, sf::Color fBackgroundColor) 
-    : fSize(fSize), W(W), fBackgroundColor(fBackgroundColor)
+Field::Field(sf::Vector2u sizeTile, GenerateObjects& generateObjects,
+             GenerateMap& generateMap, DoStep &doStep,
+             TileInfo& tileInfo) :
+    mMap(sizeTile.x, sizeTile.y),
+    mTileInfo(tileInfo),
+    mSizePixels(mMap.getWidth()*mTileInfo.getTileSize().x,
+                mMap.getHeight()*mTileInfo.getTileSize().y),
+    mWindow(sf::VideoMode(mSizePixels.x, mSizePixels.y), "Cells"),
+    mGenerateMap(generateMap),
+    mGenerateObjects(generateObjects),
+    mDoStep(doStep)
 {
+    mWindow.clear(sf::Color::White);
 }
 
 // Деструктор
 Field::~Field() {
-    for (auto iter: fObjects)
+    for (auto iter: mObjects)
         delete iter;
 }
 
 // Открыто ли привязанное окно
 bool Field::isWindowOpen() {
-    return W.isOpen();
+    return mWindow.isOpen();
 }
 
 // Активность привязанного окна
 void Field::setActive( bool status ) {
-    W.setActive(status);
+    mWindow.setActive(status);
 }
 
 // Вызвать метод display привязанного окна
 void Field::display() {
-    W.display();
+    mWindow.display();
 }
 
 
 // Вывести на W состояния клеток, не выполняется для тех клеток, для которых cType == cPrevType (которые не изменили тип)
 void Field::draw()
 {
-    W.clear(fBackgroundColor);
-    for (auto & objectIterator : fObjects)
-        objectIterator->draw(W);
+    drawTiles();
+    drawObjects();
 }
     
 // Функция генерации поля, принимает тип генерируемого поля
-void Field::generate(FieldGenerator & G)
+void Field::generate()
 {
-    G.generate(fSize, fObjects);
+    mGenerateMap(mMap, mTileInfo);
+    mGenerateObjects(mMap, mObjects);
 }
 
 // Функция пересчета состояния поля на один игровой шаг
-int Field::action (StepAlgorithm & S)
+void Field::doStep()
 {
-    return S.action(fObjects);
+    mDoStep(mObjects);
+}
+
+
+void Field::drawObjects()
+{
+    for (auto & objectIterator : mObjects)
+        objectIterator->draw(mWindow);
+}
+
+void Field::drawTiles()
+{
+    for (unsigned x = 0; x < mMap.getWidth(); x++){
+        for (unsigned y = 0; y < mMap.getWidth(); y++){
+            Tile& current = mMap.at(x, y);
+            if (current.isUpdated()){
+                mWindow.draw(current.getSprite());
+                current.setUpdated(false);
+            }
+        }
+    }
+}
+
+sf::RenderWindow &Field::getWindow()
+{
+    return mWindow;
 }
