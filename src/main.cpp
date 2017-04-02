@@ -1,26 +1,30 @@
-#include <ctime>
 #include <thread>
-#include <mutex>
-#include <cstdlib>
-#include <thread>
-#include <chrono>
-
-#include "field/field.hpp"
-
-#include <X11/Xlib.h>
-#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <memory>
 #include <SFML/Window.hpp>
-#include <SFML/Window/VideoMode.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <X11/Xlib.h>
+#include "item/item.hpp"
+#include "model/model.hpp"
+#include "matrix/matrix.hpp"
 
-void Thread(Field & F, DoStep & S)
+void UpdateThread(sf::RenderWindow& W, Matrix<Item>& items)
 {
-    F.setActive(true);
-    while(F.isWindowOpen()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        F.doStep();
-        if (F.isWindowOpen()) {
-            F.draw();
-            F.display();
+    W.setActive(true);
+    int x_size = items.getWidth(), y_size = items.getHeight();
+
+    while(W.isOpen()){
+        std::this_thread::sleep_for(std::chrono::milliseconds(400));
+        if (W.isOpen()) {
+            W.clear();
+            for (int i = 0; i < x_size; i++){
+                for (int j = 0; j < y_size; j++){
+                    Item& curr_item = items.at(i, j);
+                    curr_item.nextFrame();
+                    W.draw(curr_item);
+                }
+            }
+            W.display();
         }
     }
 }
@@ -28,30 +32,31 @@ void Thread(Field & F, DoStep & S)
 int main(int argc, char** argv, char** env)
 {
     XInitThreads();
-        
-    srand(time(NULL));
+    auto texture_ptr = std::make_shared<sf::Texture>();
 
-    TileInfo tileInfo;
-    sf::Texture water;
-    water.loadFromFile(sf::String("/home/alartum/programs/source/cells/src/tileinfo/tiles.png"),
-                       sf::IntRect(330, 528, tileInfo.getTileSize().x,
-                                   tileInfo.getTileSize().y));
-    tileInfo.addTexture(Tile::Water, water);
+    texture_ptr->loadFromFile("/home/alartum/programs/source/cells/src/tileinfo/tiles.png");
+    auto waterModel_ptr = std::make_shared<Model>(1, texture_ptr);
 
-    DoStep doStep;
-    GenerateSampleTiles generateMap;
-    GenerateObjects generateObjects;
-    sf::Vector2u sizeTile(10, 10);
+    int tileSize = 32;
+    waterModel_ptr->pushTextureRect(sf::IntRect(100, 694, tileSize, tileSize), 0);
+    waterModel_ptr->pushTextureRect(sf::IntRect(430, 694, tileSize, tileSize), 0);
 
-    Field F(sizeTile, generateObjects, generateMap, doStep, tileInfo);
-    F.generate();
-    F.draw();
-    F.display();
-    
-    sf::RenderWindow& W = F.getWindow();
+    Item waterItem(waterModel_ptr);
+
+    size_t x_size = 10, y_size = 10;
+    Matrix<Item> items(x_size, y_size, waterItem);
+    for (int i = 0; i < x_size; i++){
+        for (int j = 0; j < y_size; j++){
+            items.at(i, j).setPosition(tileSize*i, tileSize*j);
+        }
+    }
+
+    sf::RenderWindow W(sf::VideoMode(x_size*tileSize, y_size*tileSize), "Sprites");
     W.setActive(false);
-    std::thread T(Thread, std::ref(F), std::ref(doStep));
-    
+    W.setFramerateLimit(60);
+
+    std::thread T(UpdateThread, std::ref(W), std::ref(items));
+
     while(W.isOpen()){
         sf::Event event;
         while(W.pollEvent(event)) {

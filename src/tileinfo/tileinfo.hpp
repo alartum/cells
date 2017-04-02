@@ -1,10 +1,9 @@
-#include "../tile/tile.hpp"
-#include <SFML/Graphics/Texture.hpp>
-#include <map>
-
 #ifndef TILEINFO_HPP
 #define TILEINFO_HPP
 
+#include "../tile/tile.hpp"
+#include <SFML/Graphics/Texture.hpp>
+#include <map>
 
 class TileInfo
 {

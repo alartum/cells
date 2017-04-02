@@ -1,3 +1,6 @@
+#ifndef HEADER_FIELD_HPP_INCLUDED
+#define HEADER_FIELD_HPP_INCLUDED
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Window/VideoMode.hpp>
@@ -10,9 +13,6 @@
 #include "../generate_map/generatemap.hpp"
 #include "../do_step/dostep.hpp"
 
-
-#ifndef HEADER_FIELD_HPP_INCLUDED
-#define HEADER_FIELD_HPP_INCLUDED
 
 class Field 
 {
@@ -61,14 +61,6 @@ public:
 
     // Функция пересчета состояния поля на один игровой шаг
     void doStep();
-    
-    // Оператор вывода в поток
-    friend std::ostream& operator<< (std::ostream& ostr, Field & F) {
-        ostr << "Field: (" << F.mSizePixels.x << ", " << F.mSizePixels.y << ")" << std::endl;
-        for (auto & iterator: F.mObjects)
-            ostr << "      " << (*iterator) << std::endl;
-        return ostr;
-    }
 };
 
 #endif

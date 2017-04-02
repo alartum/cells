@@ -61,9 +61,10 @@ void Field::doStep()
 
 
 void Field::drawObjects()
-{
+{/*
     for (auto & objectIterator : mObjects)
         objectIterator->draw(mWindow);
+*/
 }
 
 void Field::drawTiles()

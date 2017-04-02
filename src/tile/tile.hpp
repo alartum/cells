@@ -1,8 +1,9 @@
+#ifndef HEADER_TILE_HPP_INCLUDED
+#define HEADER_TILE_HPP_INCLUDED
+
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
-#ifndef HEADER_TILE_HPP_INCLUDED
-#define HEADER_TILE_HPP_INCLUDED
 
 class Tile
 {

@@ -1,3 +1,6 @@
+#ifndef HEADER_GENERATEOBJECTS_HPP_INCLUDED
+#define HEADER_GENERATEOBJECTS_HPP_INCLUDED
+
 #include <exception>
 #include <stdexcept>
 
@@ -8,8 +11,6 @@
 #include "../tile/tile.hpp"
 
 
-#ifndef HEADER_GENERATEOBJECTS_HPP_INCLUDED
-#define HEADER_GENERATEOBJECTS_HPP_INCLUDED
 
 // Абстрактный генератор карт
 class GenerateObjects

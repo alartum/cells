@@ -1,9 +1,10 @@
+#ifndef GENERATEMAP_HPP
+#define GENERATEMAP_HPP
+
 #include "../matrix/matrix.hpp"
 #include "../tile/tile.hpp"
 #include "../tileinfo/tileinfo.hpp"
 
-#ifndef GENERATEMAP_HPP
-#define GENERATEMAP_HPP
 
 class GenerateMap
 {
