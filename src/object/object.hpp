@@ -1,21 +1,15 @@
 #ifndef HEADER_OBJECT_HPP_INCLUDED
 #define HEADER_OBJECT_HPP_INCLUDED
 
+#include "../game_item/gameitem.hpp"
 
-
-// ABSTRACT CLASS //
-class Object 
+class Object : public GameItem
 {
 public:
-    // Entity := behaviour depends on environment
-    // Item   := behaviour is unconditional
-    enum Type {Entity, Item};
-    
-protected:
-    Type  mType;
-public:
-    Type getType() const;
-
+    Object(const std::shared_ptr<ModelManager>& modelManagerPtr,
+           int objectType = 0,
+           const sf::Vector2f& position = sf::Vector2f(0,0),
+           unsigned state = 0);
 };
 
 #endif

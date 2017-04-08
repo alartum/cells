@@ -21,15 +21,15 @@ private:
     // Current frame series
     const std::vector<sf::IntRect>* mFrames;
 protected:
-    // Type ID to handle textures correctly
-    size_t mTypeID;
     // Current state; update is done according to it
     unsigned mState;
     // Current animation (action) frame
     unsigned mFrameNo;
+    void setModel(const std::shared_ptr<const Model>& model);
 public:
-    Item(const std::shared_ptr<const Model>& model, unsigned state = 0,
-         const sf::Vector2f& position = sf::Vector2f(0,0));
+    Item(const std::shared_ptr<const Model>& model,
+         const sf::Vector2f& position = sf::Vector2f(0,0),
+         unsigned state = 0);
     ~Item();
     Item& operator = (const Item& other);
     // Returns current sprite

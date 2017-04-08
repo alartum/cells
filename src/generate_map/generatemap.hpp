@@ -3,7 +3,6 @@
 
 #include "../matrix/matrix.hpp"
 #include "../tile/tile.hpp"
-#include "../tileinfo/tileinfo.hpp"
 
 
 class GenerateMap
@@ -11,14 +10,14 @@ class GenerateMap
 public:
     GenerateMap();
     // Generate field
-    virtual void operator () (Matrix<Tile>& map, TileInfo& info);
+    virtual void operator () (Matrix<Tile>& map);
 };
 
 class GenerateSampleTiles : public GenerateMap
 {
 public:
     GenerateSampleTiles();
-    void operator ()(Matrix<Tile>& map, TileInfo& info);
+    void operator ()(Matrix<Tile>& map);
 };
 
 #endif // GENERATEMAP_HPP

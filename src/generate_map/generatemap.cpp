@@ -5,7 +5,7 @@ GenerateMap::GenerateMap()
 
 }
 
-void GenerateMap::operator () (Matrix<Tile>& map, TileInfo &info)
+void GenerateMap::operator () (Matrix<Tile>& map)
 {
 }
 
@@ -13,7 +13,7 @@ GenerateSampleTiles::GenerateSampleTiles()
 {
 }
 
-void GenerateSampleTiles::operator ()(Matrix<Tile>& map, TileInfo &info)
+void GenerateSampleTiles::operator ()(Matrix<Tile>& map)
 {
     for (unsigned x = 0; x < map.getWidth(); x++){
         for (unsigned y = 0; y < map.getWidth(); y++){

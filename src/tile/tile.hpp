@@ -1,31 +1,20 @@
 #ifndef HEADER_TILE_HPP_INCLUDED
 #define HEADER_TILE_HPP_INCLUDED
 
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
+#include "../game_item/gameitem.hpp"
+#include "../object/object.hpp"
+#include <list>
 
-
-class Tile
+class Tile : public GameItem
 {
 public:
-    enum Type {Clear = 0,
-               Live  = 1,
-               Water = 2,
-               Green = 3};
-    
-private:
-    Type mType;
-    sf::Sprite mSprite;
-    bool mIsUpdated;
-public:
-    Tile();
-    Tile(Type type, const sf::Texture& texture);
-    Tile::Type getType() const;
-    void setType(Type type);
-    sf::Sprite& getSprite();
-    void setSprite(const sf::Texture& texture);
-    bool isUpdated() const;
-    void setUpdated(bool isUpdated);
+    Tile(const std::shared_ptr<ModelManager>& modelManagerPtr,
+         int tileType = 0,
+         const sf::Vector2f& position = sf::Vector2f(0,0),
+         unsigned state = 0);
+    // Objects in current tile
+    // May be used to optimise interacting
+    std::list<std::shared_ptr<Object> > mObjects;
 };
 
 #endif

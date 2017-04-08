@@ -5,24 +5,23 @@
 #include <SFML/Window.hpp>
 #include <SFML/Window/VideoMode.hpp>
 
-#include "../tileinfo/tileinfo.hpp"
 #include "../tile/tile.hpp"
 #include "../matrix/matrix.hpp"
 #include "../object/object.hpp"
 #include "../generate_objects/generateobjects.hpp"
 #include "../generate_map/generatemap.hpp"
 #include "../do_step/dostep.hpp"
-
+#include "../model_manager/modelmanager.hpp"
 
 class Field 
 {
 private:
     Matrix<Tile>     mMap;
-    TileInfo&        mTileInfo;
+    ModelManager     mModelManager;
     // In pixels
-    sf::Vector2u mSizePixels;
+    sf::Vector2u     mSizePixels;
     sf::RenderWindow mWindow;
-    // Массив указателей на объекты с поля
+    // Objects on the field
     std::vector< Object* > mObjects;
 
     GenerateMap&     mGenerateMap;

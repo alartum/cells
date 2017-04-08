@@ -7,6 +7,7 @@
 #include "item/item.hpp"
 #include "model/model.hpp"
 #include "matrix/matrix.hpp"
+#include "model_manager/modelmanager.hpp"
 
 void UpdateThread(sf::RenderWindow& W, Matrix<Item>& items)
 {
@@ -41,7 +42,10 @@ int main(int argc, char** argv, char** env)
     waterModel_ptr->pushTextureRect(sf::IntRect(100, 694, tileSize, tileSize), 0);
     waterModel_ptr->pushTextureRect(sf::IntRect(430, 694, tileSize, tileSize), 0);
 
-    Item waterItem(waterModel_ptr);
+    ModelManager sample;
+    sample.initSample();
+    //Item waterItem(waterModel_ptr);
+    Item waterItem(sample.getModel(0));
 
     size_t x_size = 10, y_size = 10;
     Matrix<Item> items(x_size, y_size, waterItem);

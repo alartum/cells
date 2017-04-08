@@ -1,8 +1,8 @@
 #include "item.hpp"
 #include <iostream>
 
-Item::Item(const std::shared_ptr<const Model>& model, unsigned state,
-           const sf::Vector2f& position) :
+Item::Item(const std::shared_ptr<const Model>& model,
+           const sf::Vector2f& position, unsigned state) :
     mModel(model),
     mState(state)
 {
@@ -45,4 +45,11 @@ Item& Item::operator = (const Item& other)
     mIsUpdated = false;
 
     return *this;
+}
+
+void Item::setModel(const std::shared_ptr<const Model>& model)
+{
+    mModel = model;
+    setTexture(*mModel->getTexture());
+    setState(0);
 }
