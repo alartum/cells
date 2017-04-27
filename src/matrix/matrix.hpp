@@ -24,7 +24,7 @@ public:
     // Изменяет ширину
     inline void setWidth (unsigned width);
     // Изменяет оба параметра
-    inline void setSize (unsigned width, unsigned height);
+    inline void setSize (unsigned height, unsigned widht);
     inline unsigned getHeight () const;
     inline unsigned getWidth () const;
 
@@ -74,7 +74,7 @@ private:
 };
 
 template <typename T>
-inline Matrix<T>::Matrix (unsigned width, unsigned height, const T &element):
+inline Matrix<T>::Matrix (unsigned height, unsigned width, const T &element):
     mHeight (height), mWidth (width), mElements (height * width, element)
 {
 
@@ -83,14 +83,14 @@ inline Matrix<T>::Matrix (unsigned width, unsigned height, const T &element):
 template <typename T>
 inline T& Matrix<T>::at (unsigned x, unsigned y)
 {
-    return mElements[y * mWidth + x];
+    return mElements[x * mWidth + y];
 }
 
 
 template <typename T>
 inline bool Matrix<T>::isInRange(unsigned x, unsigned y) const
 {
-   return ((x < mWidth) && (y < mHeight));
+   return ((x < mHeight) && (y < mWidth));
 }
 
 template <typename T>
@@ -124,7 +124,7 @@ inline void Matrix<T>::setWidth(unsigned width)
 }
 
 template <typename T>
-inline void Matrix<T>::setSize(unsigned width, unsigned height)
+inline void Matrix<T>::setSize(unsigned height, unsigned width)
 {
     unsigned lWidth = mWidth;
     unsigned lHeight = mHeight;
@@ -137,7 +137,7 @@ inline void Matrix<T>::setSize(unsigned width, unsigned height)
 
     for (unsigned i = 0; i < std::min(lHeight, mHeight); i++)
         for (unsigned j = 0; j < std::min(lWidth, mWidth); j++)
-            mElements[i * mWidth + j] = buffer[i * lWidth + j];
+            mElements[i * mHeight + j] = buffer[i * lHeight + j];
 }
 
 

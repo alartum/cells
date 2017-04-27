@@ -1,32 +1,61 @@
 #include "generatemap.hpp"
+#include <random>
+#include <numeric>
+#include <iterator>
+#include <algorithm>
 
-GenerateMap::GenerateMap()
+#include "../tileinfo/tile_ids.hpp"
+
+
+/*GenerateMap::GenerateMap() {
+    ;
+}*/
+
+GenerateRandomMap::GenerateRandomMap (unsigned grassGroupCount, double grassDispersionMin, double grassDispersionMax, double grassDensity ) :
+    grassGroupCount(grassGroupCount), grassDispersionMin(grassDispersionMin), grassDispersionMax(grassDispersionMax), grassDensity(grassDensity) 
 {
-
+    
 }
 
-void GenerateMap::operator () (Matrix<Tile>& map)
-{
-}
-
-GenerateSampleTiles::GenerateSampleTiles()
-{
-}
-
-void GenerateSampleTiles::operator ()(Matrix<Tile>& map)
-{
-    for (unsigned x = 0; x < map.getWidth(); x++){
-        for (unsigned y = 0; y < map.getWidth(); y++){
-            Tile& current = map.at(x, y);
-            current.setType(Tile::Water);
-            Tile::Type type = current.getType();
-            sf::Texture& texture = info.getTexture(type);
-            sf::Sprite& sprite = current.getSprite();
-            sprite.setTexture(texture);
-            float xpos = x*info.getTileSize().x;
-            float ypos = y*info.getTileSize().y;
-            sprite.setPosition(xpos, ypos);
-            current.setUpdated(true);
+void GenerateRandomMap::operator() ( Matrix< Tile >& map ) {
+    // Размеры поля
+    unsigned mapHeight  = map.getHeight();
+    unsigned mapWidth   = map.getWidth();
+    
+    // Вспомогательные генераторы
+    std::random_device  tempRandomDevice;
+    std::mt19937        mtGenerator(tempRandomDevice());
+    
+    // Относительное положение центра травы
+    std::uniform_real_distribution< double >    grassCentreDistribution(0, 1);
+    std::uniform_real_distribution< double >    grassDispersionDistribution(grassDispersionMin, grassDispersionMax);
+    
+    for (unsigned i = 0; i < mapHeight; i++)
+        for (unsigned j = 0; j < mapWidth; j++)
+            map.at(i, j).setTypeID(TILE_WATER_ID);
+    
+    for (unsigned i = 0; i < grassGroupCount; i++) {
+        
+        // Координаты текущего центра
+        double xCoord = grassCentreDistribution(mtGenerator);
+        double yCoord = grassCentreDistribution(mtGenerator);
+        
+        // Распределения травы вокруг центра
+        std::normal_distribution< double > xGrassDistribution(xCoord, grassDispersionDistribution(mtGenerator));
+        std::normal_distribution< double > yGrassDistribution(yCoord, grassDispersionDistribution(mtGenerator));
+        
+        for (unsigned j = 0; (double)j * grassDensity < (double)(mapHeight * mapWidth); j++) {
+            double xCurrent = xGrassDistribution(mtGenerator);
+            double yCurrent = yGrassDistribution(mtGenerator);
+            
+            if (xCurrent >= 1 || xCurrent < 0 || yCurrent >= 1 || yCurrent < 0) // Трава сгенерировалась за пределами карты
+                continue;
+            
+            map.at(
+                static_cast< unsigned >(xCurrent * mapHeight), 
+                static_cast< unsigned >(yCurrent * mapWidth)
+            ).setTypeID(TILE_GRASS_ID);
         }
     }
 }
+

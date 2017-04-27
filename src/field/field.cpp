@@ -1,20 +1,11 @@
-#include "field.hpp"
+/*#include "field.hpp"
 
 
  // Конструктор W - окно отрисовки, fSize - вектор размера, fCellSize - размер клетки
 Field::Field(sf::Vector2u sizeTile, GenerateObjects& generateObjects,
-             GenerateMap& generateMap, DoStep &doStep,
-             TileInfo& tileInfo) :
-    mMap(sizeTile.x, sizeTile.y),
-    mTileInfo(tileInfo),
-    mSizePixels(mMap.getWidth()*mTileInfo.getTileSize().x,
-                mMap.getHeight()*mTileInfo.getTileSize().y),
-    mWindow(sf::VideoMode(mSizePixels.x, mSizePixels.y), "Cells"),
-    mGenerateMap(generateMap),
-    mGenerateObjects(generateObjects),
-    mDoStep(doStep)
+             GenerateMap& generateMap, DoStep &doStep) 
 {
-    mWindow.clear(sf::Color::White);
+    //mWindow.clear(sf::Color::White);
 }
 
 // Деструктор
@@ -49,7 +40,7 @@ void Field::draw()
 // Функция генерации поля, принимает тип генерируемого поля
 void Field::generate()
 {
-    mGenerateMap(mMap, mTileInfo);
+    mGenerateMap(mMap);
     mGenerateObjects(mMap, mObjects);
 }
 
@@ -64,7 +55,7 @@ void Field::drawObjects()
 {/*
     for (auto & objectIterator : mObjects)
         objectIterator->draw(mWindow);
-*/
+
 }
 
 void Field::drawTiles()
@@ -83,4 +74,4 @@ void Field::drawTiles()
 sf::RenderWindow &Field::getWindow()
 {
     return mWindow;
-}
+}*/

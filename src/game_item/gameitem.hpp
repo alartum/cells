@@ -16,7 +16,7 @@ public:
     // Updates ID and reloads the texture
     //! Time expensive
     void setTypeID(int TypeID);
-private:
+protected:
     // Type ID to handle textures correctly
     int mTypeID;
     // Model that provides textures

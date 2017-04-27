@@ -31,8 +31,7 @@ private:
 public:    
     // fSizeTile
     Field(sf::Vector2u sizeTile, GenerateObjects& generateObjects,
-          GenerateMap& generateMap, DoStep& doStep,
-          TileInfo& tileInfo);
+          GenerateMap& generateMap, DoStep& doStep);
     
     // Деструктор
     ~Field();

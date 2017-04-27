@@ -2,7 +2,9 @@
 #define MODELMANAGER_HPP
 
 #include <map>
-#include <model/model.hpp>
+#include "../model/model.hpp"
+#include "../tileinfo/tile_ids.hpp"
+
 #include <string>
 
 class ModelManager

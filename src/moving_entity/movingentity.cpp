@@ -1,3 +1,4 @@
+/*
 #include "movingentity.hpp"
 
 MovingEntity::MovingEntity(const std::shared_ptr<ModelManager> &modelManagerPtr,
@@ -19,3 +20,4 @@ MovingEntity::Direction MovingEntity::getDirection() const
 {
     return mDirection;
 }
+//*/

@@ -1,4 +1,4 @@
-#ifndef ENTITY_HPP
+/*#ifndef ENTITY_HPP
 #define ENTITY_HPP
 
 #include "../object/object.hpp"
@@ -18,3 +18,4 @@ private:
 };
 
 #endif // ENTITY_HPP
+//*/

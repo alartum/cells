@@ -1,3 +1,4 @@
+/*
 #ifndef MOVINGENTITY_HPP
 #define MOVINGENTITY_HPP
 
@@ -18,3 +19,4 @@ public:
 };
 
 #endif // MOVINGENTITY_HPP
+*/

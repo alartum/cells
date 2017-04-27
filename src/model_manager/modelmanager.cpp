@@ -15,20 +15,23 @@ std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
 
 void ModelManager::loadModel(int typeID, const std::shared_ptr<const Model>& model_ptr)
 {
-    mModels.insert(std::pair<int, std::shared_ptr<Model> >(typeID, model_ptr));
+    //mModels.insert(std::make_pair<int, std::shared_ptr<Model> >(typeID, model_ptr));
+    mModels[typeID] = model_ptr;
 }
 
 void ModelManager::initSample()
 {
-    // Example
-    auto texture_ptr = std::make_shared<sf::Texture>();
-
-    texture_ptr->loadFromFile("/home/alartum/programs/source/cells/src/tileinfo/tiles.png");
-    auto waterModel_ptr = std::make_shared<const Model>(1, texture_ptr);
-
     int tileSize = 32;
+    auto texture_ptr = std::make_shared<sf::Texture>();
+    texture_ptr->loadFromFile("tileinfo/tiles.png");
+    
+    auto waterModel_ptr = std::make_shared< Model >(1, texture_ptr);
     waterModel_ptr->pushTextureRect(sf::IntRect(100, 694, tileSize, tileSize), 0);
     waterModel_ptr->pushTextureRect(sf::IntRect(430, 694, tileSize, tileSize), 0);
-
-    loadModel(0, waterModel_ptr);
+    loadModel(TILE_WATER_ID, waterModel_ptr);
+    
+    auto grassModel_ptr = std::make_shared< Model >(1, texture_ptr);
+    grassModel_ptr->pushTextureRect(sf::IntRect(32, 32, tileSize, tileSize), 0);
+    // grassModel_ptr->pushTextureRect(sf::IntRect());
+    loadModel(TILE_GRASS_ID, grassModel_ptr);    
 }

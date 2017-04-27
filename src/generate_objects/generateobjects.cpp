@@ -1,4 +1,4 @@
-#include "generateobjects.hpp"
+/*#include "generateobjects.hpp"
 
 #include <random>
 #include <set>
@@ -14,3 +14,4 @@ GenerateObjects::GenerateObjects()
 void GenerateObjects::operator () (const Matrix<Tile>& map, std::vector< Object* > & R)
 {
 }
+//*/

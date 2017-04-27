@@ -1,4 +1,4 @@
-#ifndef HEADER_GENERATEOBJECTS_HPP_INCLUDED
+/*#ifndef HEADER_GENERATEOBJECTS_HPP_INCLUDED
 #define HEADER_GENERATEOBJECTS_HPP_INCLUDED
 
 #include <exception>
@@ -36,3 +36,4 @@ public:
 };
 
 #endif
+//*/

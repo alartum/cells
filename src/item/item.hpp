@@ -23,6 +23,8 @@ private:
 protected:
     // Current state; update is done according to it
     unsigned mState;
+    
+    int mTypeID;
     // Current animation (action) frame
     unsigned mFrameNo;
     void setModel(const std::shared_ptr<const Model>& model);
