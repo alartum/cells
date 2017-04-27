@@ -49,7 +49,16 @@
 		time_t t = time(NULL); \
 		struct tm* tmp = localtime(&t); \
 		strftime(__tb, 100, "%d/%m/%Y %H:%M:%S ", tmp); \
-		printf("%s [pid=%d] ", __tb, (int)getpid()); \
+		const char* __filename__ = __FILE__; \
+		char* __iterator__ = (char*)__filename__ + strlen(__filename__) - 1; \
+		int __count__slash__ = 0; \
+                while (__iterator__ > __filename__ && __count__slash__ < 2) { \
+                    if (*__iterator__ == '/') \
+                        __count__slash__ ++; \
+                    if (__count__slash__ != 2) \
+                        __iterator__--; \
+                } \
+                printf("%s [pid=%d] [%s] [line: %d] ", __tb, (int)getpid(), __iterator__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 		printf("\n"); \
 		fflush(stdout); \
@@ -65,7 +74,16 @@
 		time_t t = time(NULL); \
 		struct tm* tmp = localtime(&t); \
 		strftime(__tb, 100, "%d/%m/%Y %H:%M:%S ", tmp); \
-		printf("%s [pid=%d]", __tb, (int)getpid()); \
+		const char* __filename__ = __FILE__; \
+                char* __iterator__ = (char*)__filename__ + strlen(__filename__) - 1; \
+                int __count__slash__ = 0; \
+                while (__iterator__ > __filename__ && __count__slash__ < 2) { \
+                    if (*__iterator__ == '/') \
+                        __count__slash__ ++; \
+                    if (__count__slash__ != 2) \
+                        __iterator__--; \
+                } \
+                printf("%s [pid=%d] [%s] [line: %d] ", __tb, (int)getpid(), __iterator__, __LINE__); \
 		SET_FONT(CL_FT_RED); \
 		printf(" ERROR! "); \
 		SET_FONT(TY_FT_DEFAULT); \
