@@ -1,77 +1,92 @@
-/*#include "field.hpp"
+#include "field.hpp"
+#include "../debug.h"
 
-
- // Конструктор W - окно отрисовки, fSize - вектор размера, fCellSize - размер клетки
-Field::Field(sf::Vector2u sizeTile, GenerateObjects& generateObjects,
-             GenerateMap& generateMap, DoStep &doStep) 
-{
-    //mWindow.clear(sf::Color::White);
+Field::Field (  sf::RenderWindow&       Window,
+                sf::Vector2u&           sizeTiles,
+                unsigned                tileSize
+             ) :
+                mWindow         (Window),
+                mSizeTiles      (sizeTiles),
+                mTileSize       (tileSize),
+                mMap            (sizeTiles.x, sizeTiles.y, Tile(1)) 
+            {            
+    for (unsigned i = 0; i < sizeTiles.x; i++)
+        for (unsigned j = 0; j < sizeTiles.y; j++) {
+            mMap.at(i, j).setPosition(tileSize * i, tileSize * j);
+        }
 }
 
-// Деструктор
 Field::~Field() {
-    for (auto iter: mObjects)
-        delete iter;
+    
 }
 
-// Открыто ли привязанное окно
+sf::RenderWindow& Field::getWindow() {
+    return mWindow;
+}
+
+unsigned int Field::getWidth() {
+    return mSizeTiles.y;
+}
+
+unsigned Field::getHeight() {
+    return mSizeTiles.x;
+}
+
+sf::Vector2u Field::getSize() {
+    return mSizeTiles;
+}
+
 bool Field::isWindowOpen() {
     return mWindow.isOpen();
 }
 
-// Активность привязанного окна
-void Field::setActive( bool status ) {
-    mWindow.setActive(status);
+void Field::setActive ( bool status ) {
+    mWindow.setActive( status );
 }
 
-// Вызвать метод display привязанного окна
-void Field::display() {
-    mWindow.display();
-}
-
-
-// Вывести на W состояния клеток, не выполняется для тех клеток, для которых cType == cPrevType (которые не изменили тип)
-void Field::draw()
-{
-    drawTiles();
-    drawObjects();
-}
-    
-// Функция генерации поля, принимает тип генерируемого поля
-void Field::generate()
-{
-    mGenerateMap(mMap);
-    mGenerateObjects(mMap, mObjects);
-}
-
-// Функция пересчета состояния поля на один игровой шаг
-void Field::doStep()
-{
-    mDoStep(mObjects);
-}
-
-
-void Field::drawObjects()
-{
-    for (auto & objectIterator : mObjects)
-        objectIterator->draw(mWindow);
-
-}
-
-void Field::drawTiles()
-{
-    for (unsigned x = 0; x < mMap.getWidth(); x++){
-        for (unsigned y = 0; y < mMap.getWidth(); y++){
-            Tile& current = mMap.at(x, y);
-            if (current.isUpdated()){
-                mWindow.draw(current.getSprite());
-                current.setUpdated(false);
-            }
+void Field::setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr) {
+    mModelManager = modelManager_ptr;
+    for (unsigned i = 0; i < mSizeTiles.x; i++)
+        for (unsigned j = 0; j < mSizeTiles.y; j++) {
+            mMap.at(i, j).setModelManager(mModelManager);
+            mMap.at(i, j).loadModel();
         }
-    }
 }
 
-sf::RenderWindow &Field::getWindow()
-{
-    return mWindow;
-}*/
+void Field::draw() {
+    for (unsigned i = 0; i < mMap.getHeight(); i++)
+        for (unsigned j = 0; j < mMap.getWidth(); j++) {
+            Tile& currentTile = mMap.at(i, j);
+            currentTile.nextFrame();
+            mWindow.draw(currentTile);
+        }
+}
+
+void drawObjects() {
+}
+
+void Field::drawTiles() {
+    for (unsigned i = 0; i < mMap.getHeight(); i++)
+        for (unsigned j = 0; j < mMap.getWidth(); j++) {
+            Item& curr_item = mMap.at(i, j);
+            curr_item.nextFrame();
+            mWindow.draw(curr_item);
+        }
+}
+
+void Field::display() {
+    mWindow.display();    
+}
+
+void Field::generateTiles(std::function< void(Matrix< Tile >&) > generatorMap) {
+    generatorMap(mMap);
+}
+
+void Field::generateObjects(std::function< void(Matrix< Tile >&, std::vector< Object* >&) > generatorObjects) {
+    generatorObjects(mMap, mObjects);
+}
+
+
+void Field::doStep() {
+}
+

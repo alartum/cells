@@ -10,13 +10,14 @@ ModelManager::ModelManager()
 
 std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
 {
-    LOG("mModels size = %lu, typeID = %d", mModels.size(), typeID);
+    //LOG("mModels size = %lu, typeID = %d", mModels.size(), typeID);
     try{
         return mModels.at(typeID);
     }
     catch (const std::out_of_range& oor){
         std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
     }
+    return NULL;
 }
 
 void ModelManager::addModel(int typeID, const std::shared_ptr< const Model >& model_ptr)

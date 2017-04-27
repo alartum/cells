@@ -11,81 +11,30 @@
 #include "matrix/matrix.hpp"
 #include "model_manager/modelmanager.hpp"
 #include "generate_map/generatemap.hpp"
+#include "field/field.hpp"
 
 // for log messages
 #include "debug.h"
 
 
-void UpdateThread(sf::RenderWindow& W, Matrix<Tile>& items)
+void UpdateThread(sf::RenderWindow& W, Field& F)
 {
-    W.setActive(true);
-    int x_size = items.getWidth(), y_size = items.getHeight();
+    F.setActive(true);
 
     while(W.isOpen()){
         std::this_thread::sleep_for(std::chrono::milliseconds(400));
         if (W.isOpen()) {
             W.clear();
-            for (int i = 0; i < x_size; i++){
-                for (int j = 0; j < y_size; j++){
-                    Item& curr_item = items.at(i, j);
-                    curr_item.nextFrame();
-                    W.draw(curr_item);
-                }
-            }
+            F.drawTiles();
             W.display();
         }
     }
 }
 
-int test_graph(int argc, char** argv, char** env)
+/*
+int test_map_generation(int argc, char** argv, char** env)
 {
-    XInitThreads();
-    auto texture_ptr = std::make_shared<sf::Texture>();
-
-    texture_ptr->loadFromFile("tileinfo/tiles.png");
-    auto waterModel_ptr = std::make_shared<Model>(1, texture_ptr);
-
-    int tileSize = 32;
-    waterModel_ptr->pushTextureRect(sf::IntRect(100, 694, tileSize, tileSize), 0);
-    waterModel_ptr->pushTextureRect(sf::IntRect(430, 694, tileSize, tileSize), 0);
-
-    ModelManager sample;
-    sample.initSample();
-    //Item waterItem(waterModel_ptr);
-    Item waterItem;
-
-    waterItem.setModel(sample.getModel(0));
-    size_t x_size = 10, y_size = 10;
-    Matrix<Item> items(x_size, y_size, waterItem);
-    for (unsigned i = 0; i < x_size; i++){
-        for (unsigned j = 0; j < y_size; j++){
-            items.at(i, j).setPosition(tileSize*i, tileSize*j);
-        }
-    }
-
-    sf::RenderWindow W(sf::VideoMode(x_size*tileSize, y_size*tileSize), "Sprites");
-    W.setActive(false);
-    W.setFramerateLimit(60);
-
-    //std::thread T(UpdateThread, std::ref(W), std::ref(items));
-
-    while(W.isOpen()){
-        sf::Event event;
-        while(W.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                W.close();
-                break;
-            }
-        }
-    }
-    //T.join();
-
-    return 0;
-}//*/
-
-int test_map_generetion(int argc, char** argv, char** env)
-{
-    size_t x_size = 10, y_size = 10;
+    size_t x_size = 40, y_size = 40;
     int tileSize = 32;
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
     sample->initSample();
@@ -96,7 +45,6 @@ int test_map_generetion(int argc, char** argv, char** env)
     
     for (unsigned i = 0; i < x_size; i++)
         for (unsigned j = 0; j < y_size; j++) {
-            std::cout << i << " " << j << std::endl;
             items.at(i, j).setModelManager(sample);
             items.at(i, j).loadModel();
             items.at(i, j).setPosition(tileSize*i, tileSize*j);
@@ -104,18 +52,66 @@ int test_map_generetion(int argc, char** argv, char** env)
     LOG("Matrix of tile created");
         
         
-    GenerateRandomMap mapGenerator(3, 0.01, 0.02, 20);
-    std::cout << "I am here" << std::endl;
+    GenerateRandomMap mapGenerator(8, 0.01, 0.06, 15);
     mapGenerator(items);
     
     
     XInitThreads();
     
-    sf::RenderWindow W(sf::VideoMode(x_size*tileSize, y_size*tileSize), "Sprites");
+    sf::RenderWindow W(sf::VideoMode(x_size * tileSize, y_size * tileSize), "Sprites");
     W.setActive(false);
     W.setFramerateLimit(60);
 
     std::thread T(UpdateThread, std::ref(W), std::ref(items));
+
+    while(W.isOpen()){
+        sf::Event event;
+        while(W.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                W.close();
+                break;
+            }
+        }
+    }
+    T.join();
+    
+    return 0;
+}*/
+
+int test_field(int argc, char** argv, char** env) {
+    XInitThreads();
+     
+    size_t x_size = 40, y_size = 40;
+    sf::Vector2u fieldSize(x_size, y_size);
+    
+    int tileSize = 32;
+    std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
+    sample->initSample();
+    LOG("Model manager initialized");
+
+    sf::RenderWindow W(sf::VideoMode(x_size * tileSize, y_size * tileSize), "Sprites");
+    W.setFramerateLimit(60);
+    Field F(W, fieldSize, tileSize);
+    F.setModelManager(sample);
+    F.setActive(false);
+    
+    GenerateRandomMap mapGenerator(8, 0.01, 0.06, 15);
+    GenerateRandomMap& gen = mapGenerator;
+    F.generateTiles(gen);
+    
+    /*for (int i = 0; i < F.mMap.getHeight(); i++) {
+        for (int j = 0; j < F.mMap.getWidth(); j++) {
+            if (F.mMap.at(i, j).getTypeID() == TILE_GRASS_ID) 
+                std::cout << "\x1b[42m\x1b[1m";
+            else
+                std::cout << "\x1b[34m";
+            std::cout << "  ";
+            std::cout << "\x1b[44m";
+        }
+        std::cout << std::endl;
+    }*/
+    
+    std::thread T(UpdateThread, std::ref(W), std::ref(F));
 
     while(W.isOpen()){
         sf::Event event;
@@ -134,6 +130,6 @@ int test_map_generetion(int argc, char** argv, char** env)
 
 int main(int argc, char ** argv, char** env)
 {
-    test_map_generetion(argc, argv, env);
+    test_field(argc, argv, env);
     return 0;
 }

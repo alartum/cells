@@ -3,16 +3,15 @@
 
 #include "../matrix/matrix.hpp"
 #include "../tile/tile.hpp"
-/*
+
 class GenerateMap
 {
 public:
     GenerateMap();
-    // Generate field
-    virtual void operator () (Matrix<Tile>& map);
+    void operator () (Matrix<Tile>& map);
 };
-*/
-class GenerateRandomMap// : public GenerateMap
+
+class GenerateRandomMap : public GenerateMap
 {
 // Генерация островков травы с помощью нормального распределения с диагональной 
 // ковариационной матрицей, значения которой распределены равнометрно между
@@ -28,5 +27,6 @@ public:
     GenerateRandomMap(unsigned grassGroupCount, double grassDispersionMin, double grassDispersionMax, double grassDensity);
     void operator ()(Matrix<Tile>& map);
 };
+
 
 #endif // GENERATEMAP_HPP

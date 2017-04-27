@@ -22,14 +22,14 @@ void GameItem::setTypeID(int TypeID)
     loadModel();
 }
 
-void GameItem::setModelManager (const std::shared_ptr<const ModelManager>& modelManagerPtr)
+void GameItem::setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr)
 {
-    mModelManager = modelManagerPtr;
+    mModelManager = modelManager_ptr;
 }
 
 void GameItem::loadModel()
 {
-    LOG("[GameItem.loadModel()] mTypeID = %d", mTypeID);
+    //LOG("[GameItem.loadModel()] mTypeID = %d", mTypeID);
     if (mModelManager)
         setModel(mModelManager->getModel(mTypeID));
 }

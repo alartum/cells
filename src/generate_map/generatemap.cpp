@@ -5,11 +5,18 @@
 #include <algorithm>
 
 #include "../tileinfo/tile_ids.hpp"
+#include "../debug.h"
 
-
-/*GenerateMap::GenerateMap() {
+GenerateMap::GenerateMap() {
     ;
-}*/
+}
+
+void GenerateMap::operator() ( Matrix< Tile >& map ) {
+    std::cout << "ЗаебалоСюдаХодить" << std::endl;;
+}
+
+
+
 
 GenerateRandomMap::GenerateRandomMap (unsigned grassGroupCount, double grassDispersionMin, double grassDispersionMax, double grassDensity ) :
     grassGroupCount(grassGroupCount), grassDispersionMin(grassDispersionMin), grassDispersionMax(grassDispersionMax), grassDensity(grassDensity) 
@@ -18,6 +25,15 @@ GenerateRandomMap::GenerateRandomMap (unsigned grassGroupCount, double grassDisp
 }
 
 void GenerateRandomMap::operator() ( Matrix< Tile >& map ) {
+    LOG("RandomMapGenerate:\n"
+        "               size = (%u, %u)\n"
+        "               grassGroupCount = %u\n"
+        "               grassDispersionMin = %lg\n"
+        "               grassDispersionMax = %lg\n"
+        "               grassDensity = %lg",
+        map.getHeight(), map.getWidth(),
+        grassGroupCount, grassDispersionMin, grassDispersionMax, grassDensity);
+  
     // Размеры поля
     unsigned mapHeight  = map.getHeight();
     unsigned mapWidth   = map.getWidth();

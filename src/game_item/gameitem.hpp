@@ -15,7 +15,7 @@ public:
     // Updates ID and reloads the texture
     //! Time expensive
     void setTypeID(int TypeID);
-    void setModelManager (const std::shared_ptr<const ModelManager>& modelManagerPtr);
+    void setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr);
     std::shared_ptr<const ModelManager> getModelManager() const;
     void loadModel();
 protected:

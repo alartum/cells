@@ -48,7 +48,7 @@
 		char __tb[101]; \
 		time_t t = time(NULL); \
 		struct tm* tmp = localtime(&t); \
-		strftime(__tb, 100, "%d/%m/%Y %H:%M:%S ", tmp); \
+		strftime(__tb, 100, "%d.%m.%Y %H:%M:%S ", tmp); \
 		const char* __filename__ = __FILE__; \
 		char* __iterator__ = (char*)__filename__ + strlen(__filename__) - 1; \
 		int __count__slash__ = 0; \
@@ -73,7 +73,7 @@
 		char __tb[101]; \
 		time_t t = time(NULL); \
 		struct tm* tmp = localtime(&t); \
-		strftime(__tb, 100, "%d/%m/%Y %H:%M:%S ", tmp); \
+		strftime(__tb, 100, "%d.%m.%Y %H:%M:%S ", tmp); \
 		const char* __filename__ = __FILE__; \
                 char* __iterator__ = (char*)__filename__ + strlen(__filename__) - 1; \
                 int __count__slash__ = 0; \
