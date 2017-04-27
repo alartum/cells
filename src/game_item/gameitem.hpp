@@ -8,14 +8,16 @@
 class GameItem : public Item
 {
 public:
-    GameItem(const std::shared_ptr<const ModelManager>& modelManagerPtr,
-             int typeID = 0,
+    GameItem(int typeID = 0,
              const sf::Vector2f& position = sf::Vector2f(0,0),
              unsigned state = 0);
     int getTypeID() const;
     // Updates ID and reloads the texture
     //! Time expensive
     void setTypeID(int TypeID);
+    void setModelManager (const std::shared_ptr<const ModelManager>& modelManagerPtr);
+    std::shared_ptr<const ModelManager> getModelManager() const;
+    void loadModel();
 protected:
     // Type ID to handle textures correctly
     int mTypeID;

@@ -1,12 +1,10 @@
-/*
 #include "movingentity.hpp"
 
-MovingEntity::MovingEntity(const std::shared_ptr<ModelManager> &modelManagerPtr,
-                           int entityType,
+MovingEntity::MovingEntity(int entityType,
                            const sf::Vector2f &position,
                            unsigned state) :
-    Entity(modelManagerPtr, tileType, position, state),
-      mDirection(MovingEntity::Direction::NONE)
+    Entity(entityType, position, state),
+    mDirection(MovingEntity::Direction::NONE)
 {
 
 }
@@ -20,4 +18,3 @@ MovingEntity::Direction MovingEntity::getDirection() const
 {
     return mDirection;
 }
-//*/

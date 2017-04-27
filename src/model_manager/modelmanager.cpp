@@ -10,13 +10,16 @@ ModelManager::ModelManager()
 
 std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
 {
-    LOG("mModels size = %lu", mModels.size());
-    for (auto & pair: mModels)
-        std::cout << pair.first << std::endl;
-    return mModels.at(typeID);
+    LOG("mModels size = %lu, typeID = %d", mModels.size(), typeID);
+    try{
+        return mModels.at(typeID);
+    }
+    catch (const std::out_of_range& oor){
+        std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
+    }
 }
 
-void ModelManager::loadModel(int typeID, const std::shared_ptr< const Model >& model_ptr)
+void ModelManager::addModel(int typeID, const std::shared_ptr< const Model >& model_ptr)
 {
     mModels.insert(std::pair<int, std::shared_ptr< const Model > >(typeID, model_ptr));
 }
@@ -30,10 +33,10 @@ void ModelManager::initSample()
     auto waterModel_ptr = std::make_shared< Model >(1, texture_ptr);
     waterModel_ptr->pushTextureRect(sf::IntRect(100, 694, tileSize, tileSize), 0);
     waterModel_ptr->pushTextureRect(sf::IntRect(430, 694, tileSize, tileSize), 0);
-    loadModel(TILE_WATER_ID, waterModel_ptr);
+    addModel(TILE_WATER_ID, waterModel_ptr);
     
     auto grassModel_ptr = std::make_shared< Model >(1, texture_ptr);
     grassModel_ptr->pushTextureRect(sf::IntRect(32, 32, tileSize, tileSize), 0);
     // grassModel_ptr->pushTextureRect(sf::IntRect());
-    loadModel(TILE_GRASS_ID, grassModel_ptr);    
+    addModel(TILE_GRASS_ID, grassModel_ptr);
 }

@@ -1,13 +1,11 @@
 #include "gameitem.hpp"
 
-GameItem::GameItem(const std::shared_ptr<const ModelManager>& modelManagerPtr,
-                    int typeID,
+GameItem::GameItem(int typeID,
                     const sf::Vector2f &position,
                     unsigned state) :
-    mTypeID(typeID),
-    Item(mModelManager->getModel(mTypeID), position, state)
+    Item(position, state),
+    mTypeID(typeID)
 {
-
 }
 
 int GameItem::getTypeID() const
@@ -15,13 +13,28 @@ int GameItem::getTypeID() const
     return mTypeID;
 }
 
-
-
 void GameItem::setTypeID(int TypeID)
 {
     if (TypeID == mTypeID)
         return;
 
     mTypeID = TypeID;
-    setModel(mModelManager->getModel(mTypeID));
+    loadModel();
+}
+
+void GameItem::setModelManager (const std::shared_ptr<const ModelManager>& modelManagerPtr)
+{
+    mModelManager = modelManagerPtr;
+}
+
+void GameItem::loadModel()
+{
+    LOG("[GameItem.loadModel()] mTypeID = %d", mTypeID);
+    if (mModelManager)
+        setModel(mModelManager->getModel(mTypeID));
+}
+
+std::shared_ptr<const ModelManager> GameItem::getModelManager() const
+{
+    return mModelManager;
 }

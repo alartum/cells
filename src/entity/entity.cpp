@@ -1,10 +1,9 @@
-/*#include "entity.hpp"
+#include "entity.hpp"
 
-Entity::Entity(const std::shared_ptr<ModelManager> &modelManagerPtr,
-               int entityType,
+Entity::Entity(int entityType,
                const sf::Vector2f &position,
                unsigned state) :
-Object(modelManagerPtr, entityType, position, state),
+  Object(entityType, position, state),
   mState(Entity::State::NONE)
 {
 
@@ -19,4 +18,3 @@ Entity::State Entity::getState() const
 {
     return mState;
 }
-//*/

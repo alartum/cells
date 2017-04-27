@@ -27,13 +27,13 @@ protected:
     int mTypeID;
     // Current animation (action) frame
     unsigned mFrameNo;
-    void setModel(const std::shared_ptr<const Model>& model);
 public:
-    Item(const std::shared_ptr<const Model>& model,
-         const sf::Vector2f& position = sf::Vector2f(0,0),
+    Item(const sf::Vector2f& position = sf::Vector2f(0,0),
          unsigned state = 0);
     ~Item();
     Item& operator = (const Item& other);
+    void setModel(const std::shared_ptr<const Model>& model);
+    std::shared_ptr<const Model> getModel() const;
     // Returns current sprite
     // The object manages it's view itself
     void setState(unsigned state);

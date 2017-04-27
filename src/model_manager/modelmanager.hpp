@@ -13,7 +13,7 @@ class ModelManager
 public:
     ModelManager();
     std::shared_ptr<const Model> getModel(int typeID) const;
-    void loadModel(int typeID, const std::shared_ptr<const Model>& model_ptr);
+    void addModel(int typeID, const std::shared_ptr<const Model>& model_ptr);
     void initSample();
 private:
     // Models with ID

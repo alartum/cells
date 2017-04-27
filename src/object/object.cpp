@@ -1,10 +1,9 @@
 #include "../object/object.hpp"
 
-Object::Object(const std::shared_ptr<ModelManager> &modelManagerPtr,
-               int objectType,
+Object::Object(int objectType,
                const sf::Vector2f &position,
                unsigned state) :
-        GameItem(modelManagerPtr, objectType, position, state)
+        GameItem(objectType, position, state)
 {
 
 }

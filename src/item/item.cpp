@@ -1,13 +1,9 @@
 #include "item.hpp"
 #include <iostream>
 
-Item::Item(const std::shared_ptr<const Model>& model,
-           const sf::Vector2f& position, unsigned state) :
-    mModel(model),
-    mState(state)
+Item::Item(const sf::Vector2f& position, unsigned state)
 {
-    setTexture(*mModel->getTexture());
-    setState(0);
+    setState(state);
     setPosition(position);
 }
 
@@ -20,9 +16,14 @@ void Item::setState(unsigned state)
     mState = state;
     mIsUpdated = true;
     mFrameNo = 0;
-    mMaxFrameNo = mModel->getNFrames(mState) - 1;
-    mFrames = &mModel->getTextureRectSeries(mState),
-    setTextureRect((*mFrames)[mFrameNo]);
+    if (mModel){
+        mMaxFrameNo = mModel->getNFrames(mState) - 1;
+        mFrames = &mModel->getTextureRectSeries(mState),
+        setTextureRect((*mFrames)[mFrameNo]);
+    }
+    else{
+        mMaxFrameNo = 0;
+    }
 }
 
 void Item::nextFrame()
@@ -31,7 +32,8 @@ void Item::nextFrame()
         mFrameNo = 0;
     else
         mFrameNo++;
-    setTextureRect((*mFrames)[mFrameNo]);
+    if (mFrames)
+        setTextureRect((*mFrames)[mFrameNo]);
 }
 
 Item& Item::operator = (const Item& other)
@@ -52,4 +54,9 @@ void Item::setModel(const std::shared_ptr<const Model>& model)
     mModel = model;
     setTexture(*mModel->getTexture());
     setState(0);
+}
+
+std::shared_ptr<const Model> Item::getModel() const
+{
+    return mModel;
 }

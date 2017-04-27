@@ -52,8 +52,9 @@ int test_graph(int argc, char** argv, char** env)
     ModelManager sample;
     sample.initSample();
     //Item waterItem(waterModel_ptr);
-    Item waterItem(sample.getModel(0));
+    Item waterItem;
 
+    waterItem.setModel(sample.getModel(0));
     size_t x_size = 10, y_size = 10;
     Matrix<Item> items(x_size, y_size, waterItem);
     for (unsigned i = 0; i < x_size; i++){
@@ -84,21 +85,20 @@ int test_graph(int argc, char** argv, char** env)
 
 int test_map_generetion(int argc, char** argv, char** env)
 {
-    ModelManager sample;
-    sample.initSample();
-    LOG("Model manager initialized");
-    
     size_t x_size = 10, y_size = 10;
     int tileSize = 32;
-    std::shared_ptr< const ModelManager > sample_ptr = std::make_shared< ModelManager >(sample);
-    LOG("Sample model created");
-    
-    Matrix< Tile > items(x_size, y_size, Tile(sample_ptr));
+    std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
+    sample->initSample();
+    LOG("Model manager initialized");
+
+    Matrix<Tile > items(x_size, y_size, Tile(1));
     LOG("Matrix initialized");
     
     for (unsigned i = 0; i < x_size; i++)
         for (unsigned j = 0; j < y_size; j++) {
             std::cout << i << " " << j << std::endl;
+            items.at(i, j).setModelManager(sample);
+            items.at(i, j).loadModel();
             items.at(i, j).setPosition(tileSize*i, tileSize*j);
         }
     LOG("Matrix of tile created");
