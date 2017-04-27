@@ -22,7 +22,7 @@ void UpdateThread(sf::RenderWindow& W, Field& F)
     F.setActive(true);
 
     while(W.isOpen()){
-        std::this_thread::sleep_for(std::chrono::milliseconds(400));
+        std::this_thread::sleep_for(std::chrono::milliseconds(800));
         if (W.isOpen()) {
             W.clear();
             F.drawTiles();
@@ -77,6 +77,7 @@ int test_map_generation(int argc, char** argv, char** env)
     
     return 0;
 }*/
+
 
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();

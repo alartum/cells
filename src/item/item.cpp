@@ -32,8 +32,7 @@ void Item::nextFrame()
         mFrameNo = 0;
     else
         mFrameNo++;
-    if (mFrames)
-        setTextureRect((*mFrames)[mFrameNo]);
+    setTextureRect((*mFrames)[mFrameNo]);
 }
 
 Item& Item::operator = (const Item& other)
