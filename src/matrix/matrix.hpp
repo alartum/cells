@@ -14,7 +14,8 @@ template <typename T>
 class Matrix
 {
 public:
-    Matrix (unsigned width = 0, unsigned height = 0, const T& element = T());
+    Matrix (unsigned height = 0, unsigned width = 0, const T& element = T());
+    Matrix (unsigned height = 0, unsigned width = 0, T&& element = T());
     // Возвращает ссылку элемент с данной позицией
     T& at (unsigned x, unsigned y);
     // Заполняет матрицу элементом element
@@ -75,6 +76,13 @@ private:
 
 template <typename T>
 inline Matrix<T>::Matrix (unsigned height, unsigned width, const T &element):
+    mHeight (height), mWidth (width), mElements (height * width, element)
+{
+
+}
+
+template <typename T>
+inline Matrix<T>::Matrix (unsigned height, unsigned width, T&& element):
     mHeight (height), mWidth (width), mElements (height * width, element)
 {
 

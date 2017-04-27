@@ -10,13 +10,15 @@ ModelManager::ModelManager()
 
 std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
 {
+    LOG("mModels size = %lu", mModels.size());
+    for (auto & pair: mModels)
+        std::cout << pair.first << std::endl;
     return mModels.at(typeID);
 }
 
-void ModelManager::loadModel(int typeID, const std::shared_ptr<const Model>& model_ptr)
+void ModelManager::loadModel(int typeID, const std::shared_ptr< const Model >& model_ptr)
 {
-    //mModels.insert(std::make_pair<int, std::shared_ptr<Model> >(typeID, model_ptr));
-    mModels[typeID] = model_ptr;
+    mModels.insert(std::pair<int, std::shared_ptr< const Model > >(typeID, model_ptr));
 }
 
 void ModelManager::initSample()

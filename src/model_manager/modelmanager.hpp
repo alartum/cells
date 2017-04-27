@@ -4,6 +4,7 @@
 #include <map>
 #include "../model/model.hpp"
 #include "../tileinfo/tile_ids.hpp"
+#include "../debug.h"
 
 #include <string>
 
