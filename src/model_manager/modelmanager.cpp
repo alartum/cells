@@ -28,15 +28,19 @@ void ModelManager::initSample()
 {
     int tileSize = 32;
     auto texture_ptr = std::make_shared<sf::Texture>();
-    texture_ptr->loadFromFile("tileinfo/tiles.png");
-    
+
+    bool is_loaded = texture_ptr->loadFromFile("./tileinfo/tiles.png");
+    if (!is_loaded){
+        return;
+    }
+
     auto waterModel_ptr = std::make_shared< Model >(1, texture_ptr);
     waterModel_ptr->pushTextureRect(sf::IntRect(100, 694, tileSize, tileSize), 0);
     waterModel_ptr->pushTextureRect(sf::IntRect(430, 694, tileSize, tileSize), 0);
     addModel(TILE_WATER_ID, waterModel_ptr);
     
     auto grassModel_ptr = std::make_shared< Model >(1, texture_ptr);
-    grassModel_ptr->pushTextureRect(sf::IntRect(32, 32, tileSize, tileSize), 0);
+    grassModel_ptr->pushTextureRect(sf::IntRect(34, 67, tileSize, tileSize), 0);
     // grassModel_ptr->pushTextureRect(sf::IntRect());
     addModel(TILE_GRASS_ID, grassModel_ptr);
 }

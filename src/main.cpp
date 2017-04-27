@@ -22,7 +22,7 @@ void UpdateThread(sf::RenderWindow& W, Matrix<Tile>& items)
     int x_size = items.getWidth(), y_size = items.getHeight();
 
     while(W.isOpen()){
-        std::this_thread::sleep_for(std::chrono::milliseconds(400));
+        std::this_thread::sleep_for(std::chrono::milliseconds(800));
         if (W.isOpen()) {
             W.clear();
             for (int i = 0; i < x_size; i++){
@@ -85,7 +85,8 @@ int test_graph(int argc, char** argv, char** env)
 
 int test_map_generetion(int argc, char** argv, char** env)
 {
-    size_t x_size = 10, y_size = 10;
+    XInitThreads();
+    size_t x_size = 30, y_size = 30;
     int tileSize = 32;
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
     sample->initSample();
@@ -93,7 +94,7 @@ int test_map_generetion(int argc, char** argv, char** env)
 
     Matrix<Tile > items(x_size, y_size, Tile(1));
     LOG("Matrix initialized");
-    
+
     for (unsigned i = 0; i < x_size; i++)
         for (unsigned j = 0; j < y_size; j++) {
             std::cout << i << " " << j << std::endl;
@@ -105,18 +106,14 @@ int test_map_generetion(int argc, char** argv, char** env)
         
         
     GenerateRandomMap mapGenerator(3, 0.01, 0.02, 20);
-    std::cout << "I am here" << std::endl;
     mapGenerator(items);
-    
-    
-    XInitThreads();
+    LOG("Map generated");
     
     sf::RenderWindow W(sf::VideoMode(x_size*tileSize, y_size*tileSize), "Sprites");
     W.setActive(false);
     W.setFramerateLimit(60);
-
     std::thread T(UpdateThread, std::ref(W), std::ref(items));
-
+    LOG("Starting new thread");
     while(W.isOpen()){
         sf::Event event;
         while(W.pollEvent(event)) {
