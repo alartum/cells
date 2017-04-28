@@ -18,4 +18,7 @@ Tile::Tile ( Tile&& other ) :
     setModelManager(other.getModelManager());
 }
 
-
+ Tile& Tile::operator = (const Tile& other){
+     GameItem:: operator = (other);
+     return *this;
+ }

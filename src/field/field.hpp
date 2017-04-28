@@ -15,12 +15,10 @@
 #include "../model_manager/modelmanager.hpp"
 #include "../do_step/dostep.hpp"
 
-class Field 
+class Field : public sf::RenderWindow
 {
 public:
-    sf::RenderWindow&           mWindow;
-    sf::Vector2u&               mSizeTiles;
-    unsigned                    mTileSize;
+    sf::Vector2u                mTileSize;
     
     // Objects on the field
     std::vector< Object* >      mObjects;
@@ -28,43 +26,25 @@ public:
     
     std::shared_ptr<const ModelManager> mModelManager;
 
+    void setTilePositions();
 public:    
-    // fSizeTiles
-    Field(  sf::RenderWindow&   Window,
-            sf::Vector2u&       sizeTiles,
-            unsigned            mTileSize
-         );
+    Field(sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels, sf::Vector2u tileSize);
     
-    // Деструктор
     ~Field();
-    
-    // Вернуть ссылку на привязанное окно
-    sf::RenderWindow& getWindow();
-    
-    unsigned getWidth();
-    unsigned getHeight();
-    sf::Vector2u getSize();
-
-    // Открыто ли привязанное окно
-    bool isWindowOpen();
-    
-    // Активность привязанного окна
-    void setActive(bool status);
-    
-    // Установить менеджер моделей
+    void fitView();
+    // Sets model manager for every tile
+    void loadTileTextures();
+    void setMapSize(sf::Vector2u size);
+    sf::Vector2u getMapSize() const;
+    void setTileSize(sf::Vector2u size);
+    sf::Vector2u getTileSize() const;
     void setModelManager (const std::shared_ptr<const ModelManager>& modelManagerPtr);
 
-    // Вывести на W все объекты (вызвать draw(W) для них)
-    void draw();
-    
     // Отрисовать только объекты
     void drawObjects();
 
     // Отрисовать только тайлы
     void drawTiles();
-    
-    // Вызвать метод display привязанного окна
-    void display();
         
     // Функция генерации тайлов поля
     void generateTiles(std::function< void(Matrix< Tile >&) > generatorMap);

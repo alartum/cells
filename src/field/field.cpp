@@ -1,65 +1,87 @@
 #include "field.hpp"
 #include "../debug.h"
 
-Field::Field (  sf::RenderWindow&       Window,
-                sf::Vector2u&           sizeTiles,
-                unsigned                tileSize
-             ) :
-                mWindow         (Window),
-                mSizeTiles      (sizeTiles),
-                mTileSize       (tileSize),
-                mMap            (sizeTiles.x, sizeTiles.y, Tile(1)) 
-            {            
-    for (unsigned i = 0; i < sizeTiles.x; i++)
-        for (unsigned j = 0; j < sizeTiles.y; j++) {
-            mMap.at(i, j).setPosition(tileSize * i, tileSize * j);
-        }
+Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels, sf::Vector2u tileSize) :
+    sf::RenderWindow(sf::VideoMode(sizeInPixels.x, sizeInPixels.y), "Field"),
+    mTileSize    (tileSize),
+    mMap         (sizeInTiles.x, sizeInTiles.y)
+{
+    setActive(false);
+    setFramerateLimit(60);
+    setTilePositions();
+//    fitView();
 }
 
 Field::~Field() {
     
 }
 
-sf::RenderWindow& Field::getWindow() {
-    return mWindow;
+ void Field::setTilePositions(){
+     for (unsigned i = 0; i < mMap.getWidth(); i++)
+         for (unsigned j = 0; j < mMap.getHeight(); j++) {
+             mMap.at(i, j).setPosition(mTileSize.x * i, mTileSize.y * j);
+         }
+ }
+
+void Field::fitView(){
+    sf::Vector2u mapSize = getMapSize();
+    //LOG("Tile size: (%u, %u)", mTileSize.x, mTileSize.y);
+    //LOG("Map size: (%u, %u)", mapSize.x, mapSize.y);
+    //LOG("Real size: (%u, %u)", getSize().x, getSize().y);
+    sf::Vector2u realSize(mTileSize.x * mapSize.y, mTileSize.y * mapSize.x);
+    // Proportions of the real size of the map
+    if (realSize.x == 0 || realSize.y == 0)
+        return;
+    float prop_x = (float)mapSize.x / mapSize.y;
+    float prop_y = (float)mapSize.y / mapSize.x;
+
+    //LOG("prop_x, prop_y: (%f, %f)", prop_x, prop_y);
+    sf::Vector2u window_size = getSize();
+    sf::Vector2u x_bestFit(window_size.x, window_size.x * prop_x);
+    sf::Vector2u y_bestFit(window_size.y * prop_y, window_size.y);
+    //LOG("Map px size: (%u, %u)", realSize.x, realSize.y);
+    //LOG("X best fit: (%u, %u)", x_bestFit.x, x_bestFit.y);
+    //LOG("Y best fit: (%u, %u)", y_bestFit.x, y_bestFit.y);
+    if (x_bestFit.y <= window_size.y)
+        setSize(x_bestFit);
+    else
+        setSize(y_bestFit);
+
+    sf::View fieldView(sf::FloatRect(0, 0, realSize.x, realSize.y));
+    // Use default viewport
+    setView(fieldView);
+    //LOG("New size: (%u, %u)", getSize().x, getSize().y);
 }
 
-unsigned int Field::getWidth() {
-    return mSizeTiles.y;
+void Field::setMapSize(sf::Vector2u size){
+    mMap.setSize(size.x, size.y);
 }
 
-unsigned Field::getHeight() {
-    return mSizeTiles.x;
+sf::Vector2u Field::getTileSize() const{
+    return mTileSize;
 }
 
-sf::Vector2u Field::getSize() {
-    return mSizeTiles;
+void Field::setTileSize(sf::Vector2u size){
+    mTileSize = size;
+
 }
 
-bool Field::isWindowOpen() {
-    return mWindow.isOpen();
+sf::Vector2u Field::getMapSize() const{
+    return sf::Vector2u(mMap.getHeight(), mMap.getWidth());
 }
 
-void Field::setActive ( bool status ) {
-    mWindow.setActive( status );
+void Field::loadTileTextures(){
+    for (unsigned i = 0; i < mMap.getHeight(); i++){
+        for (unsigned j = 0; j < mMap.getWidth(); j++){
+            mMap.at(i, j).setModelManager(mModelManager);
+            mMap.at(i, j).loadModel();
+        }
+    }
 }
 
 void Field::setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr) {
     mModelManager = modelManager_ptr;
-    for (unsigned i = 0; i < mSizeTiles.x; i++)
-        for (unsigned j = 0; j < mSizeTiles.y; j++) {
-            mMap.at(i, j).setModelManager(mModelManager);
-            mMap.at(i, j).loadModel();
-        }
-}
-
-void Field::draw() {
-    for (unsigned i = 0; i < mMap.getHeight(); i++)
-        for (unsigned j = 0; j < mMap.getWidth(); j++) {
-            Tile& currentTile = mMap.at(i, j);
-            currentTile.nextFrame();
-            mWindow.draw(currentTile);
-        }
+//    setTileModelManager();
 }
 
 void drawObjects() {
@@ -68,14 +90,12 @@ void drawObjects() {
 void Field::drawTiles() {
     for (unsigned i = 0; i < mMap.getHeight(); i++)
         for (unsigned j = 0; j < mMap.getWidth(); j++) {
-            Item& curr_item = mMap.at(i, j);
+            Tile& curr_item = mMap.at(i, j);
+            //LOG("ID = %d", curr_item.getTypeID());
+            //LOG("POS = (%d, %d)", curr_item.getPosition().x, curr_item.getPosition().y);
             curr_item.nextFrame();
-            mWindow.draw(curr_item);
+            draw(curr_item);
         }
-}
-
-void Field::display() {
-    mWindow.display();    
 }
 
 void Field::generateTiles(std::function< void(Matrix< Tile >&) > generatorMap) {

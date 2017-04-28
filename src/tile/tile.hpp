@@ -17,6 +17,7 @@ public:
     // Objects in current tile
     // May be used to optimise interacting
      std::list<std::shared_ptr<Object> > mObjects;
+     Tile& operator = (const Tile& other);
 };
 
 #endif

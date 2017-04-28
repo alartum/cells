@@ -38,3 +38,8 @@ std::shared_ptr<const ModelManager> GameItem::getModelManager() const
 {
     return mModelManager;
 }
+
+GameItem& GameItem::operator = (const GameItem& other){
+    mModelManager = other.mModelManager;
+    setTypeID(other.mTypeID);
+}

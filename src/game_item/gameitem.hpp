@@ -18,6 +18,7 @@ public:
     void setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr);
     std::shared_ptr<const ModelManager> getModelManager() const;
     void loadModel();
+    GameItem& operator = (const GameItem& other);
 protected:
     // Type ID to handle textures correctly
     int mTypeID;

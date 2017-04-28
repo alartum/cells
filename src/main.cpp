@@ -17,16 +17,16 @@
 #include "debug.h"
 
 
-void UpdateThread(sf::RenderWindow& W, Field& F)
+void UpdateThread(Field& F)
 {
     F.setActive(true);
 
-    while(W.isOpen()){
+    while(F.isOpen()){
         std::this_thread::sleep_for(std::chrono::milliseconds(800));
-        if (W.isOpen()) {
-            W.clear();
+        if (F.isOpen()) {
+            F.clear();
             F.drawTiles();
-            W.display();
+            F.display();
         }
     }
 }
@@ -82,23 +82,24 @@ int test_map_generation(int argc, char** argv, char** env)
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
      
-    size_t x_size = 40, y_size = 40;
+    size_t x_size = 30, y_size = 30;
     sf::Vector2u fieldSize(x_size, y_size);
-    
-    int tileSize = 32;
-    std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
-    sample->initSample();
-    LOG("Model manager initialized");
+    sf::Vector2u tileSize(32, 32);
+    sf::Vector2u windowSize(640, 860);
 
-    sf::RenderWindow W(sf::VideoMode(x_size * tileSize, y_size * tileSize), "Sprites");
-    W.setFramerateLimit(60);
-    Field F(W, fieldSize, tileSize);
-    F.setModelManager(sample);
-    F.setActive(false);
-    
+    Field F(fieldSize, windowSize, tileSize);
     GenerateRandomMap mapGenerator(8, 0.01, 0.06, 15);
     GenerateRandomMap& gen = mapGenerator;
     F.generateTiles(gen);
+    LOG("Map generated");
+
+    std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
+    sample->initSample();
+    LOG("Model manager initialized");
+    F.setModelManager(sample);
+    F.loadTileTextures();
+    LOG("Textures loaded");
+    F.fitView();
     
     /*for (int i = 0; i < F.mMap.getHeight(); i++) {
         for (int j = 0; j < F.mMap.getWidth(); j++) {
@@ -112,13 +113,13 @@ int test_field(int argc, char** argv, char** env) {
         std::cout << std::endl;
     }*/
     
-    std::thread T(UpdateThread, std::ref(W), std::ref(F));
+    std::thread T(UpdateThread, std::ref(F));
 
-    while(W.isOpen()){
+    while(F.isOpen()){
         sf::Event event;
-        while(W.pollEvent(event)) {
+        while(F.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                W.close();
+                F.close();
                 break;
             }
         }
