@@ -3,6 +3,7 @@
 #include <memory>
 #include <SFML/Graphics/Texture.hpp>
 
+#include "../debug.h"
 ModelManager::ModelManager()
 {
 
