@@ -1,4 +1,5 @@
 #include "field.hpp"
+#define DEBUG
 #include "../debug.h"
 
 Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels, sf::Vector2u tileSize) :
@@ -71,6 +72,17 @@ sf::Vector2u Field::getMapSize() const{
     return sf::Vector2u(mMap.getHeight(), mMap.getWidth());
 }
 
+void Field::loadEntityTextures(){
+    for (auto& ent: mEntities){
+        ent.setModelManager(mModelManager);
+        ent.loadModel();
+        if (ent.getTypeID() == OBJECT_GRASS_EATING_ID){
+            ent.setState(rand() % 4);
+            ent.setFrame(rand() % 4);
+        }
+    }
+}
+
 void Field::loadTileTextures(){
     for (unsigned i = 0; i < mMap.getHeight(); i++){
         for (unsigned j = 0; j < mMap.getWidth(); j++){
@@ -86,7 +98,14 @@ void Field::setModelManager (const std::shared_ptr<const ModelManager>& modelMan
 //    setTileModelManager();
 }
 
-void drawObjects() {
+//! TODO matrix coords -> absolute coords
+void Field::drawEntities() {
+    for (auto& ent: mEntities){
+        //LOG("Entity ID: %d", ent.getTypeID());
+       // LOG("Entity pos: %f, %f", ent.getPosition().x, ent.getPosition().y);
+        ent.nextFrame();
+        draw(ent);
+    }
 }
 
 void Field::drawTiles() {
@@ -106,8 +125,13 @@ void Field::generateTiles(std::function< void(Matrix< Tile >&) > generatorMap) {
     generatorMap(mMap);
 }
 
-void Field::generateObjects(std::function< void(Matrix< Tile >&, std::vector< Object* >&) > generatorObjects) {
-    generatorObjects(mMap, mObjects);
+//! TODO coords
+void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities) {
+    generateEntities(mMap, mEntities);
+    for (auto& ent: mEntities){
+        sf::Vector2f ent_pos(ent.getPosition().y * mTileSize.x, ent.getPosition().x * mTileSize.y);
+        ent.setPosition(ent_pos);
+    }
 }
 
 

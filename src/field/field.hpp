@@ -21,7 +21,7 @@ public:
     sf::Vector2u                mTileSize;
     
     // Objects on the field
-    std::vector< Object* >      mObjects;
+    std::vector< Entity >      mEntities;
     Matrix<Tile>                mMap;
     
     std::shared_ptr<const ModelManager> mModelManager;
@@ -34,6 +34,8 @@ public:
     void fitView();
     // Sets model manager for every tile
     void loadTileTextures();
+    // Sets model manager for every entity
+    void loadEntityTextures();
     void setMapSize(sf::Vector2u size);
     sf::Vector2u getMapSize() const;
     void setTileSize(sf::Vector2u size);
@@ -41,7 +43,7 @@ public:
     void setModelManager (const std::shared_ptr<const ModelManager>& modelManagerPtr);
 
     // Отрисовать только объекты
-    void drawObjects();
+    void drawEntities();
 
     // Отрисовать только тайлы
     void drawTiles();
@@ -50,7 +52,7 @@ public:
     void generateTiles(std::function< void(Matrix< Tile >&) > generatorMap);
     
     // Функция генерации объектов на поле
-    void generateObjects(std::function< void(Matrix< Tile >&, std::vector< Object* >&) > generatorObjects);
+    void generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities);
     
     // Функция пересчета состояния поля на один игровой шаг
     void doStep();

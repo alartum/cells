@@ -9,7 +9,7 @@ Entity::Entity(int entityType,
 
 }
 
-void Entity::setState (Entity::State state)
+/*void Entity::setState (Entity::State state)
 {
     mState = state;
 }
@@ -18,3 +18,4 @@ Entity::State Entity::getState() const
 {
     return mState;
 }
+*/

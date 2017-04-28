@@ -11,7 +11,8 @@ HEADERS += \
     model_manager/modelmanager.hpp \
     game_item/gameitem.hpp \
     entity/entity.hpp \
-    moving_entity/movingentity.hpp
+    moving_entity/movingentity.hpp \
+    tileinfo/tile_ids.hpp
 
 SOURCES += \
     field/field.cpp \

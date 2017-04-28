@@ -10,8 +10,8 @@ public:
     Entity(int entityType = 0,
            const sf::Vector2f& position = sf::Vector2f(0,0),
            unsigned state = 0);
-    void setState (State state);
-    State getState() const;
+   // void setState (State state);
+    //State getState() const;
 private:
     State mState;
 };

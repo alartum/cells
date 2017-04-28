@@ -28,6 +28,8 @@ void Item::setState(unsigned state)
 
 void Item::nextFrame()
 {
+    if (!mModel)
+        return;
     if (mFrameNo == mMaxFrameNo)
         mFrameNo = 0;
     else
@@ -58,4 +60,8 @@ void Item::setModel(const std::shared_ptr<const Model>& model)
 std::shared_ptr<const Model> Item::getModel() const
 {
     return mModel;
+}
+
+void Item::setFrame(unsigned frame){
+    mFrameNo = frame;
 }

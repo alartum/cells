@@ -22,10 +22,11 @@ void UpdateThread(Field& F)
     F.setActive(true);
 
     while(F.isOpen()){
-        std::this_thread::sleep_for(std::chrono::milliseconds(800));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         if (F.isOpen()) {
             F.clear();
             F.drawTiles();
+            F.drawEntities();
             F.display();
         }
     }
@@ -82,7 +83,7 @@ int test_map_generation(int argc, char** argv, char** env)
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
      
-    sf::Vector2u fieldSize(60, 80);
+    sf::Vector2u fieldSize(20, 20);
     sf::Vector2u tileSize(32, 32);
     sf::Vector2u windowSize(640, 860);
 
@@ -92,11 +93,15 @@ int test_field(int argc, char** argv, char** env) {
     F.generateTiles(gen);
     LOG("Map generated");
 
+    GenerateRandomEntity entityGenerator(3, 3, 1, 30, 5, 3, 1, 3);
+    F.generateEntities(entityGenerator);
+
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
     sample->initSample();
     LOG("Model manager initialized");
     F.setModelManager(sample);
     F.loadTileTextures();
+    F.loadEntityTextures();
     LOG("Textures loaded");
     F.fitView();
     
@@ -131,6 +136,7 @@ int test_field(int argc, char** argv, char** env) {
 
 int main(int argc, char ** argv, char** env)
 {
+    srand(time(0));
     test_field(argc, argv, env);
     return 0;
 }

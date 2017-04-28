@@ -82,7 +82,7 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
             unsigned yCurrent = yDistribution(mtGenerator);
             
             if (IDS.at(xCurrent, yCurrent) != TILE_UNDEFINED_ID &&
-                IDS.at(xCurrent, yCurrent) != TILE_WATER_ID)
+                IDS.at(xCurrent, yCurrent) != TILE_GRASS_ID)
                 continue;
                 
             

@@ -37,6 +37,7 @@ public:
     // Returns current sprite
     // The object manages it's view itself
     void setState(unsigned state);
+    void setFrame(unsigned frame);
     void nextFrame();
 };
 

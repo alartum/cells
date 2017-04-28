@@ -18,7 +18,7 @@ std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
     catch (const std::out_of_range& oor){
         std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
     }
-    return NULL;
+    return mModels.at(OBJECT_UNDEFINED_ID);
 }
 
 void ModelManager::addModel(int typeID, const std::shared_ptr< const Model >& model_ptr)
@@ -45,4 +45,22 @@ void ModelManager::initSample()
     grassModel_ptr->pushTextureRect(sf::IntRect(34, 67, tileSize, tileSize), 0);
     // grassModel_ptr->pushTextureRect(sf::IntRect());
     addModel(TILE_GRASS_ID, grassModel_ptr);
+
+    auto chicken_texture = std::make_shared<sf::Texture>();
+    is_loaded = chicken_texture->loadFromFile("./tileinfo/chicken_eat.png");
+    if (!is_loaded){
+        return;
+    }
+
+    auto chickenModel_ptr = std::make_shared< Model >(4, chicken_texture);
+    for (int k = 0; k < 4; k++){
+        for (int i = 0; i < 4; i++){
+            chickenModel_ptr->pushTextureRect(sf::IntRect(i * tileSize, k * tileSize, tileSize, tileSize), k);
+        }
+    }
+    addModel(OBJECT_GRASS_EATING_ID, chickenModel_ptr);
+
+    auto noModel_ptr = std::make_shared< Model >(1, texture_ptr);
+    noModel_ptr->pushTextureRect(sf::IntRect(364, 1, tileSize, tileSize), 0);
+    addModel(OBJECT_UNDEFINED_ID, noModel_ptr);
 }
