@@ -1,5 +1,5 @@
-#ifndef DEBUG_H_INCLUDED
-#define DEBUG_H_INCLUDED
+//#ifndef DEBUG_H_INCLUDED
+//#define DEBUG_H_INCLUDED
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
@@ -63,7 +63,7 @@
 		fflush(stdout); \
 	}
 #else
-	#define log(format, ...) ;
+	#define LOG(format, ...) ;
 #endif
 
 // PERROR MACRO
@@ -95,4 +95,4 @@
 	}
 
 
-#endif // DEBUG_H_INCLUDED
+//#endif // DEBUG_H_INCLUDED
