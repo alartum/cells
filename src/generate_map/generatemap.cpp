@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "../tileinfo/tile_ids.hpp"
+#define DEBUG
 #include "../debug.h"
 
 GenerateMap::GenerateMap() {
