@@ -19,14 +19,25 @@ class GenerateRandomMap : public GenerateMap
 // Плотность распределения островков равномерная.
 // Тип генерируемой карты не зависит от размера пареданной "Matrix< Tile >& map". 
 protected:
-    unsigned    grassGroupCount;        // Количество "островков травы"
-    double      grassDispersionMin;     // Дисперсия травы (минимальное значени)
-    double      grassDispersionMax;     // Дисперсия травы (максимальное значение)
-    double      grassDensity;           // Плотность травяных островков (положительное число около 7-20, 7 - наиболее плотная)
+    unsigned    grassGroupCount;        // Количество островков "травы"
+    double      grassDispersionMin;     // Дисперсия "травы" (минимальное значени)
+    double      grassDispersionMax;     // Дисперсия "травы" (максимальное значение)
+    double      grassDensity;           // Плотность "травяных" островков (положительное число около 7-20, 7 - наиболее плотная)
 public:
     GenerateRandomMap(unsigned grassGroupCount, double grassDispersionMin, double grassDispersionMax, double grassDensity);
     void operator ()(Matrix<Tile>& map);
 };
+
+
+
+
+class MapDump 
+{
+public:
+    MapDump();
+    void operator () (Matrix< Tile >&);
+};
+
 
 
 #endif // GENERATEMAP_HPP

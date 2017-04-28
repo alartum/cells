@@ -75,3 +75,29 @@ void GenerateRandomMap::operator() ( Matrix< Tile >& map ) {
     }
 }
 
+
+
+
+MapDump::MapDump() {
+}
+
+void MapDump::operator() ( Matrix< Tile >& map) {
+    for (unsigned i = 0; i < map.getHeight(); i++) {
+        for (unsigned j = 0; j < map.getWidth(); j++) {
+            switch (map.at(i, j).getTypeID()) {
+                case TILE_WATER_ID:
+                    std::cout << CL_BG_BLUE;
+                    break;
+                case TILE_GRASS_ID:
+                    std::cout << CL_BG_GREEN;
+                    break;
+                default:
+                    std::cout << CL_BG_BLACK;
+            }
+            std::cout << "  " << TY_FT_DEFAULT; 
+        }
+        std::cout << std::endl;
+    }
+}
+
+

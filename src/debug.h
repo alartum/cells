@@ -40,7 +40,6 @@
 	}
 
 //!TODO DELETE IT
-#define DEBUG 1
 // LOG MACRO
 #if defined(DEBUG)
 	#define LOG(format, ...) \
