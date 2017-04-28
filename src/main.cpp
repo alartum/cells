@@ -82,8 +82,7 @@ int test_map_generation(int argc, char** argv, char** env)
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
      
-    size_t x_size = 30, y_size = 30;
-    sf::Vector2u fieldSize(x_size, y_size);
+    sf::Vector2u fieldSize(60, 80);
     sf::Vector2u tileSize(32, 32);
     sf::Vector2u windowSize(640, 860);
 

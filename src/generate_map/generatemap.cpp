@@ -25,6 +25,7 @@ GenerateRandomMap::GenerateRandomMap (unsigned grassGroupCount, double grassDisp
 }
 
 void GenerateRandomMap::operator() ( Matrix< Tile >& map ) {
+
     LOG("RandomMapGenerate:\n"
         "               size = (%u, %u)\n"
         "               grassGroupCount = %u\n"

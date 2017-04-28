@@ -17,17 +17,18 @@ Field::~Field() {
 }
 
  void Field::setTilePositions(){
-     for (unsigned i = 0; i < mMap.getWidth(); i++)
-         for (unsigned j = 0; j < mMap.getHeight(); j++) {
-             mMap.at(i, j).setPosition(mTileSize.x * i, mTileSize.y * j);
+     for (unsigned i = 0; i < mMap.getHeight(); i++)
+         for (unsigned j = 0; j < mMap.getWidth(); j++) {
+             mMap.at(i, j).setPosition(mTileSize.x * j, mTileSize.y * i);
+             LOG("POS = (%f, %f)", mMap.at(i, j).getPosition().x, mMap.at(i, j).getPosition().y);
          }
  }
 
 void Field::fitView(){
     sf::Vector2u mapSize = getMapSize();
-    //LOG("Tile size: (%u, %u)", mTileSize.x, mTileSize.y);
-    //LOG("Map size: (%u, %u)", mapSize.x, mapSize.y);
-    //LOG("Real size: (%u, %u)", getSize().x, getSize().y);
+    LOG("Tile size: (%u, %u)", mTileSize.x, mTileSize.y);
+    LOG("Map size: (%u, %u)", mapSize.x, mapSize.y);
+    LOG("Real size: (%u, %u)", getSize().x, getSize().y);
     sf::Vector2u realSize(mTileSize.x * mapSize.y, mTileSize.y * mapSize.x);
     // Proportions of the real size of the map
     if (realSize.x == 0 || realSize.y == 0)
@@ -35,13 +36,13 @@ void Field::fitView(){
     float prop_x = (float)mapSize.x / mapSize.y;
     float prop_y = (float)mapSize.y / mapSize.x;
 
-    //LOG("prop_x, prop_y: (%f, %f)", prop_x, prop_y);
+    LOG("prop_x, prop_y: (%f, %f)", prop_x, prop_y);
     sf::Vector2u window_size = getSize();
     sf::Vector2u x_bestFit(window_size.x, window_size.x * prop_x);
     sf::Vector2u y_bestFit(window_size.y * prop_y, window_size.y);
-    //LOG("Map px size: (%u, %u)", realSize.x, realSize.y);
-    //LOG("X best fit: (%u, %u)", x_bestFit.x, x_bestFit.y);
-    //LOG("Y best fit: (%u, %u)", y_bestFit.x, y_bestFit.y);
+    LOG("Map px size: (%u, %u)", realSize.x, realSize.y);
+    LOG("X best fit: (%u, %u)", x_bestFit.x, x_bestFit.y);
+    LOG("Y best fit: (%u, %u)", y_bestFit.x, y_bestFit.y);
     if (x_bestFit.y <= window_size.y)
         setSize(x_bestFit);
     else
@@ -50,7 +51,7 @@ void Field::fitView(){
     sf::View fieldView(sf::FloatRect(0, 0, realSize.x, realSize.y));
     // Use default viewport
     setView(fieldView);
-    //LOG("New size: (%u, %u)", getSize().x, getSize().y);
+    LOG("New size: (%u, %u)", getSize().x, getSize().y);
 }
 
 void Field::setMapSize(sf::Vector2u size){
@@ -73,6 +74,7 @@ sf::Vector2u Field::getMapSize() const{
 void Field::loadTileTextures(){
     for (unsigned i = 0; i < mMap.getHeight(); i++){
         for (unsigned j = 0; j < mMap.getWidth(); j++){
+//            LOG("POS = (%f, %f)", mMap.at(i, j).getPosition().x, mMap.at(i, j).getPosition().y);
             mMap.at(i, j).setModelManager(mModelManager);
             mMap.at(i, j).loadModel();
         }
@@ -88,11 +90,13 @@ void drawObjects() {
 }
 
 void Field::drawTiles() {
+    //LOG("ITERATION");
     for (unsigned i = 0; i < mMap.getHeight(); i++)
         for (unsigned j = 0; j < mMap.getWidth(); j++) {
             Tile& curr_item = mMap.at(i, j);
+            //LOG("[%u, %u]", i, j);
             //LOG("ID = %d", curr_item.getTypeID());
-            //LOG("POS = (%d, %d)", curr_item.getPosition().x, curr_item.getPosition().y);
+            //LOG("POS = (%f, %f)", curr_item.getPosition().x, curr_item.getPosition().y);
             curr_item.nextFrame();
             draw(curr_item);
         }
