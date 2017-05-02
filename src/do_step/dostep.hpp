@@ -4,14 +4,17 @@
 #include <vector>
 #include <random>
 #include "../object/object.hpp"
+#include "../matrix/matrix.hpp"
+#include "../tile/tile.hpp"
+#include "../entity/entity.hpp"
 
-// Абстрактный класс алгоритма обработки поля для следующего шага
 class DoStep
 {
 public:
     DoStep();
     // Функция шага
-    virtual void operator () (std::vector< Object* > & M);
+    virtual void operator () (Matrix< Tile >& map, std::vector< Entity >& M);
 };
+
 
 #endif

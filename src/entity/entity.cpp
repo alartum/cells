@@ -3,8 +3,7 @@
 Entity::Entity(int entityType,
                const sf::Vector2f &position,
                unsigned state) :
-  Object(entityType, position, state),
-  mState(Entity::State::NONE)
+  Object(entityType, position, state)
 {
 
 }

@@ -1,6 +1,6 @@
 #include "dostep.hpp"
 ////////////////////////////////////////////////////////////////////////////////////////////////
-void DoStep::operator () (std::vector< Object* > & M)
+void DoStep::operator () (Matrix< Tile >& mapx, std::vector< Entity > & M)
 {
 }
 
