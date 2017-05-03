@@ -2,7 +2,6 @@
 #define ENTITY_HPP
 
 #include "../object/object.hpp"
-#include "../../../cells2/cells/src/tile/tile.hpp"
 
 class Entity : public Object
 {

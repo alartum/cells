@@ -83,17 +83,17 @@ int test_map_generation(int argc, char** argv, char** env)
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
      
-    sf::Vector2u fieldSize(20, 20);
+    sf::Vector2u fieldSize(30, 40);
     sf::Vector2u tileSize(32, 32);
     sf::Vector2u windowSize(640, 860);
 
     Field F(fieldSize, windowSize, tileSize);
-    GenerateRandomMap mapGenerator(8, 0.01, 0.06, 15);
+    GenerateRandomMap mapGenerator(20, 0.01, 0.1, 15);
     GenerateRandomMap& gen = mapGenerator;
     F.generateTiles(gen);
     LOG("Map generated");
 
-    GenerateRandomEntity entityGenerator(3, 3, 1, 30, 5, 3, 1, 3);
+    GenerateRandomEntity entityGenerator(1, 1, 5, 30, 5, 3, 1, 3);
     F.generateEntities(entityGenerator);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();

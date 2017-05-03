@@ -1,5 +1,5 @@
 #include "field.hpp"
-#define DEBUG
+//#define DEBUG
 #include "../debug.h"
 
 Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels, sf::Vector2u tileSize) :
@@ -137,4 +137,3 @@ void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< E
 
 void Field::doStep() {
 }
-

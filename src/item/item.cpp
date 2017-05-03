@@ -1,5 +1,7 @@
 #include "item.hpp"
 #include <iostream>
+#define DEBUG
+#include "debug.h"
 
 Item::Item(const sf::Vector2f& position, unsigned state)
 {
@@ -17,8 +19,8 @@ void Item::setState(unsigned state)
     mIsUpdated = true;
     mFrameNo = 0;
     if (mModel){
-        mMaxFrameNo = mModel->getNFrames(mState) - 1;
-        mFrames = &mModel->getTextureRectSeries(mState),
+        mFrames = &mModel->getTextureRectSeries(mState);
+        mMaxFrameNo = mFrames->size() - 1;
         setTextureRect((*mFrames)[mFrameNo]);
     }
     else{
@@ -30,7 +32,7 @@ void Item::nextFrame()
 {
     if (!mModel)
         return;
-    if (mFrameNo == mMaxFrameNo)
+    if (mFrameNo >= mMaxFrameNo)
         mFrameNo = 0;
     else
         mFrameNo++;
@@ -63,5 +65,9 @@ std::shared_ptr<const Model> Item::getModel() const
 }
 
 void Item::setFrame(unsigned frame){
-    mFrameNo = frame;
+    if (frame > mMaxFrameNo){
+        std::cerr << "[Item] Rejected attempt to set invalid frame = " << frame << "\n";
+    }
+    else
+        mFrameNo = frame;
 }
