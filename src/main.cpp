@@ -16,7 +16,6 @@
 // for log messages
 #include "debug.h"
 
-
 void UpdateThread(Field& F)
 {
     F.setActive(true);
@@ -113,7 +112,7 @@ int test_field(int argc, char** argv, char** env) {
                 std::cout << "\x1b[34m";
             std::cout << "  ";
             std::cout << "\x1b[44m";
-        }
+    }
         std::cout << std::endl;
     }*/
     
@@ -133,10 +132,12 @@ int test_field(int argc, char** argv, char** env) {
     return 0;
 }
 
+int test_algo(int argc, char** argv, char** env);
 
 int main(int argc, char ** argv, char** env)
 {
     srand(time(0));
     test_field(argc, argv, env);
+    //test_algo(argc, argv, env);
     return 0;
 }

@@ -3,7 +3,8 @@
 
 #include "../matrix/matrix.hpp"
 #include "../tile/tile.hpp"
-
+#include "../tileinfo/tile_ids.hpp"
+#include "../entity/entity.hpp"
 class GenerateMap
 {
 public:
@@ -35,7 +36,7 @@ class MapDump
 {
 public:
     MapDump();
-    void operator () (Matrix< Tile >&);
+    void operator () ( Matrix< Tile >& map, std::vector< Entity> & En );
 };
 
 

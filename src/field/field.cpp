@@ -21,7 +21,7 @@ Field::~Field() {
      for (unsigned i = 0; i < mMap.getHeight(); i++)
          for (unsigned j = 0; j < mMap.getWidth(); j++) {
              mMap.at(i, j).setPosition(mTileSize.x * j, mTileSize.y * i);
-             LOG("POS = (%f, %f)", mMap.at(i, j).getPosition().x, mMap.at(i, j).getPosition().y);
+             //LOG("POS = (%f, %f)", mMap.at(i, j).getPosition().x, mMap.at(i, j).getPosition().y);
          }
  }
 

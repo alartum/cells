@@ -94,6 +94,7 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
                         if (IDS.at(i, j) == TILE_GRASS_ID)
                             grassNeightbors += 1;
                 }
+                
             
             if (grassNeightbors >= grassEatingNeightborsMin && grassNeightbors <= grassEatingNeightborsMax)
                 IDS.at(xCurrent, yCurrent) = OBJECT_GRASS_EATING_ID;
@@ -125,12 +126,17 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
     R.clear();
     for( unsigned i = 0; i < IDS.getHeight(); i++)
         for (unsigned j = 0; j < IDS.getWidth(); j++) {
+            LOG("i=%d, j=%d, IDS.height=%d, IDSwidth=%d",
+                i, j, IDS.getHeight(), IDS.getWidth()
+            );
             int cur = IDS.at(i, j);
+            LOG("ID=%d", cur)
             if (IS_GRASS_EATING(cur))
                 R.push_back(Entity(OBJECT_GRASS_EATING_ID, sf::Vector2f(i, j)));
-            if (IS_PREDATOR(cur))
-                R.push_back(Entity(OBJECT_PREDATOR_ID, sf::Vector2f(i, j)));
+            //if (IS_PREDATOR(cur))
+            //    R.push_back(Entity(OBJECT_PREDATOR_ID, sf::Vector2f(i, j)));
         }
+    LOG("FinishFull");
 }
 
                 

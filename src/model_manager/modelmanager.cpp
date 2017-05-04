@@ -17,8 +17,8 @@ std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
     }
     catch (const std::out_of_range& oor){
         std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
+        return mModels.at(OBJECT_UNDEFINED_ID);
     }
-    return mModels.at(OBJECT_UNDEFINED_ID);
 }
 
 void ModelManager::addModel(int typeID, const std::shared_ptr< const Model >& model_ptr)

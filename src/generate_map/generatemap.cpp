@@ -4,7 +4,6 @@
 #include <iterator>
 #include <algorithm>
 
-#include "../tileinfo/tile_ids.hpp"
 #define DEBUG
 #include "../debug.h"
 
@@ -13,7 +12,7 @@ GenerateMap::GenerateMap() {
 }
 
 void GenerateMap::operator() ( Matrix< Tile >& map ) {
-    std::cout << "ЗаебалоСюдаХодить" << std::endl;;
+    //std::cout << "ЗаебалоСюдаХодить" << std::endl;;
 }
 
 
@@ -83,10 +82,20 @@ void GenerateRandomMap::operator() ( Matrix< Tile >& map ) {
 MapDump::MapDump() {
 }
 
-void MapDump::operator() ( Matrix< Tile >& map) {
-    for (unsigned i = 0; i < map.getHeight(); i++) {
+void MapDump::operator() ( Matrix< Tile >& map, std::vector< Entity>& En ) {
+    
+    Matrix< int > IDS(map.getHeight(), map.getWidth());
+    for (unsigned i = 0; i < map.getHeight(); i++)
         for (unsigned j = 0; j < map.getWidth(); j++) {
-            switch (map.at(i, j).getTypeID()) {
+            IDS.at(i, j) = map.at(i, j).getTypeID();
+        }
+    
+    for (unsigned i = 0; i < IDS.getHeight(); i++) {
+        for (unsigned j = 0; j < IDS.getWidth(); j++) {
+            switch (IDS.at(i, j)) {
+                case OBJECT_GRASS_EATING_ID:
+                    std::cout << CL_BG_PURPLE;
+                    break;
                 case TILE_WATER_ID:
                     std::cout << CL_BG_BLUE;
                     break;

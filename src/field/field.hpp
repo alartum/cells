@@ -18,11 +18,10 @@
 class Field : public sf::RenderWindow
 {
 public:
-    sf::Vector2u                mTileSize;
-    
+    sf::Vector2u                        mTileSize;
     // Objects on the field
-    std::vector< Entity >      mEntities;
-    Matrix<Tile>                mMap;
+    std::vector< Entity >               mEntities;
+    Matrix<Tile>                        mMap;
     
     std::shared_ptr<const ModelManager> mModelManager;
 
