@@ -1,20 +1,20 @@
 #include "tile.hpp"
 
 Tile::Tile(int tileType,
-            const sf::Vector2u &latticePosition,
+            const sf::Vector2f &position,
             unsigned state
           ) :
-    GameItem(tileType, latticePosition, state)
+    GameItem(tileType, position, state)
 {
 }
 
 Tile::Tile ( const Tile& other ) : 
-    GameItem (other.mTypeID, other.getLatticePosition(), other.mState) {
+    GameItem (other.mTypeID, other.getPosition(), other.mState) {
     setModelManager(other.getModelManager());
 }
 
 Tile::Tile ( Tile&& other ) : 
-    GameItem (other.mTypeID, other.getLatticePosition(), other.mState) {
+    GameItem (other.mTypeID, other.getPosition(), other.mState) {
     setModelManager(other.getModelManager());
 }
 

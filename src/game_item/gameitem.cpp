@@ -1,9 +1,10 @@
 #include "gameitem.hpp"
 
-GameItem::GameItem(int typeID,
-                    const sf::Vector2u &latticePosition,
-                    unsigned state) :
-    Item(latticePosition, state),
+GameItem::GameItem( int typeID,
+                    const sf::Vector2f &position,
+                    unsigned state
+                  ) :
+    Item(position, state),
     mTypeID(typeID)
 {
 }

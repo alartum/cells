@@ -11,8 +11,8 @@
 #define CL_FT_GREEN             "\x1b[32m"
 #define CL_FT_BROWN             "\x1b[33m"
 #define CL_FT_BLUE              "\x1b[34m"
-#define CL_FT_PURPLE    		"\x1b[35m"
-#define CL_FT_MAGENTA   		"\x1b[36m"
+#define CL_FT_PURPLE    	"\x1b[35m"
+#define CL_FT_MAGENTA   	"\x1b[36m"
 #define CL_FT_GRAY              "\x1b[37m"
 
 #define CL_BG_BLACK             "\x1b[40m"
@@ -20,16 +20,16 @@
 #define CL_BG_GREEN             "\x1b[42m"
 #define CL_BG_BROWN             "\x1b[43m"
 #define CL_BG_BLUE              "\x1b[44m"
-#define CL_BG_PURPLE    		"\x1b[45m"
-#define CL_BG_MAGENTA   		"\x1b[46m"
+#define CL_BG_PURPLE    	"\x1b[45m"
+#define CL_BG_MAGENTA   	"\x1b[46m"
 #define CL_BG_GRAY              "\x1b[47m"
 
-#define TY_FT_DEFAULT   		"\x1b[0m"
+#define TY_FT_DEFAULT   	"\x1b[0m"
 #define TY_FT_BOLD              "\x1b[1m"
 #define TY_FT_HBOLD             "\x1b[2m"
-#define TY_FT_UNDERLINE 		"\x1b[4m"
-//#define TY_FT_BOLD    		"\x1b[5m"
-#define TY_FT_REVERSE   		"\x1b[7m"
+#define TY_FT_UNDERLINE 	"\x1b[4m"
+//#define TY_FT_BOLD    	"\x1b[5m"
+#define TY_FT_REVERSE   	"\x1b[7m"
 
 #define SET_FONT(X) printf(X)
 #define printf_color(color, ...) \

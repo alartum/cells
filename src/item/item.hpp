@@ -20,8 +20,6 @@ private:
     std::shared_ptr<const Model> mModel;
     // Current frame series
     const std::vector<sf::IntRect>* mFrames;
-    // Позиция на клеточном поле
-    sf::Vector2u mLatticePosition;
     
 protected:
     // Current state; update is done according to it
@@ -31,19 +29,18 @@ protected:
     // Current animation (action) frame
     unsigned mFrameNo;
 public:
-    Item(const sf::Vector2u& latticePosition = sf::Vector2u(0,0),
-         unsigned state = 0);
+    Item(const sf::Vector2f& position = sf::Vector2f(0,0), unsigned state = 0);
     ~Item();
     Item& operator = (const Item& other);
     void setModel(const std::shared_ptr<const Model>& model);
     std::shared_ptr<const Model> getModel() const;
     // Returns current sprite
     // The object manages it's view itself
+
     void setState(unsigned state);
     void setFrame(unsigned frame);
     void nextFrame();
-    void calcSpritePosition(sf::Vector2u& tileSize);
-    const sf::Vector2u& getLatticePosition() const;
+
 };
 
 #endif // ITEM_HPP

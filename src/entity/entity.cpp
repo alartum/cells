@@ -1,9 +1,11 @@
 #include "entity.hpp"
 
 Entity::Entity(int entityType,
-               const sf::Vector2u &latticePosition,
-               unsigned state) :
-  Object(entityType, latticePosition, state)
+           const sf::Vector2u& tileFrom,
+           const sf::Vector2u& tileTo,
+           unsigned state
+          ) :
+  Object(entityType, tileFrom, tileTo, state)
 {
 
 }

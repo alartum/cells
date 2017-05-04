@@ -106,9 +106,9 @@ int test_field(int argc, char** argv, char** env) {
     LOG("Textures loaded");
     F.fitView();
     
-    for (auto & iter: F.mEntities)
-        std::cout << iter.getTypeID() << " ";
-    std::cout.flush();
+    //for (auto & iter: F.mEntities) {
+    //    std::cout << OBJECT_GRASS_EATING_ID << " " << OBJECT_PREDATOR_ID << " " << iter.getTypeID() << std::endl;
+    //}
     
     std::thread T(UpdateThread, std::ref(F));
 

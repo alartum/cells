@@ -69,7 +69,7 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
     Matrix< int > IDS (map.getHeight(), map.getWidth(), 0);
     for (unsigned i = 0; i < IDS.getHeight(); i++)
         for (unsigned j = 0; j < IDS.getWidth(); j++) {
-            IDS.at(i, j) = 0;
+            IDS.at(i, j) = OBJECT_UNDEFINED_ID;
         }
     
     std::random_device  rd;
@@ -83,7 +83,8 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
             unsigned xCurrent = xDistribution(mtGenerator);
             unsigned yCurrent = yDistribution(mtGenerator);
             
-            if (IDS.at(xCurrent, yCurrent) != TILE_GRASS_ID)
+            if (map.at(xCurrent, yCurrent).getTypeID() != TILE_GRASS_ID ||
+                IDS.at(xCurrent, yCurrent) != OBJECT_UNDEFINED_ID)
                 continue;
                 
             
@@ -106,8 +107,8 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
             unsigned xCurrent = xDistribution(mtGenerator);
             unsigned yCurrent = yDistribution(mtGenerator);
             
-            if (IDS.at(xCurrent, yCurrent) != TILE_UNDEFINED_ID &&
-                IDS.at(xCurrent, yCurrent) != TILE_WATER_ID)
+           if (map.at(xCurrent, yCurrent).getTypeID() != TILE_GRASS_ID ||
+                IDS.at(xCurrent, yCurrent) != OBJECT_UNDEFINED_ID)
                 continue;
                 
             
@@ -127,16 +128,16 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
     R.clear();
     for( unsigned i = 0; i < IDS.getHeight(); i++)
         for (unsigned j = 0; j < IDS.getWidth(); j++) {
-            LOG("i=%d, j=%d, IDS.height=%d, IDSwidth=%d",
-                i, j, IDS.getHeight(), IDS.getWidth()
-            );
+            //LOG("i=%d, j=%d, IDS.height=%d, IDSwidth=%d",
+            //    i, j, IDS.getHeight(), IDS.getWidth()
+            //);
             int cur = IDS.at(i, j);
-            LOG("ID=%d", cur)
-            if (IS_GRASS_EATING(cur))
+            //LOG("ID=%d", cur)
+            if (cur == OBJECT_GRASS_EATING_ID)
                 R.push_back(Entity(OBJECT_GRASS_EATING_ID, sf::Vector2u(i, j)));
-            if (IS_PREDATOR(cur))
+            if (cur == OBJECT_PREDATOR_ID)
                 R.push_back(Entity(OBJECT_PREDATOR_ID, sf::Vector2u(i, j)));
-            LOG("finish")
+            //LOG("finish")
         }
     LOG("FinishFull");
 }
