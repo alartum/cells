@@ -57,7 +57,7 @@
                     if (__count__slash__ != 2) \
                         __iterator__--; \
                 } \
-                printf("%s [pid=%d] [%s] [line: %d] ", __tb, (int)getpid(), __iterator__, __LINE__); \
+                printf("%s [pid=%d] [%s:%d] ", __tb, (int)getpid(), __iterator__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 		printf("\n"); \
 		fflush(stdout); \

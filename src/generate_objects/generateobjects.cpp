@@ -67,7 +67,7 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
     Matrix< int > IDS (map.getHeight(), map.getWidth(), 0);
     for (unsigned i = 0; i < IDS.getHeight(); i++)
         for (unsigned j = 0; j < IDS.getWidth(); j++) {
-            IDS.at(i, j) = map.at(i, j).getTypeID();
+            IDS.at(i, j) = 0;
         }
     
     std::random_device  rd;
@@ -81,8 +81,7 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
             unsigned xCurrent = xDistribution(mtGenerator);
             unsigned yCurrent = yDistribution(mtGenerator);
             
-            if (IDS.at(xCurrent, yCurrent) != TILE_UNDEFINED_ID &&
-                IDS.at(xCurrent, yCurrent) != TILE_GRASS_ID)
+            if (IDS.at(xCurrent, yCurrent) != TILE_GRASS_ID)
                 continue;
                 
             
@@ -91,7 +90,7 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
             for (int i = -(int)grassEatingDistance + (int)xCurrent; i <= (int)grassEatingDistance + (int)xCurrent; i++)
                 for (int j = -(int)grassEatingDistance + (int)yCurrent; j <= (int)grassEatingDistance + (int)yCurrent; j++) {
                     if (i >= 0 && i < (int)IDS.getHeight() && j >= 0 && j < (int)IDS.getWidth())
-                        if (IDS.at(i, j) == TILE_GRASS_ID)
+                        if (map.at(i, j).getTypeID() == TILE_GRASS_ID)
                             grassNeightbors += 1;
                 }
                 
@@ -115,7 +114,7 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
             for (int i = -(int)predatorsDistance + (int)xCurrent; i <= (int)predatorsDistance + (int)xCurrent; i++)
                 for (int j = -(int)predatorsDistance + (int)yCurrent; j <= (int)predatorsDistance + (int)yCurrent; j++) {
                     if (i >= 0 && i < (int)IDS.getHeight() && j >= 0 && j < (int)IDS.getWidth())
-                        if (IDS.at(i, j) != TILE_WATER_ID && IDS.at(i, j) != TILE_UNDEFINED_ID)
+                        if (map.at(i, j).getTypeID() == TILE_GRASS_ID)
                             grassNeightbors += 1;
                 }
             
@@ -133,8 +132,9 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
             LOG("ID=%d", cur)
             if (IS_GRASS_EATING(cur))
                 R.push_back(Entity(OBJECT_GRASS_EATING_ID, sf::Vector2f(i, j)));
-            //if (IS_PREDATOR(cur))
-            //    R.push_back(Entity(OBJECT_PREDATOR_ID, sf::Vector2f(i, j)));
+            if (IS_PREDATOR(cur))
+                R.push_back(Entity(OBJECT_PREDATOR_ID, sf::Vector2f(i, j)));
+            LOG("finish")
         }
     LOG("FinishFull");
 }

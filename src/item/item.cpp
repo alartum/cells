@@ -1,7 +1,7 @@
 #include "item.hpp"
 #include <iostream>
 #define DEBUG
-#include "debug.h"
+#include "../debug.h"
 
 Item::Item(const sf::Vector2f& position, unsigned state)
 {
