@@ -89,14 +89,18 @@ void MapDump::operator() ( Matrix< Tile >& map, std::vector< Entity>& En ) {
         for (unsigned j = 0; j < map.getWidth(); j++) {
             IDS.at(i, j) = map.at(i, j).getTypeID();
         }
-        
-    //for (auto 
+    for (auto & iter: En) {
+        IDS.at(iter.getLatticePosition().x, iter.getLatticePosition().y) = iter.getTypeID();
+    }
     
     for (unsigned i = 0; i < IDS.getHeight(); i++) {
         for (unsigned j = 0; j < IDS.getWidth(); j++) {
             switch (IDS.at(i, j)) {
                 case OBJECT_GRASS_EATING_ID:
                     std::cout << CL_BG_PURPLE;
+                    break;
+                case OBJECT_PREDATOR_ID:
+                    std::cout << CL_BG_RED;
                     break;
                 case TILE_WATER_ID:
                     std::cout << CL_BG_BLUE;
