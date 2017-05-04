@@ -92,8 +92,10 @@ int test_field(int argc, char** argv, char** env) {
     F.generateTiles(gen);
     LOG("Map generated");
 
-    GenerateRandomEntity entityGenerator(3, 1, 0, 30, 1, 1, 0, 30);
+    GenerateRandomEntity entityGenerator(10, 1, 0, 30, 10, 1, 0, 30);
     F.generateEntities(entityGenerator);
+
+    MapDump()(F.mMap, F.mEntities);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
     sample->initSample();
@@ -104,17 +106,9 @@ int test_field(int argc, char** argv, char** env) {
     LOG("Textures loaded");
     F.fitView();
     
-    /*for (int i = 0; i < F.mMap.getHeight(); i++) {
-        for (int j = 0; j < F.mMap.getWidth(); j++) {
-            if (F.mMap.at(i, j).getTypeID() == TILE_GRASS_ID) 
-                std::cout << "\x1b[42m\x1b[1m";
-            else
-                std::cout << "\x1b[34m";
-            std::cout << "  ";
-            std::cout << "\x1b[44m";
-    }
-        std::cout << std::endl;
-    }*/
+    for (auto & iter: F.mEntities)
+        std::cout << iter.getTypeID() << " ";
+    std::cout.flush();
     
     std::thread T(UpdateThread, std::ref(F));
 

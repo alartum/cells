@@ -39,7 +39,7 @@
 		SET_FONT(TY_FT_DEFAULT); \
 	}
 
-//!TODO DELETE IT
+
 // LOG MACRO
 #if defined(DEBUG)
 	#define LOG(format, ...) \

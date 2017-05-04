@@ -7,7 +7,7 @@ class Object : public GameItem
 {
 public:
     Object(int objectType = 0,
-           const sf::Vector2f& position = sf::Vector2f(0,0),
+           const sf::Vector2u& latticePosition = sf::Vector2u(0,0),
            unsigned state = 0);
 };
 

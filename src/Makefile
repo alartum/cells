@@ -281,7 +281,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/cells1.0.0 || mkdir -p .tmp/cells1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/cells1.0.0/ && $(COPY_FILE) --parents field/field.hpp matrix/matrix.hpp object/object.hpp tile/tile.hpp generate_map/generatemap.hpp generate_objects/generateobjects.hpp do_step/dostep.hpp model/model.hpp item/item.hpp model_manager/modelmanager.hpp game_item/gameitem.hpp entity/entity.hpp moving_entity/movingentity.hpp .tmp/cells1.0.0/ && $(COPY_FILE) --parents field/field.cpp object/object.cpp do_step/dostep.cpp tile/tile.cpp generate_map/generatemap.cpp generate_objects/generateobjects.cpp main.cpp model/model.cpp item/item.cpp model_manager/modelmanager.cpp game_item/gameitem.cpp entity/entity.cpp moving_entity/movingentity.cpp .tmp/cells1.0.0/ && (cd `dirname .tmp/cells1.0.0` && $(TAR) cells1.0.0.tar cells1.0.0 && $(COMPRESS) cells1.0.0.tar) && $(MOVE) `dirname .tmp/cells1.0.0`/cells1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/cells1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/cells1.0.0/ && $(COPY_FILE) --parents field/field.hpp matrix/matrix.hpp object/object.hpp tile/tile.hpp generate_map/generatemap.hpp generate_objects/generateobjects.hpp do_step/dostep.hpp model/model.hpp item/item.hpp model_manager/modelmanager.hpp game_item/gameitem.hpp entity/entity.hpp moving_entity/movingentity.hpp tileinfo/tile_ids.hpp .tmp/cells1.0.0/ && $(COPY_FILE) --parents field/field.cpp object/object.cpp do_step/dostep.cpp tile/tile.cpp generate_map/generatemap.cpp generate_objects/generateobjects.cpp main.cpp model/model.cpp item/item.cpp model_manager/modelmanager.cpp game_item/gameitem.cpp entity/entity.cpp moving_entity/movingentity.cpp .tmp/cells1.0.0/ && (cd `dirname .tmp/cells1.0.0` && $(TAR) cells1.0.0.tar cells1.0.0 && $(COMPRESS) cells1.0.0.tar) && $(MOVE) `dirname .tmp/cells1.0.0`/cells1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/cells1.0.0
 
 
 clean:compiler_clean 
@@ -324,18 +324,22 @@ field.o: field/field.cpp field/field.hpp \
 		item/item.hpp \
 		model/model.hpp \
 		model_manager/modelmanager.hpp \
+		tileinfo/tile_ids.hpp \
 		object/object.hpp \
 		matrix/matrix.hpp \
 		generate_objects/generateobjects.hpp \
+		entity/entity.hpp \
 		generate_map/generatemap.hpp \
-		do_step/dostep.hpp
+		do_step/dostep.hpp \
+		debug.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o field.o field/field.cpp
 
 object.o: object/object.cpp object/object.hpp \
 		game_item/gameitem.hpp \
 		item/item.hpp \
 		model/model.hpp \
-		model_manager/modelmanager.hpp
+		model_manager/modelmanager.hpp \
+		tileinfo/tile_ids.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o object.o object/object.cpp
 
 dostep.o: do_step/dostep.cpp do_step/dostep.hpp \
@@ -343,7 +347,11 @@ dostep.o: do_step/dostep.cpp do_step/dostep.hpp \
 		game_item/gameitem.hpp \
 		item/item.hpp \
 		model/model.hpp \
-		model_manager/modelmanager.hpp
+		model_manager/modelmanager.hpp \
+		tileinfo/tile_ids.hpp \
+		matrix/matrix.hpp \
+		tile/tile.hpp \
+		entity/entity.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o dostep.o do_step/dostep.cpp
 
 tile.o: tile/tile.cpp tile/tile.hpp \
@@ -351,6 +359,7 @@ tile.o: tile/tile.cpp tile/tile.hpp \
 		item/item.hpp \
 		model/model.hpp \
 		model_manager/modelmanager.hpp \
+		tileinfo/tile_ids.hpp \
 		object/object.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tile.o tile/tile.cpp
 
@@ -361,7 +370,10 @@ generatemap.o: generate_map/generatemap.cpp generate_map/generatemap.hpp \
 		item/item.hpp \
 		model/model.hpp \
 		model_manager/modelmanager.hpp \
-		object/object.hpp
+		tileinfo/tile_ids.hpp \
+		object/object.hpp \
+		entity/entity.hpp \
+		debug.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generatemap.o generate_map/generatemap.cpp
 
 generateobjects.o: generate_objects/generateobjects.cpp generate_objects/generateobjects.hpp \
@@ -371,30 +383,47 @@ generateobjects.o: generate_objects/generateobjects.cpp generate_objects/generat
 		item/item.hpp \
 		model/model.hpp \
 		model_manager/modelmanager.hpp \
-		tile/tile.hpp
+		tileinfo/tile_ids.hpp \
+		tile/tile.hpp \
+		entity/entity.hpp \
+		debug.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generateobjects.o generate_objects/generateobjects.cpp
 
 main.o: main.cpp item/item.hpp \
 		model/model.hpp \
 		matrix/matrix.hpp \
-		model_manager/modelmanager.hpp
+		model_manager/modelmanager.hpp \
+		tileinfo/tile_ids.hpp \
+		generate_map/generatemap.hpp \
+		tile/tile.hpp \
+		game_item/gameitem.hpp \
+		object/object.hpp \
+		entity/entity.hpp \
+		field/field.hpp \
+		generate_objects/generateobjects.hpp \
+		do_step/dostep.hpp \
+		debug.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 model.o: model/model.cpp model/model.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o model.o model/model.cpp
 
 item.o: item/item.cpp item/item.hpp \
-		model/model.hpp
+		model/model.hpp \
+		debug.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o item.o item/item.cpp
 
 modelmanager.o: model_manager/modelmanager.cpp model_manager/modelmanager.hpp \
-		model/model.hpp
+		model/model.hpp \
+		tileinfo/tile_ids.hpp \
+		debug.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o modelmanager.o model_manager/modelmanager.cpp
 
 gameitem.o: game_item/gameitem.cpp game_item/gameitem.hpp \
 		item/item.hpp \
 		model/model.hpp \
-		model_manager/modelmanager.hpp
+		model_manager/modelmanager.hpp \
+		tileinfo/tile_ids.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o gameitem.o game_item/gameitem.cpp
 
 entity.o: entity/entity.cpp entity/entity.hpp \
@@ -402,16 +431,11 @@ entity.o: entity/entity.cpp entity/entity.hpp \
 		game_item/gameitem.hpp \
 		item/item.hpp \
 		model/model.hpp \
-		model_manager/modelmanager.hpp
+		model_manager/modelmanager.hpp \
+		tileinfo/tile_ids.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o entity.o entity/entity.cpp
 
-movingentity.o: moving_entity/movingentity.cpp moving_entity/movingentity.hpp \
-		entity/entity.hpp \
-		object/object.hpp \
-		game_item/gameitem.hpp \
-		item/item.hpp \
-		model/model.hpp \
-		model_manager/modelmanager.hpp
+movingentity.o: moving_entity/movingentity.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o movingentity.o moving_entity/movingentity.cpp
 
 ####### Install

@@ -9,7 +9,7 @@ class GameItem : public Item
 {
 public:
     GameItem(int typeID = 0,
-             const sf::Vector2f& position = sf::Vector2f(0,0),
+             const sf::Vector2u& latticePosition = sf::Vector2u(0,0),
              unsigned state = 0);
     int getTypeID() const;
     // Updates ID and reloads the texture
@@ -19,6 +19,7 @@ public:
     std::shared_ptr<const ModelManager> getModelManager() const;
     void loadModel();
     GameItem& operator = (const GameItem& other);
+    
 protected:
     // Type ID to handle textures correctly
     int mTypeID;

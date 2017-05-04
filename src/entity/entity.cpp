@@ -1,9 +1,9 @@
 #include "entity.hpp"
 
 Entity::Entity(int entityType,
-               const sf::Vector2f &position,
+               const sf::Vector2u &latticePosition,
                unsigned state) :
-  Object(entityType, position, state)
+  Object(entityType, latticePosition, state)
 {
 
 }

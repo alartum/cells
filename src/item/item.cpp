@@ -3,10 +3,10 @@
 #define DEBUG
 #include "../debug.h"
 
-Item::Item(const sf::Vector2f& position, unsigned state)
+Item::Item(const sf::Vector2u& latticePosition, unsigned state) : mLatticePosition(latticePosition)
 {
     setState(state);
-    setPosition(position);
+    //setPosition(position);
 }
 
 Item::~Item()
@@ -71,3 +71,13 @@ void Item::setFrame(unsigned frame){
     else
         mFrameNo = frame;
 }
+
+void Item::calcSpritePosition(sf::Vector2u& tileSize) {
+    sf::Vector2f ent_pos(mLatticePosition.y * tileSize.x, mLatticePosition.x * tileSize.y);
+    setPosition(ent_pos);
+}
+
+const sf::Vector2u& Item::getLatticePosition() const {
+    return mLatticePosition;
+}
+

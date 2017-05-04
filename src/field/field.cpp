@@ -129,8 +129,7 @@ void Field::generateTiles(std::function< void(Matrix< Tile >&) > generatorMap) {
 void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities) {
     generateEntities(mMap, mEntities);
     for (auto& ent: mEntities){
-        sf::Vector2f ent_pos(ent.getPosition().y * mTileSize.x, ent.getPosition().x * mTileSize.y);
-        ent.setPosition(ent_pos);
+        ent.calcSpritePosition(mTileSize);
     }
 }
 

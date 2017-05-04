@@ -46,6 +46,8 @@ GenerateRandomEntity::GenerateRandomEntity (
                 predatorNeightborsMax           (predatorNeightborsMax)
 {};
 
+
+
 void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity >& R ) {
     LOG("GenerateRandomEntity:\n"
         "               size = (%u, %u)\n"
@@ -131,9 +133,9 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
             int cur = IDS.at(i, j);
             LOG("ID=%d", cur)
             if (IS_GRASS_EATING(cur))
-                R.push_back(Entity(OBJECT_GRASS_EATING_ID, sf::Vector2f(i, j)));
+                R.push_back(Entity(OBJECT_GRASS_EATING_ID, sf::Vector2u(i, j)));
             if (IS_PREDATOR(cur))
-                R.push_back(Entity(OBJECT_PREDATOR_ID, sf::Vector2f(i, j)));
+                R.push_back(Entity(OBJECT_PREDATOR_ID, sf::Vector2u(i, j)));
             LOG("finish")
         }
     LOG("FinishFull");
