@@ -134,9 +134,9 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
             int cur = IDS.at(i, j);
             //LOG("ID=%d", cur)
             if (cur == OBJECT_GRASS_EATING_ID)
-                R.push_back(Entity(OBJECT_GRASS_EATING_ID, sf::Vector2u(i, j)));
+                R.push_back(Entity(OBJECT_GRASS_EATING_ID, sf::Vector2u(i, j), sf::Vector2u(i, j)));
             if (cur == OBJECT_PREDATOR_ID)
-                R.push_back(Entity(OBJECT_PREDATOR_ID, sf::Vector2u(i, j)));
+                R.push_back(Entity(OBJECT_PREDATOR_ID, sf::Vector2u(i, j), sf::Vector2u(i, j)));
             //LOG("finish")
         }
     LOG("FinishFull");

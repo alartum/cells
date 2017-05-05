@@ -3,17 +3,26 @@
 
 #include <vector>
 #include <random>
+#include <set>
+#include <vector>
 #include "../object/object.hpp"
 #include "../matrix/matrix.hpp"
 #include "../tile/tile.hpp"
 #include "../entity/entity.hpp"
 
-class DoStep
-{
+class DoStep {
 public:
     DoStep();
-    // Функция шага
-    virtual void operator () (Matrix< Tile >& map, std::vector< Entity >& M);
+    void operator () ( Matrix< Tile >& map, std::vector< Entity >& En );
+};
+
+class RandomMoving {
+private:
+    Matrix< int > cache;
+    std::vector< int > color;
+public:
+    RandomMoving();
+    void operator () ( Matrix< Tile >& map, std::vector< Entity >& En );
 };
 
 

@@ -48,13 +48,19 @@ public:
     void drawTiles();
         
     // Функция генерации тайлов поля
-    void generateTiles(std::function< void(Matrix< Tile >&) > generatorMap);
+    void generateTiles          (std::function< void(Matrix< Tile >&) > generatorMap);
     
     // Функция генерации объектов на поле
-    void generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities);
+    void generateEntities       (std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities);
     
     // Функция пересчета состояния поля на один игровой шаг
-    void doStep();
+    void doStep                 (std::function< void(Matrix< Tile >&, std::vector< Entity >&) > do_step);
+
+    void syncronize();
+    
+    void calcSpritePosition ( double time, double stepCount );
+    
+    void nextFrame();
 };
 
 #endif

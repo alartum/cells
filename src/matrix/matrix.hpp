@@ -86,7 +86,7 @@ template <typename T>
 inline Matrix<T>::Matrix (unsigned height, unsigned width, const T &element):
     mHeight (height), mWidth (width), mElements (height * width, element)
 {
-
+    
 }
 
 template <typename T>
@@ -142,6 +142,9 @@ inline void Matrix<T>::setWidth(unsigned width)
 template <typename T>
 inline void Matrix<T>::setSize(unsigned height, unsigned width)
 {
+    if (height == mHeight && width == mWidth)
+        return;
+    
     unsigned lWidth = mWidth;
     unsigned lHeight = mHeight;
     std::vector< T > buffer = mElements;

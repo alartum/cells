@@ -102,8 +102,8 @@ void Field::setModelManager (const std::shared_ptr<const ModelManager>& modelMan
 void Field::drawEntities() {
     for (auto& ent: mEntities){
         //LOG("Entity ID: %d", ent.getTypeID());
-       // LOG("Entity pos: %f, %f", ent.getPosition().x, ent.getPosition().y);
-        ent.nextFrame();
+        //LOG("Entity pos: %f, %f", ent.getPosition().x, ent.getPosition().y);
+        //ent.nextFrame();
         draw(ent);
     }
 }
@@ -113,19 +113,21 @@ void Field::drawTiles() {
     for (unsigned i = 0; i < mMap.getHeight(); i++)
         for (unsigned j = 0; j < mMap.getWidth(); j++) {
             Tile& curr_item = mMap.at(i, j);
-            //LOG("[%u, %u]", i, j);
-            //LOG("ID = %d", curr_item.getTypeID());
-            //LOG("POS = (%f, %f)", curr_item.getPosition().x, curr_item.getPosition().y);
-            curr_item.nextFrame();
             draw(curr_item);
+            mMap.at(i, j).nextFrame();
         }
+}
+
+void Field::nextFrame() {
+    for (auto& ent: mEntities) {
+        ent.nextFrame();
+    }
 }
 
 void Field::generateTiles(std::function< void(Matrix< Tile >&) > generatorMap) {
     generatorMap(mMap);
 }
 
-//! TODO coords
 void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities) {
     generateEntities(mMap, mEntities);
     for (auto& ent: mEntities){
@@ -139,5 +141,24 @@ void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< E
 }
 
 
-void Field::doStep() {
+void Field::doStep(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > do_step) {
+    do_step(mMap, mEntities);
 }
+
+void Field::syncronize() {
+    for (auto& ent: mEntities) {
+        ent.mTileFrom = ent.mTileTo, ent.mTileTo = ent.mFuturePosition;
+        ent.calcSpritePosition(mTileSize, 0, 1);
+    }
+    
+}
+
+void Field::calcSpritePosition ( double time, double stepCount ) {
+    for (auto& ent: mEntities) {
+        ent.calcSpritePosition(mTileSize, time, stepCount);
+    }
+}
+
+
+
+

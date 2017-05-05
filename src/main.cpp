@@ -11,22 +11,35 @@
 #include "matrix/matrix.hpp"
 #include "model_manager/modelmanager.hpp"
 #include "generate_map/generatemap.hpp"
+#include "do_step/dostep.hpp"
 #include "field/field.hpp"
 
 // for log messages
+#define DEBUG
 #include "debug.h"
 
 void UpdateThread(Field& F)
 {
+       RandomMoving RM;
     F.setActive(true);
 
     while(F.isOpen()){
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        //std::this_thread::sleep_for(std::chrono::milliseconds(800));
         if (F.isOpen()) {
-            F.clear();
-            F.drawTiles();
-            F.drawEntities();
-            F.display();
+            for (int i = 0; i < 8; i++) {
+                F.calcSpritePosition(i, 7);
+                F.clear();
+                F.drawTiles();
+                F.drawEntities();
+                F.display();
+                if (i % 3 == 0) {
+                    F.nextFrame();
+                }
+                std::chrono::milliseconds(100);
+            }
+            
+            RM.operator () (F.mMap, F.mEntities);
+            F.syncronize();
         }
     }
 }
@@ -82,20 +95,20 @@ int test_map_generation(int argc, char** argv, char** env)
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
      
-    sf::Vector2u fieldSize(40, 40);
+    sf::Vector2u fieldSize(20, 20);
     sf::Vector2u tileSize(32, 32);
     sf::Vector2u windowSize(600, 600);
 
     Field F(fieldSize, windowSize, tileSize);
-    GenerateRandomMap mapGenerator(5, 0.01, 0.1, 15);
+    GenerateRandomMap mapGenerator(5, 0.01, 0.15, 3);
     GenerateRandomMap& gen = mapGenerator;
     F.generateTiles(gen);
     LOG("Map generated");
 
-    GenerateRandomEntity entityGenerator(10, 1, 0, 30, 10, 1, 0, 30);
+    GenerateRandomEntity entityGenerator(10, 1, 0, 30, 10, 1, 1, 0);
     F.generateEntities(entityGenerator);
 
-    MapDump()(F.mMap, F.mEntities);
+    //MapDump()(F.mMap, F.mEntities);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
     sample->initSample();
@@ -110,6 +123,24 @@ int test_field(int argc, char** argv, char** env) {
     //    std::cout << OBJECT_GRASS_EATING_ID << " " << OBJECT_PREDATOR_ID << " " << iter.getTypeID() << std::endl;
     //}
     
+    //RandomMoving RM;
+    /*
+    std::cout << (void*)(&RM) << std::endl;
+    
+    for (int i = 0; i < 10000; i++) {
+        MapDump()(F.mMap, F.mEntities);
+        LOG("Map dumped");
+        
+        //F.generateEntities(entityGenerator);
+        //F.doStep(RM);
+        RM.operator()(F.mMap, F.mEntities);
+        LOG("do step finished");
+        sleep(1);
+        F.syncronize();
+        
+    }*/
+
+    //*/
     std::thread T(UpdateThread, std::ref(F));
 
     while(F.isOpen()){
