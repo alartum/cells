@@ -3,8 +3,26 @@
 
 Model::Model(unsigned nStates, const std::shared_ptr<const sf::Texture>& texture) :
     mTexture(texture),
-    mTextureRects(nStates)
+    mTextureRects(nStates),
+    mIsRandomFrame(false)
 {
+}
+
+bool Model::getIsRandomFrame() const{
+    return mIsRandomFrame;
+}
+void Model::setIsRandomFrame(bool value){
+    mIsRandomFrame = value;
+}
+
+std::vector<sf::IntRect>& Model::getAnimation(unsigned state){
+    try{
+        return mTextureRects.at(state);
+    }
+    catch (const std::out_of_range& oor){
+        std::cerr << "[Model] No frame animation for state =  " << state << "\n";
+        return mTextureRects[0];
+    }
 }
 
 const std::shared_ptr<const sf::Texture> &Model::getTexture() const

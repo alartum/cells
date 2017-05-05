@@ -1,6 +1,5 @@
 #include "item.hpp"
 #include <iostream>
-#define DEBUG
 #include "../debug.h"
 
 Item::Item(const sf::Vector2f& position, unsigned state)
@@ -65,11 +64,7 @@ std::shared_ptr<const Model> Item::getModel() const
 }
 
 void Item::setFrame(unsigned frame){
-    if (frame > mMaxFrameNo){
-        std::cerr << "[Item] Rejected attempt to set invalid frame = " << frame << "\n";
-    }
-    else
-        mFrameNo = frame;
+    mFrameNo = frame % (mMaxFrameNo + 1);
 }
 
 /*

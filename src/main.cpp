@@ -38,7 +38,7 @@ void UpdateThread(Field& F)
                 std::chrono::milliseconds(100);
             }
             
-            RM.operator () (F.mMap, F.mEntities);
+            RM(F.mMap, F.mEntities);
             F.syncronize();
         }
     }
@@ -111,7 +111,7 @@ int test_field(int argc, char** argv, char** env) {
     //MapDump()(F.mMap, F.mEntities);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
-    sample->initSample();
+    sample->loadConfig("config.lua");
     LOG("Model manager initialized");
     F.setModelManager(sample);
     F.loadTileTextures();

@@ -20,11 +20,11 @@ private:
     std::shared_ptr<const Model> mModel;
     // Current frame series
     const std::vector<sf::IntRect>* mFrames;
-    
+
 protected:
     // Current state; update is done according to it
     unsigned mState;
-    
+
     int mTypeID;
     // Current animation (action) frame
     unsigned mFrameNo;
@@ -38,6 +38,8 @@ public:
     // The object manages it's view itself
 
     void setState(unsigned state);
+    // Sets frame equal to 'frame % maxFrameNo'
+    // Always finishes without error
     void setFrame(unsigned frame);
     void nextFrame();
 

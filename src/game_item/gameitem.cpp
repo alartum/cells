@@ -1,5 +1,5 @@
 #include "gameitem.hpp"
-
+#include "debug.h"
 GameItem::GameItem( int typeID,
                     const sf::Vector2f &position,
                     unsigned state
@@ -30,7 +30,7 @@ void GameItem::setModelManager (const std::shared_ptr<const ModelManager>& model
 
 void GameItem::loadModel()
 {
-    //LOG("[GameItem.loadModel()] mTypeID = %d", mTypeID);
+    LOG("[GameItem.loadModel()] mTypeID = %d", mTypeID);
     if (mModelManager)
         setModel(mModelManager->getModel(mTypeID));
 }

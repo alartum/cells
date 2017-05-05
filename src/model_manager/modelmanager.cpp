@@ -2,7 +2,6 @@
 #include "modelmanager.hpp"
 #include <memory>
 #include <SFML/Graphics/Texture.hpp>
-
 #include "../debug.h"
 ModelManager::ModelManager()
 {
@@ -11,12 +10,13 @@ ModelManager::ModelManager()
 
 std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
 {
-    //LOG("mModels size = %lu, typeID = %d", mModels.size(), typeID);
+    LOG("[ModelManager.getModel()] typeID = %d", typeID);
     try{
         return mModels.at(typeID);
     }
     catch (const std::out_of_range& oor){
-        //std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
+        std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
+        LOG("Undefined: %d", OBJECT_UNDEFINED_ID);
         return mModels.at(OBJECT_UNDEFINED_ID);
     }
 }
@@ -40,7 +40,7 @@ void ModelManager::initSample()
     waterModel_ptr->pushTextureRect(sf::IntRect(100, 694, tileSize, tileSize), 0);
     waterModel_ptr->pushTextureRect(sf::IntRect(430, 694, tileSize, tileSize), 0);
     addModel(TILE_WATER_ID, waterModel_ptr);
-    
+
     auto grassModel_ptr = std::make_shared< Model >(1, texture_ptr);
     grassModel_ptr->pushTextureRect(sf::IntRect(34, 67, tileSize, tileSize), 0);
     // grassModel_ptr->pushTextureRect(sf::IntRect());
@@ -63,4 +63,83 @@ void ModelManager::initSample()
     auto noModel_ptr = std::make_shared< Model >(1, texture_ptr);
     noModel_ptr->pushTextureRect(sf::IntRect(364, 1, tileSize, tileSize), 0);
     addModel(OBJECT_UNDEFINED_ID, noModel_ptr);
+}
+
+void ModelManager::loadModel(const sol::table& prop){
+    // Provide some basic info
+    int id = prop["id"];
+    std::string name   = prop["name"];
+    std::cout << "[Model Manager] Loading: [" << id << "] " << name << std::endl;
+
+    // Load texture if not already loaded
+    sol::table  model  = prop["model"];
+    std::string sprite_sheet = model["sprite_sheet"];
+    auto& texture_ptr = mTextureMap[sprite_sheet];
+    if (!texture_ptr){
+        texture_ptr = std::make_shared<sf::Texture >();
+        bool is_loaded = texture_ptr->loadFromFile(sprite_sheet);
+        if (!is_loaded){
+            texture_ptr.reset();
+            std::cerr << "[Model Manager] Can't load texture: " << sprite_sheet << std::endl;
+            return;
+        }
+    }
+
+    // Load the animation
+    sol::table states = model["states"];
+    auto model_ptr = std::make_shared<Model >(states.size() + 1, texture_ptr);
+    model_ptr->setIsRandomFrame(model["random_frame"]);
+    auto loadState = [&model_ptr](sol::object key, sol::table state){
+        std::string state_name = state["name"];
+        int stateNo = key.as<int>();
+        std::cout << "[Model Manager]\t\t[" <<stateNo << "] " << state_name;
+        sol::table frames = state["frames"];
+        std::vector<sf::IntRect>& animation = model_ptr->getAnimation(stateNo);
+        animation.resize(frames.size() + 1);
+        auto loadFrame = [&animation](sol::object key, sol::table frame){
+            std::cout << "{" << key.as<int>() << "}";
+            int frameNo = key.as<int>();
+            int top_left_x = frame["top_left"]["x"];
+            int top_left_y = frame["top_left"]["y"];
+            int size_x = frame["size"]["x"];
+            int size_y = frame["size"]["y"];
+
+            sf::IntRect rect(top_left_x, top_left_y, size_x, size_y);
+            //std::cout << "[" << top_left_x << top_left_y <<  size_x << size_y << "]";
+            animation[frameNo] = rect;
+        };
+        frames.for_each(loadFrame);
+        std::cout << std::endl;
+    };
+    states.for_each(loadState);
+    //int size = model_ptr->getTextureRectSeries(0).size();
+    //LOG("Model: %d", size)
+    addModel(id, model_ptr);
+}
+
+#define print_type(info) std::system((std::string("c++filt -t ")  + typeid(info).name()).c_str())
+
+void ModelManager::loadConfig(const std::string& filename){
+    sol::state lua;
+    lua.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string);
+
+    // VERY IMPORTANT PLACE: std::ref(*this) != *this
+    // Only passing by reference allow access to class members
+    lua.set_function("GameItem", &ModelManager::loadModel, std::ref(*this));
+    // Load file without execute
+    sol::load_result script = lua.load_file(filename);
+    if (!script.valid()){
+        std::cerr << "[Model Manager] Can't load config file: " << filename << std::endl;
+        return;
+    }
+
+    // Execute under protection
+    sol::protected_function_result result = script(); //execute
+    if (!result.valid()){
+        std::cerr << "[Model Manager] Wrong config file format: " << filename << std::endl;
+        return;
+    }
+    /*sf::IntRect rect = mModels[257]->getTextureRectSeries(0).at(1);
+    LOG("Final: %d", mModels[257]->getTextureRectSeries(0).size());
+    LOG("Final left: %d", rect.left);*/;
 }

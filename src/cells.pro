@@ -11,8 +11,8 @@ HEADERS += \
     model_manager/modelmanager.hpp \
     game_item/gameitem.hpp \
     entity/entity.hpp \
-    moving_entity/movingentity.hpp \
-    tileinfo/tile_ids.hpp
+    tileinfo/tile_ids.hpp \
+    debug.h
 
 SOURCES += \
     field/field.cpp \
@@ -27,8 +27,12 @@ SOURCES += \
     model_manager/modelmanager.cpp \
     game_item/gameitem.cpp \
     entity/entity.cpp \
-    moving_entity/movingentity.cpp
 
 LIBS += -lX11
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system
 LIBS += -lre2
+
+CONFIG += c++14
+INCLUDEPATH += /usr/include/lua5.3
+INCLUDEPATH += /usr/include/sol
+LIBS += -llua5.3

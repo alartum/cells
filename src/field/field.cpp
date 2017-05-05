@@ -10,7 +10,6 @@ Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels, sf::Vector2u 
     setActive(false);
     setFramerateLimit(60);
     setTilePositions();
-//    fitView();
 }
 
 Field::~Field() {
@@ -74,11 +73,12 @@ sf::Vector2u Field::getMapSize() const{
 
 void Field::loadEntityTextures(){
     for (auto& ent: mEntities){
+        LOG("Entity ID: %d", ent.getTypeID());
         ent.setModelManager(mModelManager);
         ent.loadModel();
-        if (ent.getTypeID() == OBJECT_GRASS_EATING_ID){
-            ent.setState(rand() % 4);
-            ent.setFrame(rand() % 4);
+
+        if (ent.getModel()->getIsRandomFrame()){
+            ent.setFrame(rand());
         }
     }
 }
@@ -87,8 +87,12 @@ void Field::loadTileTextures(){
     for (unsigned i = 0; i < mMap.getHeight(); i++){
         for (unsigned j = 0; j < mMap.getWidth(); j++){
 //            LOG("POS = (%f, %f)", mMap.at(i, j).getPosition().x, mMap.at(i, j).getPosition().y);
-            mMap.at(i, j).setModelManager(mModelManager);
-            mMap.at(i, j).loadModel();
+            Tile& tile = mMap.at(i, j);
+            tile.setModelManager(mModelManager);
+            tile.loadModel();
+            if (tile.getModel()->getIsRandomFrame()){
+                tile.setFrame(rand());
+            }
         }
     }
 }
