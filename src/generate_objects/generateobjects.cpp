@@ -75,19 +75,18 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
     std::random_device  rd;
     std::mt19937        mtGenerator(rd());
     
-    std::uniform_int_distribution< unsigned >   xDistribution(0, IDS.getHeight());
-    std::uniform_int_distribution< unsigned >   yDistribution(0, IDS.getWidth());
+    std::uniform_int_distribution< unsigned >   xDistribution(0, IDS.getHeight()-1);
+    std::uniform_int_distribution< unsigned >   yDistribution(0, IDS.getWidth()-1);
     
     // Grass-eating
     for (int i = 0; (double)i * grassEatingDensity < IDS.getHeight() * IDS.getWidth(); i++) {
             unsigned xCurrent = xDistribution(mtGenerator);
             unsigned yCurrent = yDistribution(mtGenerator);
-            
+
             if (map.at(xCurrent, yCurrent).getTypeID() != TILE_GRASS_ID ||
-                IDS.at(xCurrent, yCurrent) != OBJECT_UNDEFINED_ID)
+                IDS.at(xCurrent, yCurrent) != OBJECT_UNDEFINED_ID){
                 continue;
-                
-            
+            }
             unsigned grassNeightbors = 0;
             
             for (int i = -(int)grassEatingDistance + (int)xCurrent; i <= (int)grassEatingDistance + (int)xCurrent; i++)
