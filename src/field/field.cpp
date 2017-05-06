@@ -5,7 +5,8 @@
 Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels, sf::Vector2u tileSize) :
     sf::RenderWindow(sf::VideoMode(sizeInPixels.x, sizeInPixels.y), "Field"),
     mTileSize    (tileSize),
-    mMap         (sizeInTiles.x, sizeInTiles.y)
+    mMap         (sizeInTiles.x, sizeInTiles.y),
+    mNAnimationTicks (8)
 {
     setActive(false);
     setFramerateLimit(60);
@@ -84,15 +85,11 @@ void Field::loadEntityTextures(){
 }
 
 void Field::loadTileTextures(){
-    for (unsigned i = 0; i < mMap.getHeight(); i++){
-        for (unsigned j = 0; j < mMap.getWidth(); j++){
-//            LOG("POS = (%f, %f)", mMap.at(i, j).getPosition().x, mMap.at(i, j).getPosition().y);
-            Tile& tile = mMap.at(i, j);
-            tile.setModelManager(mModelManager);
-            tile.loadModel();
-            if (tile.getModel()->getIsRandomFrame()){
-                tile.setFrame(rand());
-            }
+    for (auto& tile: mMap){
+        tile.setModelManager(mModelManager);
+        tile.loadModel();
+        if (tile.getModel()->getIsRandomFrame()){
+            tile.setFrame(rand());
         }
     }
 }
@@ -114,12 +111,10 @@ void Field::drawEntities() {
 
 void Field::drawTiles() {
     //LOG("ITERATION");
-    for (unsigned i = 0; i < mMap.getHeight(); i++)
-        for (unsigned j = 0; j < mMap.getWidth(); j++) {
-            Tile& curr_item = mMap.at(i, j);
-            draw(curr_item);
-            mMap.at(i, j).nextFrame();
-        }
+    for (auto& tile: mMap){
+        draw(tile);
+        tile.nextFrame();
+    }
 }
 
 void Field::nextFrame() {
@@ -130,12 +125,16 @@ void Field::nextFrame() {
 
 void Field::generateTiles(std::function< void(Matrix< Tile >&) > generatorMap) {
     generatorMap(mMap);
+    for (auto& tile: mMap){
+        tile.setNAnimationTicks(mNAnimationTicks);
+    }
 }
 
 void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities) {
     generateEntities(mMap, mEntities);
     for (auto& ent: mEntities){
         ent.calcSpritePosition(mTileSize, 0, 1);
+        ent.setNAnimationTicks(mNAnimationTicks);
     }
     #if defined(DEBUG)
         for (auto& ent: mEntities) {
@@ -163,6 +162,12 @@ void Field::calcSpritePosition ( double time, double stepCount ) {
     }
 }
 
+void Field::setNAnimationTicks(int nAnimationTicks){
+    mNAnimationTicks = nAnimationTicks;
+}
 
+int Field::getNAnimationTicks() const{
+    return mNAnimationTicks;
+}
 
 
