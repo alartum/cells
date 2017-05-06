@@ -10,8 +10,10 @@
 #include <algorithm>
 
 
+//! Matrix should BE a vector, not CONTAIN a vector
+//! UPD: Done
 template <typename T>
-class Matrix
+class Matrix : public std::vector<T>
 {
 public:
     Matrix (unsigned height = 0, unsigned width = 0);
@@ -34,11 +36,7 @@ protected:
     // Корректны ли координаты
     inline bool isInRange (unsigned x, unsigned y) const;
 private:
-    // Размеры матрицы
     unsigned mHeight, mWidth;
-    // Вектор, в котором хранится
-    std::vector<T> mElements;
-    
     
     // Оператор вывода в поток
     friend std::ostream & operator << (std::ostream & ostr, Matrix & M)
@@ -53,45 +51,45 @@ private:
         return ostr;
     }
     
-    inline Matrix< T > & operator = (const Matrix< T > Other) const 
+    inline Matrix< T > & operator = (const Matrix< T > Other) const
     {
-        mHeight = Other.mHeight;
+        std::vector<T>::operator =(Other);
         mWidth = Other.mWidth;
-        mElements = Other.mElements;
+        mHeight = Other.mHeight;
     }
 
     inline Matrix< T > & operator = (const Matrix< T > & Other) const 
     {
-        mHeight = Other.mHeight;
+        std::vector<T>::operator =(Other);
         mWidth = Other.mWidth;
-        mElements = Other.mElements;
+        mHeight = Other.mHeight;
     }
 
     inline Matrix< T > & operator = (const Matrix< T > && Other) const 
     {
-        mHeight = Other.mHeight;
+        std::vector<T>::operator =(Other);
         mWidth = Other.mWidth;
-        mElements = Other.mElements;
+        mHeight = Other.mHeight;
     }
 };
 
 template <typename T>
 inline Matrix<T>::Matrix (unsigned height, unsigned width):
-    mHeight (height), mWidth (width), mElements (height * width, T())
+    std::vector<T>(height * width, T()), mHeight (height), mWidth (width)
 {
 
 }
 
 template <typename T>
 inline Matrix<T>::Matrix (unsigned height, unsigned width, const T &element):
-    mHeight (height), mWidth (width), mElements (height * width, element)
+    std::vector<T>(height * width, T()), mHeight (height), mWidth (width)
 {
     
 }
 
 template <typename T>
 inline Matrix<T>::Matrix (unsigned height, unsigned width, T&& element):
-    mHeight (height), mWidth (width), mElements (height * width, element)
+    std::vector<T>(height * width, T()), mHeight (height), mWidth (width)
 {
 
 }
@@ -99,7 +97,7 @@ inline Matrix<T>::Matrix (unsigned height, unsigned width, T&& element):
 template <typename T>
 inline T& Matrix<T>::at (unsigned x, unsigned y)
 {
-    return mElements[x * mWidth + y];
+    return std::vector<T>::at(x * mWidth + y);
 }
 
 
@@ -112,7 +110,7 @@ inline bool Matrix<T>::isInRange(unsigned x, unsigned y) const
 template <typename T>
 inline void Matrix<T>::fill(const T &element)
 {
-    std::fill(mElements.begin(), mElements.end(), element);
+    std::fill(std::vector<T>::begin(), std::vector<T>::end(), element);
 }
 
 template <typename T>
@@ -147,16 +145,16 @@ inline void Matrix<T>::setSize(unsigned height, unsigned width)
     
     unsigned lWidth = mWidth;
     unsigned lHeight = mHeight;
-    std::vector< T > buffer = mElements;
+    std::vector< T > buffer(*this);
 
     mWidth = width;
     mHeight = height;
 
-    mElements.resize(mHeight * mWidth);
+    std::vector<T>::resize(mHeight * mWidth);
 
     for (unsigned i = 0; i < std::min(lHeight, mHeight); i++)
         for (unsigned j = 0; j < std::min(lWidth, mWidth); j++)
-            mElements[i * mHeight + j] = buffer[i * lHeight + j];
+            std::vector<T>::at(i * mHeight + j) = buffer.at(i * lHeight + j);
 }
 
 
