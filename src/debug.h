@@ -96,13 +96,13 @@
 
 #include <iostream>
 #include <sstream>
-template<typename T>
-void _VAR_LOG(std::string var_name, T var){
-    std::stringstream buf;
-    buf << var_name << " = " << var;
-    std::string str_buf(buf.str());
-    LOG("%s", str_buf.c_str());
-}
+
+#define _VAR_LOG(var_name, var) \
+{std::stringstream buf; \
+    buf << var_name << " = " << var; \
+    std::string str_buf(buf.str()); \
+    LOG("%s", str_buf.c_str()); \
+} \
 
 #define VAR_LOG(var) _VAR_LOG(#var, var)
 
