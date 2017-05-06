@@ -96,10 +96,9 @@ int test_field(int argc, char** argv, char** env) {
     XInitThreads();
      
     sf::Vector2u fieldSize(20, 20);
-    sf::Vector2u tileSize(32, 32);
     sf::Vector2u windowSize(600, 600);
 
-    Field F(fieldSize, windowSize, tileSize);
+    Field F(fieldSize, windowSize);
     GenerateRandomMap mapGenerator(5, 0.01, 0.15, 3);
     GenerateRandomMap& gen = mapGenerator;
     F.generateTiles(gen);

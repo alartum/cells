@@ -2,6 +2,7 @@
 #include "modelmanager.hpp"
 #include <memory>
 #include <SFML/Graphics/Texture.hpp>
+#define DEBUG
 #include "../debug.h"
 ModelManager::ModelManager()
 {
@@ -10,14 +11,20 @@ ModelManager::ModelManager()
 
 std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
 {
-    LOG("[ModelManager.getModel()] typeID = %d", typeID);
+    //LOG("[ModelManager.getModel()] typeID = %d", typeID);
     try{
         return mModels.at(typeID);
     }
-    catch (const std::out_of_range& oor){
+    catch (...){
+        try{
         std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
-        LOG("Undefined: %d", OBJECT_UNDEFINED_ID);
+        //LOG("Undefined: %d", OBJECT_UNDEFINED_ID);
         return mModels.at(OBJECT_UNDEFINED_ID);
+        }
+        catch(...){
+            std::cerr << "[ModelManager] Invalid configuration\n";
+            return std::shared_ptr<const Model>();
+        }
     }
 }
 
@@ -139,7 +146,52 @@ void ModelManager::loadConfig(const std::string& filename){
         std::cerr << "[Model Manager] Wrong config file format: " << filename << std::endl;
         return;
     }
+
+    auto animation_ticks = lua["animation_ticks"];
+    if (animation_ticks.valid()){
+        mNAnimationTicks = animation_ticks;
+    }
+    else{
+        std::cerr << "[Model Manager] Can't find \"animation_ticks\" in " << filename << "\n";
+    }
+    auto tile_size = lua["tile_size"];
+    if (tile_size.valid()){
+        auto tile_size_x = tile_size["x"];
+        auto tile_size_y = tile_size["y"];
+        if (tile_size_x.valid()){
+            mTileSize.x = tile_size_x;
+        }
+        else{
+            std::cerr << "[Model Manager] Can't find \"tile_size.x\" in " << filename << "\n";
+        }
+        if (tile_size_y.valid()){
+            mTileSize.y = tile_size_y;
+        }
+        else{
+            std::cerr << "[Model Manager] Can't find \"tile_size.y\" in " << filename << "\n";
+        }
+    }
+    else{
+        std::cerr << "[Model Manager] Can't find \"tile_size\" in " << filename << "\n";
+    }
     /*sf::IntRect rect = mModels[257]->getTextureRectSeries(0).at(1);
     LOG("Final: %d", mModels[257]->getTextureRectSeries(0).size());
     LOG("Final left: %d", rect.left);*/;
+}
+
+sf::Vector2u ModelManager::getTileSize() const{
+    return mTileSize;
+}
+
+void ModelManager::setTileSize(sf::Vector2u size){
+    mTileSize = size;
+
+}
+
+void ModelManager::setNAnimationTicks(int nAnimationTicks){
+    mNAnimationTicks = nAnimationTicks;
+}
+
+int ModelManager::getNAnimationTicks() const{
+    return mNAnimationTicks;
 }

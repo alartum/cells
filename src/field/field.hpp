@@ -17,17 +17,22 @@
 
 class Field : public sf::RenderWindow
 {
-public:
+    //! Is the speed up really needed?
+    friend void UpdateThread(Field& F);
+private:
     sf::Vector2u                        mTileSize;
     // Objects on the field
     std::vector< Entity >               mEntities;
     Matrix<Tile>                        mMap;
-    
+    // Number of ticks between the field updates
+    // The animation frames are inserted uniformly
+    int mNAnimationTicks;
+
     std::shared_ptr<const ModelManager> mModelManager;
 
     void setTilePositions();
 public:    
-    Field(sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels, sf::Vector2u tileSize);
+    Field(sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels);
     
     ~Field();
     void fitView();
@@ -61,6 +66,9 @@ public:
     void calcSpritePosition ( double time, double stepCount );
     
     void nextFrame();
+
+    void setNAnimationTicks(int nAnimationTicks);
+    int getNAnimationTicks() const;
 };
 
 #endif

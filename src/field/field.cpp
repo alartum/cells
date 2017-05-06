@@ -2,9 +2,9 @@
 //#define DEBUG
 #include "../debug.h"
 
-Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels, sf::Vector2u tileSize) :
+Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels) :
     sf::RenderWindow(sf::VideoMode(sizeInPixels.x, sizeInPixels.y), "Field"),
-    mTileSize    (tileSize),
+    mTileSize    (32, 32),
     mMap         (sizeInTiles.x, sizeInTiles.y),
     mNAnimationTicks (8)
 {
@@ -96,6 +96,8 @@ void Field::loadTileTextures(){
 
 void Field::setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr) {
     mModelManager = modelManager_ptr;
+    mTileSize = mModelManager->getTileSize();
+    mNAnimationTicks = mModelManager->getNAnimationTicks();
 //    setTileModelManager();
 }
 
@@ -169,5 +171,3 @@ void Field::setNAnimationTicks(int nAnimationTicks){
 int Field::getNAnimationTicks() const{
     return mNAnimationTicks;
 }
-
-

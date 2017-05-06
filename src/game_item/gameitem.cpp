@@ -45,3 +45,10 @@ GameItem& GameItem::operator = (const GameItem& other){
     setTypeID(other.mTypeID);
     return *this;
 }
+
+int GameItem::getNAnimationTicks() const{
+    return mNAnimationTicks;
+}
+void GameItem::setNAnimationTicks(int nAnimationFrames){
+    mNAnimationTicks = nAnimationFrames;
+}

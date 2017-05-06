@@ -19,12 +19,17 @@ public:
     std::shared_ptr<const ModelManager> getModelManager() const;
     void loadModel();
     GameItem& operator = (const GameItem& other);
+    int getNAnimationTicks() const;
+    void setNAnimationTicks(int nAnimationFrames);
 
 protected:
     // Type ID to handle textures correctly
     int mTypeID;
     // Model that provides textures
     std::shared_ptr<const ModelManager> mModelManager;
+    // Number of frames to perform the whole animation cycle
+    // Is set by the field
+    int mNAnimationTicks;
 };
 
 #endif // GAMEITEM_HPP
