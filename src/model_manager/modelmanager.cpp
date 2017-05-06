@@ -72,15 +72,37 @@ void ModelManager::initSample()
     addModel(OBJECT_UNDEFINED_ID, noModel_ptr);
 }
 
-void ModelManager::loadModel(const sol::table& prop){
+#define OUT_HEX std::hex << std::showbase
+#define OUT_DEC std::dec << std::noshowbase
+
+#define LOAD_VAR(var, from) \
+{\
+    auto obj = from[#var];\
+    if (obj.valid()){\
+        var = obj;\
+    }\
+    else{\
+        std::cerr << "[Model Manager] Can't find \"" << #var << "\" in "\
+                  << #from << "\n";\
+        return;\
+    }\
+}
+
+void ModelManager::loadModel(const sol::table& properties){
     // Provide some basic info
-    int id = prop["id"];
-    std::string name   = prop["name"];
-    std::cout << "[Model Manager] Loading: [" << id << "] " << name << std::endl;
+    int id;
+    LOAD_VAR(id, properties);
+    std::string name;
+    LOAD_VAR(name, properties);
+    std::clog << "[Model Manager] ITEM [" << OUT_HEX
+              << id << OUT_DEC
+              << "] " << name << std::endl;
 
     // Load texture if not already loaded
-    sol::table  model  = prop["model"];
-    std::string sprite_sheet = model["sprite_sheet"];
+    sol::table  model;
+    LOAD_VAR(model, properties);
+    std::string sprite_sheet;
+    LOAD_VAR(sprite_sheet, model);
     auto& texture_ptr = mTextureMap[sprite_sheet];
     if (!texture_ptr){
         texture_ptr = std::make_shared<sf::Texture >();
@@ -93,36 +115,54 @@ void ModelManager::loadModel(const sol::table& prop){
     }
 
     // Load the animation
-    sol::table states = model["states"];
+    sol::table states;
+    LOAD_VAR(states, model);
     auto model_ptr = std::make_shared<Model >(states.size() + 1, texture_ptr);
-    model_ptr->setIsRandomFrame(model["random_frame"]);
+    bool random_frame;
+    LOAD_VAR(random_frame, model);
+    model_ptr->setIsRandomFrame(random_frame);
     auto loadState = [&model_ptr](sol::object key, sol::table state){
-        std::string state_name = state["name"];
+        std::string name;
+        LOAD_VAR(name, state);
         int stateNo = key.as<int>();
-        std::cout << "[Model Manager]\t\t[" <<stateNo << "] " << state_name;
-        sol::table frames = state["frames"];
+        std::clog << "[Model Manager]\t\t[" << OUT_HEX
+                  << stateNo << OUT_DEC << "] " << name;
+        sol::table frames;
+        LOAD_VAR(frames, state);
         std::vector<sf::IntRect>& animation = model_ptr->getAnimation(stateNo);
         animation.resize(frames.size() + 1);
         auto loadFrame = [&animation](sol::object key, sol::table frame){
-            std::cout << "{" << key.as<int>() << "}";
+            std::clog << "{" << key.as<int>() << "}";
             int frameNo = key.as<int>();
-            int top_left_x = frame["top_left"]["x"];
-            int top_left_y = frame["top_left"]["y"];
-            int size_x = frame["size"]["x"];
-            int size_y = frame["size"]["y"];
+            sol::table top_left;
+            LOAD_VAR(top_left, frame);
+            int x, y;
+            LOAD_VAR(x, top_left);
+            LOAD_VAR(y, top_left);
+            int top_left_x = x;
+            int top_left_y = y;
+            sol::table size;
+            LOAD_VAR(size, frame);
+            LOAD_VAR(x, size);
+            LOAD_VAR(y, size);
+            int size_x = x;
+            int size_y = y;
 
             sf::IntRect rect(top_left_x, top_left_y, size_x, size_y);
-            //std::cout << "[" << top_left_x << top_left_y <<  size_x << size_y << "]";
+            //std::cout << "[( " << top_left_x << "; "<< top_left_y << "), ( "
+            //          <<  size_x << "; "<< size_y << ")]\n";
             animation[frameNo] = rect;
         };
         frames.for_each(loadFrame);
-        std::cout << std::endl;
+        std::clog << std::endl;
     };
     states.for_each(loadState);
     //int size = model_ptr->getTextureRectSeries(0).size();
     //LOG("Model: %d", size)
     addModel(id, model_ptr);
 }
+
+#undef LOAD_PARAM
 
 #define print_type(info) std::system((std::string("c++filt -t ")  + typeid(info).name()).c_str())
 
@@ -133,6 +173,7 @@ void ModelManager::loadConfig(const std::string& filename){
     // VERY IMPORTANT PLACE: std::ref(*this) != *this
     // Only passing by reference allow access to class members
     lua.set_function("GameItem", &ModelManager::loadModel, std::ref(*this));
+    std::cerr << "[Model Manager] Loading config file: " << filename << std::endl;
     // Load file without execute
     sol::load_result script = lua.load_file(filename);
     if (!script.valid()){
@@ -141,7 +182,7 @@ void ModelManager::loadConfig(const std::string& filename){
     }
 
     // Execute under protection
-    sol::protected_function_result result = script(); //execute
+    sol::protected_function_result result = script();
     if (!result.valid()){
         std::cerr << "[Model Manager] Wrong config file format: " << filename << std::endl;
         return;
