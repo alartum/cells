@@ -57,7 +57,7 @@ int test_field(int argc, char** argv, char** env) {
     F.generateTiles(gen);
     LOG("Map generated");
 
-    GenerateRandomEntity entityGenerator(10, 1, 0, 30, 10, 1, 1, 0);
+    GenerateRandomEntity entityGenerator(10, 1, 0, 30, 20, 1, 3, 9);
     F.generateEntities(entityGenerator);
 
     //MapDump()(F.mMap, F.mEntities);
