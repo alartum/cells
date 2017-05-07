@@ -26,18 +26,7 @@ void UpdateThread(Field& F)
     while(F.isOpen()){
         //std::this_thread::sleep_for(std::chrono::milliseconds(800));
         if (F.isOpen()) {
-            for (int i = 0; i < 8; i++) {
-                F.calcSpritePosition(i, 7);
-                F.clear();
-                F.drawTiles();
-                F.drawEntities();
-                F.display();
-                if (i % 3 == 0) {
-                    F.nextFrame();
-                }
-                std::chrono::milliseconds(200);
-            }
-            
+            F.showAnimation();
             RM(F.mMap, F.mEntities);
             F.syncronize();
         }
@@ -63,7 +52,7 @@ int test_field(int argc, char** argv, char** env) {
     //MapDump()(F.mMap, F.mEntities);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
-    sample->loadConfig("tileinfo/config.lua");
+    sample->loadConfig("tileinfo/mm_config.lua", "tileinfo/mm_data.lua");
     LOG("Model manager initialized");
     F.setModelManager(sample);
     F.loadTileTextures();

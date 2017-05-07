@@ -147,4 +147,3 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
 }
 
 
-    

@@ -1,12 +1,14 @@
+#include <chrono>
 #include "field.hpp"
 //#define DEBUG
 #include "../debug.h"
 
-Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels) :
+Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels, int mFrameDelay) :
     sf::RenderWindow(sf::VideoMode(sizeInPixels.x, sizeInPixels.y), "Field"),
     mTileSize    (32, 32),
     mMap         (sizeInTiles.x, sizeInTiles.y),
-    mNAnimationTicks (8)
+    mAnimationTime (8),
+    mFrameDelay (mFrameDelay)
 {
     setActive(false);
     setFramerateLimit(60);
@@ -77,10 +79,8 @@ void Field::loadEntityTextures(){
         LOG("Entity ID: %d", ent.getTypeID());
         ent.setModelManager(mModelManager);
         ent.loadModel();
-
-        if (ent.getModel()->getIsRandomFrame()){
-            ent.setFrame(rand());
-        }
+        ent.initState();
+        ent.initFrame();
     }
 }
 
@@ -88,17 +88,15 @@ void Field::loadTileTextures(){
     for (auto& tile: mMap){
         tile.setModelManager(mModelManager);
         tile.loadModel();
-        if (tile.getModel()->getIsRandomFrame()){
-            tile.setFrame(rand());
-        }
+        tile.initState();
+        tile.initFrame();
     }
 }
 
 void Field::setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr) {
     mModelManager = modelManager_ptr;
     mTileSize = mModelManager->getTileSize();
-    mNAnimationTicks = mModelManager->getNAnimationTicks();
-//    setTileModelManager();
+    mAnimationTime = mModelManager->getAnimationTime();
 }
 
 //! TODO matrix coords -> absolute coords
@@ -115,7 +113,6 @@ void Field::drawTiles() {
     //LOG("ITERATION");
     for (auto& tile: mMap){
         draw(tile);
-        tile.nextFrame();
     }
 }
 
@@ -123,20 +120,19 @@ void Field::nextFrame() {
     for (auto& ent: mEntities) {
         ent.nextFrame();
     }
+    for (auto& tile: mMap){
+        tile.nextFrame();
+    }
 }
 
 void Field::generateTiles(std::function< void(Matrix< Tile >&) > generatorMap) {
     generatorMap(mMap);
-    for (auto& tile: mMap){
-        tile.setNAnimationTicks(mNAnimationTicks);
-    }
 }
 
 void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities) {
     generateEntities(mMap, mEntities);
     for (auto& ent: mEntities){
         ent.calcSpritePosition(mTileSize, 0, 1);
-        ent.setNAnimationTicks(mNAnimationTicks);
     }
     #if defined(DEBUG)
         for (auto& ent: mEntities) {
@@ -164,10 +160,22 @@ void Field::calcSpritePosition ( double time, double stepCount ) {
     }
 }
 
-void Field::setNAnimationTicks(int nAnimationTicks){
-    mNAnimationTicks = nAnimationTicks;
+void Field::setAnimationTime(int animation_time){
+    mAnimationTime = animation_time;
 }
 
-int Field::getNAnimationTicks() const{
-    return mNAnimationTicks;
+int Field::getAnimationTime() const{
+    return mAnimationTime;
+}
+
+void Field::showAnimation(){
+    for (int i = 0; i < mAnimationTime; i++) {
+        calcSpritePosition(i, mAnimationTime-1);
+        clear();
+        drawTiles();
+        drawEntities();
+        display();
+        nextFrame();
+        std::chrono::milliseconds(mFrameDelay);
+    }
 }

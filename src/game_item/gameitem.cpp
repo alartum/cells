@@ -1,4 +1,5 @@
 #include "gameitem.hpp"
+#define DEBUG
 #include "../debug.h"
 GameItem::GameItem( int typeID,
                     const sf::Vector2f &position,
@@ -21,6 +22,8 @@ void GameItem::setTypeID(int TypeID)
 
     mTypeID = TypeID;
     loadModel();
+    initState();
+    initFrame();
 }
 
 void GameItem::setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr)
@@ -30,7 +33,7 @@ void GameItem::setModelManager (const std::shared_ptr<const ModelManager>& model
 
 void GameItem::loadModel()
 {
-    LOG("[GameItem.loadModel()] mTypeID = %d", mTypeID);
+    LOG("[GameItem.loadModel()] mTypeID = 0x%x", mTypeID);
     if (mModelManager)
         setModel(mModelManager->getModel(mTypeID));
 }
@@ -44,11 +47,4 @@ GameItem& GameItem::operator = (const GameItem& other){
     mModelManager = other.mModelManager;
     setTypeID(other.mTypeID);
     return *this;
-}
-
-int GameItem::getNAnimationTicks() const{
-    return mNAnimationTicks;
-}
-void GameItem::setNAnimationTicks(int nAnimationFrames){
-    mNAnimationTicks = nAnimationFrames;
 }

@@ -1,5 +1,9 @@
+-- Number of ticks for the whole 
+-- animation sequence for one state
+animation_time = 16
 -- Default tile size
 tile_size = {x = 32, y = 32}
+
 -- Init the sprite sheet
 model = {} 
 model.sprite_sheet = './tileinfo/terrain.png'
@@ -8,19 +12,20 @@ default = {name = 'default'}
 -- Load frames for the 'default' state
 default.frames={}
 for i = 0,2 do
-	default.frames[i] = {top_left = {x = 576 + i*tile_size.x,
+	default.frames[i] = {top_left = {x = i*tile_size.x + 576,
 	                                 y = 160}, 
                          size = tile_size}
 end
+default.random_frame  = true
+default.global_frames = 2
 -- Load the 'default' state
 model.states = {}
 model.states[0] = default
 -- Allow to start animation from random frame
-model.random_frame = true
 
 GameItem{
 	id = 0x1,
-	name = 'water',
+	name = 'tile_water',
 	model = model
 }
 
@@ -33,18 +38,38 @@ default = {name = 'default'}
 default.frames={}
 default.frames[0] = {top_left = {x = 0, y = 704}, 
                          size = tile_size}
+default.random_frame  = false
+default.global_frames = 1
 -- Load the 'default' state
 model.states = {}
 model.states[0] = default
--- Allow to start animation from random frame
-model.random_frame = false
 
 GameItem{
 	id = 0xFFFFFF,
-	name = 'undefined',
+	name = 'object_undefined',
 	model = model
 }
 
+-- Init the sprite sheet
+model = {} 
+model.sprite_sheet = './tileinfo/terrain.png'
+-- Create new animation state
+default = {name = 'default'}
+-- Load frames for the 'default' state
+default.frames={}
+default.frames[0] = {top_left = {x = 32, y = 704}, 
+                         size = tile_size}
+default.random_frame  = false
+default.global_frames = 1
+-- Load the 'default' state
+model.states = {}
+model.states[0] = default
+
+GameItem{
+	id = 0x0,
+	name = 'tile_undefined',
+	model = model
+}
 
 -- Init the sprite sheet
 model = {} 
@@ -58,15 +83,16 @@ for i = 0, #states do
 	states[i].frames[0] = {top_left = {x = 128 + i*tile_size.x,
 	                                   y = 160}, 
                          	   size = tile_size}
+    states[i].random_frame = false
+	states[i].global_frames = 1
 end
 -- Load the 'default' state
 model.states = states
 -- Allow to start animation from random frame
-model.random_frame = false
 
 GameItem{
 	id = 0x2,
-	name = 'ground',
+	name = 'tile_grass',
 	model = model
 }
 
@@ -90,14 +116,15 @@ for i = 0, #states do
 	                                       y = i*tile_size.y}, 
                          	   size = tile_size}
 	end
+	states[i].random_frame = true
+	states[i].global_frames = 1
 end
 -- Load the 'default' state
 model.states = states
 -- Allow to start animation from random frame
-model.random_frame = false
 
 GameItem{
 	id = 0x101,
-	name = 'herbivorous',
+	name = 'object_grass_eating',
 	model = model
 }
