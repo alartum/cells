@@ -35,7 +35,7 @@ void UpdateThread(Field& F)
                 if (i % 3 == 0) {
                     F.nextFrame();
                 }
-                std::chrono::milliseconds(100);
+                std::chrono::milliseconds(200);
             }
             
             RM(F.mMap, F.mEntities);
@@ -43,53 +43,6 @@ void UpdateThread(Field& F)
         }
     }
 }
-
-/*
-int test_map_generation(int argc, char** argv, char** env)
-{
-    size_t x_size = 40, y_size = 40;
-    int tileSize = 32;
-    std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
-    sample->initSample();
-    LOG("Model manager initialized");
-
-    Matrix<Tile > items(x_size, y_size, Tile(1));
-    LOG("Matrix initialized");
-    
-    for (unsigned i = 0; i < x_size; i++)
-        for (unsigned j = 0; j < y_size; j++) {
-            items.at(i, j).setModelManager(sample);
-            items.at(i, j).loadModel();
-            items.at(i, j).setPosition(tileSize*i, tileSize*j);
-        }
-    LOG("Matrix of tile created");
-        
-        
-    GenerateRandomMap mapGenerator(8, 0.01, 0.06, 15);
-    mapGenerator(items);
-    
-    
-    XInitThreads();
-    
-    sf::RenderWindow W(sf::VideoMode(x_size * tileSize, y_size * tileSize), "Sprites");
-    W.setActive(false);
-    W.setFramerateLimit(60);
-
-    std::thread T(UpdateThread, std::ref(W), std::ref(items));
-
-    while(W.isOpen()){
-        sf::Event event;
-        while(W.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                W.close();
-                break;
-            }
-        }
-    }
-    T.join();
-    
-    return 0;
-}*/
 
 
 int test_field(int argc, char** argv, char** env) {
@@ -110,7 +63,7 @@ int test_field(int argc, char** argv, char** env) {
     //MapDump()(F.mMap, F.mEntities);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
-    sample->loadConfig("config.lua");
+    sample->loadConfig("tileinfo/config.lua");
     LOG("Model manager initialized");
     F.setModelManager(sample);
     F.loadTileTextures();

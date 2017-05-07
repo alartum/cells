@@ -18,6 +18,7 @@
 
 
 int test_algo(int argc, char** argv, char** env) {
+    /*
     sf::Vector2u fieldSize(20, 20);
     sf::Vector2u tileSize(32, 32);
     sf::Vector2u windowSize(640, 860);
@@ -35,7 +36,7 @@ int test_algo(int argc, char** argv, char** env) {
     MapDump MD;
     
     MD(F.mMap, F.mEntities);
-    
+    */
     return 0;
 }
 

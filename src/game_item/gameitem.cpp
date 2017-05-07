@@ -1,5 +1,5 @@
 #include "gameitem.hpp"
-#include "debug.h"
+#include "../debug.h"
 GameItem::GameItem( int typeID,
                     const sf::Vector2f &position,
                     unsigned state

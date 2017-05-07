@@ -17,12 +17,14 @@ std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
     }
     catch (...){
         try{
-        std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
+        //std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
+        PERROR("No model with ID = %d", typeID);
         //LOG("Undefined: %d", OBJECT_UNDEFINED_ID);
         return mModels.at(OBJECT_UNDEFINED_ID);
         }
         catch(...){
-            std::cerr << "[ModelManager] Invalid configuration\n";
+            //std::cerr << "[ModelManager] Invalid configuration\n";
+            PERROR("Invalid configuration");
             return std::shared_ptr<const Model>();
         }
     }
@@ -94,9 +96,10 @@ void ModelManager::loadModel(const sol::table& properties){
     LOAD_VAR(id, properties);
     std::string name;
     LOAD_VAR(name, properties);
-    std::clog << "[Model Manager] ITEM [" << OUT_HEX
-              << id << OUT_DEC
-              << "] " << name << std::endl;
+    //std::clog << "[Model Manager] ITEM [" << OUT_HEX
+    //          << id << OUT_DEC
+    //          << "] " << name << std::endl;
+    LOG("ITEM [%x] %s", id, name.c_str());
 
     // Load texture if not already loaded
     sol::table  model;
@@ -109,7 +112,8 @@ void ModelManager::loadModel(const sol::table& properties){
         bool is_loaded = texture_ptr->loadFromFile(sprite_sheet);
         if (!is_loaded){
             texture_ptr.reset();
-            std::cerr << "[Model Manager] Can't load texture: " << sprite_sheet << std::endl;
+            PERROR("Can't load texture: %s", sprite_sheet.c_str());
+            //std::cerr << "[Model Manager] Can't load texture: " << sprite_sheet << std::endl;
             return;
         }
     }
@@ -125,8 +129,8 @@ void ModelManager::loadModel(const sol::table& properties){
         std::string name;
         LOAD_VAR(name, state);
         int stateNo = key.as<int>();
-        std::clog << "[Model Manager]\t\t[" << OUT_HEX
-                  << stateNo << OUT_DEC << "] " << name;
+        //std::clog << "[Model Manager]\t\t[" << OUT_HEX << stateNo << OUT_DEC << "] " << name;
+        LOG("[%x] %s", stateNo, name.c_str());
         sol::table frames;
         LOAD_VAR(frames, state);
         std::vector<sf::IntRect>& animation = model_ptr->getAnimation(stateNo);
@@ -173,18 +177,21 @@ void ModelManager::loadConfig(const std::string& filename){
     // VERY IMPORTANT PLACE: std::ref(*this) != *this
     // Only passing by reference allow access to class members
     lua.set_function("GameItem", &ModelManager::loadModel, std::ref(*this));
-    std::cerr << "[Model Manager] Loading config file: " << filename << std::endl;
+    //std::cerr << "[Model Manager] Loading config file: " << filename << std::endl;
+    LOG("Loading config file: %s", filename.c_str());
     // Load file without execute
     sol::load_result script = lua.load_file(filename);
     if (!script.valid()){
-        std::cerr << "[Model Manager] Can't load config file: " << filename << std::endl;
+        PERROR("Can't load config file: %s", filename.c_str());
+        //std::cerr << "[Model Manager] Can't load config file: " << filename << std::endl;
         return;
     }
 
     // Execute under protection
     sol::protected_function_result result = script();
     if (!result.valid()){
-        std::cerr << "[Model Manager] Wrong config file format: " << filename << std::endl;
+        //std::cerr << "[Model Manager] Wrong config file format: " << filename << std::endl;
+        PERROR("Wrong config file format: %s", filename.c_str());
         return;
     }
 
@@ -193,7 +200,8 @@ void ModelManager::loadConfig(const std::string& filename){
         mNAnimationTicks = animation_ticks;
     }
     else{
-        std::cerr << "[Model Manager] Can't find \"animation_ticks\" in " << filename << "\n";
+        //std::cerr << "[Model Manager] Can't find \"animation_ticks\" in " << filename << "\n";
+        PERROR("Can't find \"animation_ticks\" in: %s", filename.c_str());
     }
     auto tile_size = lua["tile_size"];
     if (tile_size.valid()){
@@ -203,17 +211,20 @@ void ModelManager::loadConfig(const std::string& filename){
             mTileSize.x = tile_size_x;
         }
         else{
-            std::cerr << "[Model Manager] Can't find \"tile_size.x\" in " << filename << "\n";
+            PERROR("Can't find \"tile_size.x\" in: %s", filename.c_str());
+            //std::cerr << "[Model Manager] Can't find \"tile_size.x\" in " << filename << "\n";
         }
         if (tile_size_y.valid()){
             mTileSize.y = tile_size_y;
         }
         else{
-            std::cerr << "[Model Manager] Can't find \"tile_size.y\" in " << filename << "\n";
+            PERROR("Can't find \"tile_size.y\" in: %s", filename.c_str());
+            //std::cerr << "[Model Manager] Can't find \"tile_size.y\" in " << filename << "\n";
         }
     }
     else{
-        std::cerr << "[Model Manager] Can't find \"tile_size\" in " << filename << "\n";
+        PERROR("Can't find \"tile_size\" in: %s", filename.c_str());
+        //std::cerr << "[Model Manager] Can't find \"tile_size\" in " << filename << "\n";
     }
     /*sf::IntRect rect = mModels[257]->getTextureRectSeries(0).at(1);
     LOG("Final: %d", mModels[257]->getTextureRectSeries(0).size());

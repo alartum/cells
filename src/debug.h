@@ -57,10 +57,10 @@
                     if (__count__slash__ != 2) \
                         __iterator__--; \
                 } \
-                printf("%s [pid=%d] [%s:%d] ", __tb, (int)getpid(), __iterator__, __LINE__); \
-		printf(format, ##__VA_ARGS__); \
-		printf("\n"); \
-		fflush(stdout); \
+                fprintf(stderr, "%s [pid=%d] [%s:%d] ", __tb, (int)getpid(), __iterator__, __LINE__); \
+		fprintf(stderr, format, ##__VA_ARGS__); \
+		fprintf(stderr, "\n"); \
+		fflush(stderr); \
 	}
 #else
 	#define LOG(format, ...) ;
@@ -82,16 +82,16 @@
                     if (__count__slash__ != 2) \
                         __iterator__--; \
                 } \
-                printf("%s [pid=%d] [%s] [line: %d] ", __tb, (int)getpid(), __iterator__, __LINE__); \
+                fprintf(stderr, "%s [pid=%d] [%s:%d] ", __tb, (int)getpid(), __iterator__, __LINE__); \
 		SET_FONT(CL_FT_RED); \
-		printf(" ERROR! "); \
+		fprintf(stderr, " ERROR! "); \
 		SET_FONT(TY_FT_DEFAULT); \
-		printf(format, ##__VA_ARGS__); \
+		fprintf(stderr, format, ##__VA_ARGS__); \
 		if (errno != 0) \
-			printf(" (%s)\n", strerror(errno)); \
+			fprintf(stderr, " (%s)\n", strerror(errno)); \
 		else \
-			printf("\n"); \
-		fflush(stdout); \
+			fprintf(stderr, "\n"); \
+		fflush(stderr); \
 	}
 
 #include <iostream>
