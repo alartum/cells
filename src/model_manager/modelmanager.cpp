@@ -90,7 +90,7 @@ void ModelManager::loadModel(const sol::table& properties){
         LOAD_VAR(random_frame, state);
         state_cpy.setIsRandomFrame(random_frame);
         int stateNo = key.as<int>();
-        LOG("[%x] %s", stateNo, name.c_str());
+        LOG("[0x%x] %s", stateNo, name.c_str());
         auto loadFrame = [&state_cpy](sol::object key, sol::table frame){
             std::clog << "{" << key.as<int>() << "}";
             int frameNo = key.as<int>();
@@ -139,9 +139,15 @@ void ModelManager::loadConfig(const std::string& mm_config_file, const std::stri
         PERROR("Wrong config file format: %s", mm_config_file.c_str());
         return;
     }
-    int animation_time;
+    size_t animation_time;
     LOAD_VAR(animation_time, mm_config);
     mAnimationTime = animation_time;
+    size_t max_FPS;
+    LOAD_VAR(max_FPS, mm_config);
+    mMaxFPS = max_FPS;
+    size_t frame_delay;
+    LOAD_VAR(frame_delay, mm_config);
+    mFrameDelay = frame_delay;
     sol::table tile_size;
     LOAD_VAR(tile_size, mm_config);
     int x, y;
@@ -185,4 +191,20 @@ size_t ModelManager::getAnimationTime() const{
 }
 void ModelManager::setAnimationTime(size_t animation_time){
     mAnimationTime = animation_time;
+}
+
+
+size_t ModelManager::getFrameDelay() const{
+    return mFrameDelay;
+}
+void ModelManager::setFrameDelay(size_t frame_delay){
+    mFrameDelay = frame_delay;
+}
+
+
+size_t ModelManager::getMaxFPS() const{
+    return mMaxFPS;
+}
+void ModelManager::setMaxFPS(size_t max_FPS){
+    mMaxFPS = max_FPS;
 }

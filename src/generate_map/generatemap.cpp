@@ -90,7 +90,7 @@ void MapDump::operator() ( Matrix< Tile >& map, std::vector< Entity>& En ) {
             IDS.at(i, j) = map.at(i, j).getTypeID();
         }
     for (auto & iter: En) {
-        IDS.at(iter.mTileFrom.x, iter.mTileFrom.y) = iter.getTypeID();
+        IDS.at(iter.getTileFrom().x, iter.getTileFrom().y) = iter.getTypeID();
     }
     
     for (unsigned i = 0; i < IDS.getHeight(); i++) {

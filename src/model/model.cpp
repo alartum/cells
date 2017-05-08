@@ -11,13 +11,17 @@ Model::Model(const std::shared_ptr<const sf::Texture>& texture) :
 }
 
 const AnimationState& Model::getAnimation(int state_id) const{
-    VAR_LOG(state_id);
     try{
         return mAnimations.at(state_id);
     }
     catch (const std::out_of_range& oor){
-        PERROR("No animation for state =  0x%x", state_id);
-        return mBadState;
+        PERROR("No animation for state 0x%x", state_id);
+        try{
+            return mAnimations.at(0);
+        }
+        catch(...){
+            return mBadState;
+        }
     }
 }
 

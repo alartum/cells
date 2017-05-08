@@ -21,6 +21,12 @@ public:
     size_t getAnimationTime() const;
     void setAnimationTime(size_t animation_time);
 
+    size_t getFrameDelay() const;
+    void setFrameDelay(size_t frame_delay);
+
+    size_t getMaxFPS() const;
+    void setMaxFPS(size_t max_FPS);
+
     void setTileSize(sf::Vector2u size);
     sf::Vector2u getTileSize() const;
 private:
@@ -34,6 +40,9 @@ private:
     // Number of ticks between the field updates
     // The animation frames are inserted uniformly
     size_t mAnimationTime;
+    // Time is milliseconds between animation frames
+    size_t mFrameDelay;
+    size_t mMaxFPS;
 };
 
 #endif // MODELMANAGER_HPP

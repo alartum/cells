@@ -22,9 +22,8 @@ void Item::setState(size_t state)
         mAnimation = &mModel->getAnimation(mState);
         mIsRandomFrame = mAnimation->getIsRandomFrame();
         mAnimationTime = mAnimation->getAnimationTime();
-        setTextureRect(mAnimation->getRect(mState));
+        setTextureRect(mAnimation->getRect(mFrameNo));
         mFramesAmount = mAnimation->size();
-        initFrame();
     }
     else{
         mFramesAmount = 0;
@@ -61,7 +60,6 @@ Item& Item::operator = (const Item& other)
     mAnimation = other.mAnimation;
     mFramesAmount = other.mFramesAmount;
     mState = other.mState;
-    mTypeID = other.mTypeID;
 
     return *this;
 }
@@ -102,7 +100,6 @@ void Item::initFrame(){
         mTickNo  = rand() % mAnimationTime;
         double frame_rate = (double)mAnimationTime / mFramesAmount;
         mFrameNo = (int)(mTickNo / frame_rate);
-        VAR_LOG(mFrameNo);
     }
     else{
         mTickNo = 0;
@@ -112,4 +109,8 @@ void Item::initFrame(){
 
 void Item::initState(){
     setState(0);
+}
+
+size_t Item::getState() const{
+    return mState;
 }

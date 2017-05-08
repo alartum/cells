@@ -31,10 +31,8 @@ private:
     // If the animation starts from random frame
     bool mIsRandomFrame;
     size_t mAnimationTime;
-protected:
     // Current state; update is done according to it
     size_t mState;
-    int mTypeID;
 public:
     Item(const sf::Vector2f& position = sf::Vector2f(0,0), size_t state = 0);
     ~Item();
@@ -42,6 +40,7 @@ public:
     void setModel(const std::shared_ptr<const Model>& model);
     std::shared_ptr<const Model> getModel() const;
     void setState(size_t state);
+    size_t getState() const;
     // Sets frame equal to 'frame % maxFrameNo'
     // Always finishes without error
     void setFrame(size_t frame);

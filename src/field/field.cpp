@@ -1,17 +1,19 @@
 #include <chrono>
+#include <thread>
 #include "field.hpp"
 //#define DEBUG
 #include "../debug.h"
 
-Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels, int mFrameDelay) :
+Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels) :
     sf::RenderWindow(sf::VideoMode(sizeInPixels.x, sizeInPixels.y), "Field"),
     mTileSize    (32, 32),
     mMap         (sizeInTiles.x, sizeInTiles.y),
     mAnimationTime (8),
-    mFrameDelay (mFrameDelay)
+    mFrameDelay (200),
+    mMaxFPS(60)
 {
     setActive(false);
-    setFramerateLimit(60);
+    setFramerateLimit(mMaxFPS);
     setTilePositions();
 }
 
@@ -79,7 +81,7 @@ void Field::loadEntityTextures(){
         LOG("Entity ID: %d", ent.getTypeID());
         ent.setModelManager(mModelManager);
         ent.loadModel();
-        ent.initState();
+        ent.setState(STATE_IDLE | DIR_UP);
         ent.initFrame();
     }
 }
@@ -97,6 +99,9 @@ void Field::setModelManager (const std::shared_ptr<const ModelManager>& modelMan
     mModelManager = modelManager_ptr;
     mTileSize = mModelManager->getTileSize();
     mAnimationTime = mModelManager->getAnimationTime();
+    mFrameDelay = mModelManager->getFrameDelay();
+    mMaxFPS = mModelManager->getMaxFPS();
+    setFramerateLimit(mMaxFPS);
 }
 
 //! TODO matrix coords -> absolute coords
@@ -148,7 +153,7 @@ void Field::doStep(std::function< void(Matrix< Tile >&, std::vector< Entity >&) 
 
 void Field::syncronize() {
     for (auto& ent: mEntities) {
-        ent.mTileFrom = ent.mTileTo, ent.mTileTo = ent.mFuturePosition;
+        ent.updateRoute();
         ent.calcSpritePosition(mTileSize, 0, 1);
     }
     
@@ -169,6 +174,10 @@ int Field::getAnimationTime() const{
 }
 
 void Field::showAnimation(){
+    /*
+    std::chrono::time_point<std::chrono::system_clock> before =
+        std::chrono::system_clock::now();
+*/
     for (int i = 0; i < mAnimationTime; i++) {
         calcSpritePosition(i, mAnimationTime-1);
         clear();
@@ -176,6 +185,14 @@ void Field::showAnimation(){
         drawEntities();
         display();
         nextFrame();
-        std::chrono::milliseconds(mFrameDelay);
+        if (mFrameDelay != 0){
+            std::this_thread::sleep_for(std::chrono::milliseconds(mFrameDelay));
+        }
     }
+    /*std::chrono::time_point<std::chrono::system_clock> after =
+        std::chrono::system_clock::now();
+    auto duration = after.time_since_epoch() - before.time_since_epoch();
+    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    LOG("FPS: %d", 1000 / (millis / mAnimationTime));
+    */
 }

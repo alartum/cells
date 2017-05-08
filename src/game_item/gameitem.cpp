@@ -33,7 +33,6 @@ void GameItem::setModelManager (const std::shared_ptr<const ModelManager>& model
 
 void GameItem::loadModel()
 {
-    LOG("[GameItem.loadModel()] mTypeID = 0x%x", mTypeID);
     if (mModelManager)
         setModel(mModelManager->getModel(mTypeID));
 }

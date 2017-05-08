@@ -25,6 +25,15 @@
 #define IS_GRASS_EATING(x)              (0x100 & x)
 #define IS_OBJECT(x)                    (0xffffff00 & x)
 #define IS_TILE(x)                      (0xff & x)
+#define STATE_MASK(x)                   (0xfffffff0 & x)
+#define DIR_MASK(x)                     (0xf & x)
+#define DIR_UP                          (0x1)
+#define DIR_RIGHT                       (0x2)
+#define DIR_DOWN                        (0x4)
+#define DIR_LEFT                        (0x8)
+
+#define STATE_WALK                      (0x10)
+#define STATE_IDLE                      (0x20)
 // ... ids here
 
 #endif

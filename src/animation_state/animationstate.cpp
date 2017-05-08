@@ -40,8 +40,11 @@ const sf::IntRect& AnimationState::getRect(size_t frame) const{
         return at(frame);
     }
     catch(const std::out_of_range& oor){
-        PERROR("No texture rect for frame =  %lu", frame);
-        return mBadRect;
+        PERROR("No texture rect for frame %lu", frame);
+        if (size() > 0)
+            return at(0);
+        else
+            return mBadRect;
     }
 }
 

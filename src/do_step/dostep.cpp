@@ -117,7 +117,7 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
                                     break;
                                 default: {
                                     color[entityID] = 2;
-                                    En[entityID].mFuturePosition = new_position;
+                                    En[entityID].setFuturePosition(new_position);
                                     flag = true;
                                 }
                         }
@@ -125,7 +125,7 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
                         if (new_position.x < 0 || new_position.y < 0 || 
                             new_position.x >= cache.getHeight() || new_position.y >= cache.getHeight()) {
                             color[entityID] = 2;
-                            En[entityID].mFuturePosition = En[entityID].getTileTo();
+                            En[entityID].setFuturePosition(En[entityID].getTileTo());
                             flag = true;
                             continue;
                         }
@@ -134,7 +134,7 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
                         if ( !flag && cache.at ( new_position.x, new_position.y ) == -1 &&
                                 map.at ( new_position.x, new_position.y ).getTypeID() == TILE_GRASS_ID ) {
                             flag = true;
-                            En[entityID].mFuturePosition = new_position;
+                            En[entityID].setFuturePosition(new_position);
                             color[entityID] = 2;
                             cache.at ( i, j ) = -1;
                             cache.at ( new_position.x, new_position.y ) = entityID;
