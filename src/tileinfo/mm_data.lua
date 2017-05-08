@@ -57,6 +57,27 @@ model.sprite_sheet = './tileinfo/terrain.png'
 default = {name = 'default'}
 -- Load frames for the 'default' state
 default.frames={}
+default.frames[0] = {top_left = {x = 64, y = 704}, 
+                         size = tile_size}
+default.random_frame  = false
+default.global_frames = 1
+-- Load the 'default' state
+model.states = {}
+model.states[0] = default
+
+GameItem{
+	id = 0x103,
+	name = 'object_corpse',
+	model = model
+}
+
+-- Init the sprite sheet
+model = {} 
+model.sprite_sheet = './tileinfo/terrain.png'
+-- Create new animation state
+default = {name = 'default'}
+-- Load frames for the 'default' state
+default.frames={}
 default.frames[0] = {top_left = {x = 32, y = 704}, 
                          size = tile_size}
 default.random_frame  = false
@@ -198,3 +219,34 @@ GameItem{
 	name = 'object_grass_eating',
 	model = model
 }
+
+-- Init the sprite sheet
+model = {} 
+model.sprite_sheet = './tileinfo/wolf.png'
+-- Create new animation state
+states = {[state_idle | dir_up] = {name = 'idle_up'},
+		  [state_idle | dir_left] = {name = 'idle_left'},
+		  [state_idle | dir_down] = {name = 'idle_down'},
+		  [state_idle | dir_right] = {name = 'idle_right'},
+		  [state_walk | dir_up] = {name = 'walk_up'},
+		  [state_walk | dir_left] = {name = 'walk_left'},
+		  [state_walk | dir_down] = {name = 'walk_down'},
+		  [state_walk | dir_right] = {name = 'walk_right'}}
+-- Load frames for the states
+for _, state in pairs(states) do
+	state.frames = {}
+	state.frames[0] = {top_left = {x = 0, y = 0}, 
+                     	   size = tile_size}
+	state.random_frame = true
+	state.global_frames = 1
+end
+-- Load the 'default' state
+model.states = states
+-- Allow to start animation from random frame
+
+GameItem{
+	id = 0x201,
+	name = 'object_predator',
+	model = model
+}
+

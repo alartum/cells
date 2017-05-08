@@ -19,7 +19,7 @@ std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
         try{
         //std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
         PERROR("No model with ID = 0x%x", typeID);
-        LOG("Undefined: 0x%x", OBJECT_UNDEFINED_ID);
+        //LOG("Undefined: 0x%x", OBJECT_UNDEFINED_ID);
         return mModels.at(OBJECT_UNDEFINED_ID);
         }
         catch(...){
