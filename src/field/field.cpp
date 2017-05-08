@@ -93,6 +93,7 @@ void Field::loadTileTextures(){
         tile.initState();
         tile.initFrame();
     }
+    fancyEdges();
 }
 
 void Field::setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr) {
@@ -238,4 +239,35 @@ void Field::loadConfig(const std::string config_file){
     LOAD_VAR(width, window_size);
     sf::Vector2u w_size(width, height);
     setSize(w_size);
+}
+
+#define TEST_WATER(y, x) (mMap.at(y, x).getTypeID() & TILE_WATER_ID)
+int Field::getEdgeType(unsigned y, unsigned x){
+    int edgeType = 0;
+    int maxX = mMap.getWidth() -1;
+    int maxY = mMap.getHeight()-1;
+    if (y != 0 && TEST_WATER(y-1, x)) edgeType |= DIR_UP;
+    if (y != maxY && TEST_WATER(y+1, x)) edgeType |= DIR_DOWN;
+    if (x != 0 && TEST_WATER(y, x-1)) edgeType |= DIR_LEFT;
+    if (x != maxX && TEST_WATER(y, x+1)) edgeType |= DIR_RIGHT;\
+    if (edgeType == 0){
+        if (y != 0 && x != 0 && TEST_WATER(y-1, x-1)) edgeType |= DIR_UP | DIR_LEFT | DIR_ADD;
+        if (y != maxY && x != 0 && TEST_WATER(y+1, x-1)) edgeType |= DIR_DOWN | DIR_LEFT | DIR_ADD;
+        if (y != 0 && x != maxX && TEST_WATER(y-1, x+1)) edgeType |= DIR_UP | DIR_RIGHT | DIR_ADD;
+        if (y != maxX && x != maxY && TEST_WATER(y+1, x+1)) edgeType |= DIR_DOWN | DIR_RIGHT | DIR_ADD;
+    }
+    if (edgeType == 0)
+        return DIR_ADD;
+    return edgeType;
+}
+#undef TEST_WATER
+
+void Field::fancyEdges(){
+    for (unsigned y = 0; y < mMap.getHeight(); y++)
+        for (unsigned x = 0; x < mMap.getWidth(); x++) {
+            Tile& tile = mMap.at(y, x);
+            if (tile.getTypeID() & TILE_GRASS_ID){
+                tile.setState(getEdgeType(y, x));
+            }
+        }
 }

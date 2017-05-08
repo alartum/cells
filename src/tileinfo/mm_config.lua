@@ -1,8 +1,9 @@
 -- Where to search for models config
 -- Change this to set up different texture pack
-models_file = "./tileinfo/mm_data.lua"
---models_file = "./tileinfo/mm_data_old.lua"
 
+models_file = "./tileinfo/mm_data.lua"
+--models_file = "./tileinfo/mm_data_old_water.lua"
+--models_file = "./tileinfo/mm_data_old_ground.lua"
 
 -- Upper bound for frames per second value
 max_FPS = 60

@@ -20,7 +20,7 @@ public:
     Matrix (unsigned height, unsigned width, const T& element);
     Matrix (unsigned height, unsigned width, T&& element);
     // Возвращает ссылку элемент с данной позицией
-    T& at (unsigned x, unsigned y);
+    T& at (unsigned y, unsigned x);
     // Заполняет матрицу элементом element
     inline void fill (const T& element);
     // Изменяет высоту
@@ -95,7 +95,7 @@ inline Matrix<T>::Matrix (unsigned height, unsigned width, T&& element):
 }
 
 template <typename T>
-inline T& Matrix<T>::at (unsigned x, unsigned y)
+inline T &Matrix<T>::at(unsigned y, unsigned x)
 {
     return std::vector<T>::at(x * mWidth + y);
 }

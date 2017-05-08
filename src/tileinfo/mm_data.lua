@@ -92,21 +92,186 @@ GameItem{
 	model = model
 }
 
+dir_up = 0x1
+dir_right = 0x2
+dir_down = 0x4
+dir_left = 0x8
+dir_none = 0x0
+-- Additional mode
+dir_add = 0x10
 -- Init the sprite sheet
 model = {} 
 model.sprite_sheet = './tileinfo/terrain.png'
 -- Create new animation state
-states = {[0] = {name = 'default0'},
-		  [1] = {name = 'default1'}}
+states = {[dir_add] = {name = 'center'},
+		  [dir_none] = {name = 'filler'},
+		  [dir_up] = {name = 'up'},
+		  [dir_up | dir_right] = {name = 'up_right'},
+		  [dir_right] = {name = 'right'},
+		  [dir_right | dir_down] = {name = 'down_right'},
+		  [dir_down] = {name = 'down'},
+		  [dir_down | dir_left] = {name = 'down_left'},
+		  [dir_left] = {name = 'left'},
+		  [dir_left | dir_up] = {name = 'up_left'},
+		  [dir_add | dir_down | dir_right] = {name = 'add_down_right'},
+		  [dir_add | dir_down | dir_left] = {name = 'add_down_left'},
+		  [dir_add | dir_up | dir_right] = {name = 'add_up_right'},
+		  [dir_add | dir_up | dir_left] = {name = 'add_up_left'},
+		  [dir_down | dir_up] = {name = 'up_down'},
+		  [dir_left | dir_right] = {name = 'left_right'},
+		  [dir_up | dir_down | dir_left] = {name = 'down_up_left'},
+		  [dir_down | dir_up | dir_right] = {name = 'down_up_right'},
+		  [dir_right | dir_up | dir_left] = {name = 'right_up_left'},
+		  [dir_right | dir_down | dir_left] = {name = 'right_down_left'},
+		  [dir_right | dir_up | dir_left | dir_down] = {name = 'down_up_left_right'}}
 -- Load frames for the states
-for i = 0, #states do
-	states[i].frames = {}
-	states[i].frames[0] = {top_left = {x = 128 + i*tile_size.x,
-	                                   y = 160}, 
+-----------------------------------------------------------
+	states[dir_add].frames = {}
+	states[dir_add].frames[0] = {top_left = {x = 128, y = 96}, 
                          	   size = tile_size}
-    states[i].random_frame = false
-	states[i].global_frames = 1
-end
+    states[dir_add].random_frame = false
+	states[dir_add].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_none].frames = {}
+	states[dir_none].frames[0] = {top_left = {x = 32, y = 96}, 
+                         	   size = tile_size}
+    states[dir_none].random_frame = false
+	states[dir_none].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_up].frames = {}
+	states[dir_up].frames[0] = {top_left = {x = 128, y = 64}, 
+                         	   size = tile_size}
+    states[dir_up].random_frame = false
+	states[dir_up].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_up | dir_right].frames = {}
+	states[dir_up | dir_right].frames[0] = {top_left = {x = 160, y = 64}, 
+                         	   size = tile_size}
+    states[dir_up | dir_right].random_frame = false
+	states[dir_up | dir_right].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_right].frames = {}
+	states[dir_right].frames[0] = {top_left = {x = 160, y = 96}, 
+                         	   size = tile_size}
+    states[dir_right].random_frame = false
+	states[dir_right].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_right | dir_down].frames = {}
+	states[dir_right | dir_down].frames[0] = {top_left = {x = 160, y = 128}, 
+                         	   size = tile_size}
+    states[dir_right | dir_down].random_frame = false
+	states[dir_right | dir_down].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_down].frames = {}
+	states[dir_down].frames[0] = {top_left = {x = 128, y = 128}, 
+                         	   size = tile_size}
+    states[dir_down].random_frame = false
+	states[dir_down].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_down | dir_left].frames = {}
+	states[dir_down | dir_left].frames[0] = {top_left = {x = 96, y = 128}, 
+                         	   size = tile_size}
+    states[dir_down | dir_left].random_frame = false
+	states[dir_down | dir_left].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_left].frames = {}
+	states[dir_left].frames[0] = {top_left = {x = 96, y = 96}, 
+                         	   size = tile_size}
+    states[dir_left].random_frame = false
+	states[dir_left].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_left | dir_up].frames = {}
+	states[dir_left | dir_up].frames[0] = {top_left = {x = 96, y = 64}, 
+                         	   size = tile_size}
+    states[dir_left | dir_up].random_frame = false
+	states[dir_left | dir_up].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_add | dir_down | dir_right].frames = {}
+	states[dir_add | dir_down | dir_right].frames[0] = {top_left = {x = 128, y = 0}, 
+                         	   size = tile_size}
+    states[dir_add | dir_down | dir_right].random_frame = false
+	states[dir_add | dir_down | dir_right].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_add | dir_down | dir_left].frames = {}
+	states[dir_add | dir_down | dir_left].frames[0] = {top_left = {x = 160, y = 0}, 
+                         	   size = tile_size}
+    states[dir_add | dir_down | dir_left].random_frame = false
+	states[dir_add | dir_down | dir_left].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_add | dir_up | dir_left].frames = {}
+	states[dir_add | dir_up | dir_left].frames[0] = {top_left = {x = 160, y = 32}, 
+                         	   size = tile_size}
+    states[dir_add | dir_up | dir_left].random_frame = false
+	states[dir_add | dir_up | dir_left].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_add | dir_up | dir_right].frames = {}
+	states[dir_add | dir_up | dir_right].frames[0] = {top_left = {x = 128, y = 32}, 
+                         	   size = tile_size}
+    states[dir_add | dir_up | dir_right].random_frame = false
+	states[dir_add | dir_up | dir_right].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_down | dir_up].frames = {}
+	states[dir_down | dir_up].frames[0] = {top_left = {x = 32, y = 32}, 
+                         	   size = tile_size}
+    states[dir_down | dir_up].random_frame = false
+	states[dir_down | dir_up].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_left | dir_right].frames = {}
+	states[dir_left | dir_right].frames[0] = {top_left = {x = 64, y = 96}, 
+                         	   size = tile_size}
+    states[dir_left | dir_right].random_frame = false
+	states[dir_left | dir_right].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_up | dir_down | dir_left].frames = {}
+	states[dir_up | dir_down | dir_left].frames[0] = {top_left = {x = 0, y = 32}, 
+                         	   size = tile_size}
+    states[dir_up | dir_down | dir_left].random_frame = false
+	states[dir_up | dir_down | dir_left].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_up | dir_down | dir_right].frames = {}
+	states[dir_up | dir_down | dir_right].frames[0] = {top_left = {x = 64, y = 32}, 
+                         	   size = tile_size}
+    states[dir_up | dir_down | dir_right].random_frame = false
+	states[dir_up | dir_down | dir_right].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_up | dir_left | dir_right].frames = {}
+	states[dir_up | dir_left | dir_right].frames[0] = {top_left = {x = 64, y = 64}, 
+                         	   size = tile_size}
+    states[dir_up | dir_left | dir_right].random_frame = false
+	states[dir_up | dir_left | dir_right].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_down | dir_up | dir_left | dir_right].frames = {}
+	states[dir_down | dir_up | dir_left | dir_right].frames[0] = {top_left = {x = 32, y = 64}, 
+                         	   size = tile_size}
+    states[dir_down | dir_up | dir_left | dir_right].random_frame = false
+	states[dir_down | dir_up | dir_left | dir_right].global_frames = 1
+-----------------------------------------------------------
+-----------------------------------------------------------
+	states[dir_down | dir_left | dir_right].frames = {}
+	states[dir_down | dir_left | dir_right].frames[0] = {top_left = {x = 64, y = 128}, 
+                         	   size = tile_size}
+    states[dir_down | dir_left | dir_right].random_frame = false
+	states[dir_down | dir_left | dir_right].global_frames = 1
+-----------------------------------------------------------
 -- Load the 'default' state
 model.states = states
 -- Allow to start animation from random frame
@@ -117,16 +282,12 @@ GameItem{
 	model = model
 }
 
+state_idle = 0x200
+state_walk = 0x100
 -- Init the sprite sheet
 model = {} 
 model.sprite_sheet = './tileinfo/chicken.png'
 -- Create new animation state
-state_idle = 0x20
-state_walk = 0x10
-dir_up = 0x1
-dir_right = 0x2
-dir_down = 0x4
-dir_left = 0x8
 states = {[state_idle | dir_up] = {name = 'eat_up'},
 		  [state_idle | dir_left] = {name = 'eat_left'},
 		  [state_idle | dir_down] = {name = 'eat_down'},

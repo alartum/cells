@@ -34,6 +34,8 @@ private:
     std::shared_ptr<const ModelManager> mModelManager;
 
     void setTilePositions();
+    void fancyEdges();
+    int getEdgeType(unsigned y, unsigned x);
 public:    
     Field(sf::Vector2u sizeInTiles  = sf::Vector2u(20, 20),
           sf::Vector2u sizeInPixels = sf::Vector2u(600,600));
