@@ -196,3 +196,46 @@ void Field::showAnimation(){
     LOG("FPS: %d", 1000 / (millis / mAnimationTime));
     */
 }
+
+#define LOAD_VAR(var, from) \
+{\
+    auto obj = from[#var];\
+    if (obj.valid()){\
+        var = obj;\
+    }\
+    else{\
+        PERROR("Can't find \"%s\" in %s", #var, #from);\
+        return;\
+    }\
+}
+
+void Field::loadConfig(const std::string config_file){
+    sol::state config;
+    LOG("Loading config file: %s", config_file.c_str());
+    // Load file without execute
+    sol::load_result config_script = config.load_file(config_file);
+    if (!config_script.valid()){
+        PERROR("Can't load config file: %s", config_file.c_str());
+        return;
+    }
+    // Execute under protection
+    sol::protected_function_result config_result = config_script();
+    if (!config_result.valid()){
+        PERROR("Wrong config file format: %s", config_file.c_str());
+        return;
+    }
+    sol::table field_size;
+    LOAD_VAR(field_size, config);
+    unsigned height, width;
+    LOAD_VAR(height, field_size);
+    LOAD_VAR(width, field_size);
+    sf::Vector2u f_size(width, height);
+    mMap.setSize(f_size.y, f_size.x);
+
+    sol::table window_size;
+    LOAD_VAR(window_size, config);
+    LOAD_VAR(height, window_size);
+    LOAD_VAR(width, window_size);
+    sf::Vector2u w_size(width, height);
+    setSize(w_size);
+}

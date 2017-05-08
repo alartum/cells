@@ -121,7 +121,7 @@ void ModelManager::loadModel(const sol::table& properties){
 
 #define print_type(info) std::system((std::string("c++filt -t ")  + typeid(info).name()).c_str())
 
-void ModelManager::loadConfig(const std::string& mm_config_file, const std::string& mm_models_file){
+void ModelManager::loadConfig(const std::string& mm_config_file){
 
     sol::state mm_config;
     mm_config.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string);
@@ -155,23 +155,25 @@ void ModelManager::loadConfig(const std::string& mm_config_file, const std::stri
     LOAD_VAR(y, tile_size);
     mTileSize.x = x;
     mTileSize.y = y;
+    std::string models_file;
+    LOAD_VAR(models_file, mm_config);
 
     sol::state mm_models;
     mm_models.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string);
     // VERY IMPORTANT PLACE: std::ref(*this) != *this
     // Only passing by reference allow access to class members
     mm_models.set_function("GameItem", &ModelManager::loadModel, std::ref(*this));
-    LOG("Loading config file: %s", mm_models_file.c_str());
+    LOG("Loading config file: %s", models_file.c_str());
     // Load file without execute
-    sol::load_result models_script = mm_models.load_file(mm_models_file);
+    sol::load_result models_script = mm_models.load_file(models_file);
     if (!models_script.valid()){
-        PERROR("Can't load models file: %s", mm_models_file.c_str());
+        PERROR("Can't load models file: %s", models_file.c_str());
         return;
     }
     // Execute under protection
     sol::protected_function_result models_result = models_script();
     if (!models_result.valid()){
-        PERROR("Wrong models file format: %s", mm_models_file.c_str());
+        PERROR("Wrong models file format: %s", models_file.c_str());
         return;
     }
 }

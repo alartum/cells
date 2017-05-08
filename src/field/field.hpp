@@ -35,7 +35,8 @@ private:
 
     void setTilePositions();
 public:    
-    Field(sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels);
+    Field(sf::Vector2u sizeInTiles  = sf::Vector2u(20, 20),
+          sf::Vector2u sizeInPixels = sf::Vector2u(600,600));
     
     ~Field();
     void fitView();
@@ -74,6 +75,7 @@ public:
     int getAnimationTime() const;
 
     void showAnimation();
+    void loadConfig(const std::string config_file);
 };
 
 #endif

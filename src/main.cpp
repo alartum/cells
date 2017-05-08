@@ -36,11 +36,11 @@ void UpdateThread(Field& F)
 
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
-     
-    sf::Vector2u fieldSize(20, 20);
-    sf::Vector2u windowSize(600, 600);
 
-    Field F(fieldSize, windowSize);
+    Field F;
+    F.loadConfig("tileinfo/config.lua");
+    F.fitView();
+
     GenerateRandomMap mapGenerator(5, 0.01, 0.15, 3);
     GenerateRandomMap& gen = mapGenerator;
     F.generateTiles(gen);
@@ -52,13 +52,12 @@ int test_field(int argc, char** argv, char** env) {
     //MapDump()(F.mMap, F.mEntities);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
-    sample->loadConfig("tileinfo/mm_config.lua", "tileinfo/mm_data.lua");
+    sample->loadConfig("tileinfo/mm_config.lua");
     LOG("Model manager initialized");
     F.setModelManager(sample);
     F.loadTileTextures();
     F.loadEntityTextures();
     LOG("Textures loaded");
-    F.fitView();
     
     //for (auto & iter: F.mEntities) {
     //    std::cout << OBJECT_GRASS_EATING_ID << " " << OBJECT_PREDATOR_ID << " " << iter.getTypeID() << std::endl;

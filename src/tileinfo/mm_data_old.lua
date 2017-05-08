@@ -6,18 +6,18 @@ tile_size = {x = 32, y = 32}
 
 -- Init the sprite sheet
 model = {} 
-model.sprite_sheet = './tileinfo/water.png'
+model.sprite_sheet = './tileinfo/terrain.png'
 -- Create new animation state
 default = {name = 'default'}
 -- Load frames for the 'default' state
 default.frames={}
-for i = 0,4 do
-	default.frames[i] = {top_left = {x = i*tile_size.x + 384,
-	                                 y = 4*tile_size.y + 194}, 
+for i = 0,2 do
+	default.frames[i] = {top_left = {x = i*tile_size.x + 576,
+	                                 y = 160}, 
                          size = tile_size}
 end
 default.random_frame  = true
-default.global_frames = 16
+default.global_frames = 8
 -- Load the 'default' state
 model.states = {}
 model.states[0] = default

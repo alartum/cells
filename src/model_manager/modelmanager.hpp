@@ -16,8 +16,7 @@ public:
     std::shared_ptr<const Model> getModel(int typeID) const;
     void addModel(int typeID, const std::shared_ptr<const Model>& model_ptr);
     void initSample();
-    void loadConfig(const std::__cxx11::string &mm_config_file,
-                    const std::string& mm_models_file);
+    void loadConfig(const std::string& mm_config_file);
     size_t getAnimationTime() const;
     void setAnimationTime(size_t animation_time);
 
