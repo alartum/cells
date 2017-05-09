@@ -48,7 +48,7 @@ void UpdateThread(Field& F)
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
      
-    sf::Vector2u fieldSize(20, 20);
+    sf::Vector2u fieldSize(30, 30);
     sf::Vector2u windowSize(600, 600);
 
     Field F(fieldSize, windowSize);
