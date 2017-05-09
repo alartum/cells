@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include "field.hpp"
 //#define DEBUG
 #include "../debug.h"
@@ -6,10 +8,12 @@ Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels) :
     sf::RenderWindow(sf::VideoMode(sizeInPixels.x, sizeInPixels.y), "Field"),
     mTileSize    (32, 32),
     mMap         (sizeInTiles.x, sizeInTiles.y),
-    mNAnimationTicks (8)
+    mAnimationTime (8),
+    mFrameDelay (200),
+    mMaxFPS(60)
 {
     setActive(false);
-    setFramerateLimit(60);
+    setFramerateLimit(mMaxFPS);
     setTilePositions();
 }
 
@@ -77,10 +81,8 @@ void Field::loadEntityTextures(){
         LOG("Entity ID: %d", ent.getTypeID());
         ent.setModelManager(mModelManager);
         ent.loadModel();
-
-        if (ent.getModel()->getIsRandomFrame()){
-            ent.setFrame(rand());
-        }
+        ent.setState(STATE_IDLE | DIR_UP);
+        ent.initFrame();
     }
 }
 
@@ -88,17 +90,19 @@ void Field::loadTileTextures(){
     for (auto& tile: mMap){
         tile.setModelManager(mModelManager);
         tile.loadModel();
-        if (tile.getModel()->getIsRandomFrame()){
-            tile.setFrame(rand());
-        }
+        tile.initState();
+        tile.initFrame();
     }
+    fancyEdges();
 }
 
 void Field::setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr) {
     mModelManager = modelManager_ptr;
     mTileSize = mModelManager->getTileSize();
-    mNAnimationTicks = mModelManager->getNAnimationTicks();
-//    setTileModelManager();
+    mAnimationTime = mModelManager->getAnimationTime();
+    mFrameDelay = mModelManager->getFrameDelay();
+    mMaxFPS = mModelManager->getMaxFPS();
+    setFramerateLimit(mMaxFPS);
 }
 
 //! TODO matrix coords -> absolute coords
@@ -115,7 +119,6 @@ void Field::drawTiles() {
     //LOG("ITERATION");
     for (auto& tile: mMap){
         draw(tile);
-        tile.nextFrame();
     }
 }
 
@@ -123,20 +126,19 @@ void Field::nextFrame() {
     for (auto& ent: mEntities) {
         ent.nextFrame();
     }
+    for (auto& tile: mMap){
+        tile.nextFrame();
+    }
 }
 
 void Field::generateTiles(std::function< void(Matrix< Tile >&) > generatorMap) {
     generatorMap(mMap);
-    for (auto& tile: mMap){
-        tile.setNAnimationTicks(mNAnimationTicks);
-    }
 }
 
 void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities) {
     generateEntities(mMap, mEntities);
     for (auto& ent: mEntities){
         ent.calcSpritePosition(mTileSize, 0, 1);
-        ent.setNAnimationTicks(mNAnimationTicks);
     }
     #if defined(DEBUG)
         for (auto& ent: mEntities) {
@@ -152,7 +154,7 @@ void Field::doStep(std::function< void(Matrix< Tile >&, std::vector< Entity >&) 
 
 void Field::syncronize() {
     for (auto& ent: mEntities) {
-        ent.mTileFrom = ent.mTileTo, ent.mTileTo = ent.mFuturePosition;
+        ent.updateRoute();
         ent.calcSpritePosition(mTileSize, 0, 1);
     }
     
@@ -164,10 +166,108 @@ void Field::calcSpritePosition ( double time, double stepCount ) {
     }
 }
 
-void Field::setNAnimationTicks(int nAnimationTicks){
-    mNAnimationTicks = nAnimationTicks;
+void Field::setAnimationTime(int animation_time){
+    mAnimationTime = animation_time;
 }
 
-int Field::getNAnimationTicks() const{
-    return mNAnimationTicks;
+int Field::getAnimationTime() const{
+    return mAnimationTime;
+}
+
+void Field::showAnimation(){
+    /*
+    std::chrono::time_point<std::chrono::system_clock> before =
+        std::chrono::system_clock::now();
+*/
+    for (int i = 0; i < mAnimationTime; i++) {
+        calcSpritePosition(i, mAnimationTime-1);
+        clear();
+        drawTiles();
+        drawEntities();
+        display();
+        nextFrame();
+        if (mFrameDelay != 0){
+            std::this_thread::sleep_for(std::chrono::milliseconds(mFrameDelay));
+        }
+    }
+    /*std::chrono::time_point<std::chrono::system_clock> after =
+        std::chrono::system_clock::now();
+    auto duration = after.time_since_epoch() - before.time_since_epoch();
+    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    LOG("FPS: %d", 1000 / (millis / mAnimationTime));
+    */
+}
+
+#define LOAD_VAR(var, from) \
+{\
+    auto obj = from[#var];\
+    if (obj.valid()){\
+        var = obj;\
+    }\
+    else{\
+        PERROR("Can't find \"%s\" in %s", #var, #from);\
+        return;\
+    }\
+}
+
+void Field::loadConfig(const std::string config_file){
+    sol::state config;
+    LOG("Loading config file: %s", config_file.c_str());
+    // Load file without execute
+    sol::load_result config_script = config.load_file(config_file);
+    if (!config_script.valid()){
+        PERROR("Can't load config file: %s", config_file.c_str());
+        return;
+    }
+    // Execute under protection
+    sol::protected_function_result config_result = config_script();
+    if (!config_result.valid()){
+        PERROR("Wrong config file format: %s", config_file.c_str());
+        return;
+    }
+    sol::table field_size;
+    LOAD_VAR(field_size, config);
+    unsigned height, width;
+    LOAD_VAR(height, field_size);
+    LOAD_VAR(width, field_size);
+    sf::Vector2u f_size(width, height);
+    mMap.setSize(f_size.y, f_size.x);
+
+    sol::table window_size;
+    LOAD_VAR(window_size, config);
+    LOAD_VAR(height, window_size);
+    LOAD_VAR(width, window_size);
+    sf::Vector2u w_size(width, height);
+    setSize(w_size);
+}
+
+#define TEST_WATER(y, x) (mMap.at(y, x).getTypeID() & TILE_WATER_ID)
+int Field::getEdgeType(unsigned y, unsigned x){
+    int edgeType = 0;
+    int maxX = mMap.getWidth() -1;
+    int maxY = mMap.getHeight()-1;
+    if (y != 0 && TEST_WATER(y-1, x)) edgeType |= DIR_UP;
+    if (y != maxY && TEST_WATER(y+1, x)) edgeType |= DIR_DOWN;
+    if (x != 0 && TEST_WATER(y, x-1)) edgeType |= DIR_LEFT;
+    if (x != maxX && TEST_WATER(y, x+1)) edgeType |= DIR_RIGHT;\
+    if (edgeType == 0){
+        if (y != 0 && x != 0 && TEST_WATER(y-1, x-1)) edgeType |= DIR_UP | DIR_LEFT | DIR_ADD;
+        if (y != maxY && x != 0 && TEST_WATER(y+1, x-1)) edgeType |= DIR_DOWN | DIR_LEFT | DIR_ADD;
+        if (y != 0 && x != maxX && TEST_WATER(y-1, x+1)) edgeType |= DIR_UP | DIR_RIGHT | DIR_ADD;
+        if (y != maxX && x != maxY && TEST_WATER(y+1, x+1)) edgeType |= DIR_DOWN | DIR_RIGHT | DIR_ADD;
+    }
+    if (edgeType == 0)
+        return DIR_ADD;
+    return edgeType;
+}
+#undef TEST_WATER
+
+void Field::fancyEdges(){
+    for (unsigned y = 0; y < mMap.getHeight(); y++)
+        for (unsigned x = 0; x < mMap.getWidth(); x++) {
+            Tile& tile = mMap.at(y, x);
+            if (tile.getTypeID() & TILE_GRASS_ID){
+                tile.setState(getEdgeType(y, x));
+            }
+        }
 }

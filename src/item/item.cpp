@@ -1,52 +1,65 @@
 #include "item.hpp"
 #include <iostream>
+#define DEBUG
 #include "../debug.h"
+#include "../tileinfo/tile_ids.hpp"
 
-Item::Item(const sf::Vector2f& position, unsigned state)
+Item::Item(const sf::Vector2f& position, size_t state) :
+    mTickNo(0)
 {
     setPosition(position);
-    setState(state);
+    setState(STATE_UNDEFINED_ID);
 }
 
 Item::~Item()
 {
 }
 
-void Item::setState(unsigned state)
+void Item::setState(size_t state)
 {
     mState = state;
-    mIsUpdated = true;
-    mFrameNo = 0;
     if (mModel){
-        mFrames = &mModel->getTextureRectSeries(mState);
-        mMaxFrameNo = mFrames->size() - 1;
-        setTextureRect((*mFrames)[mFrameNo]);
+        mAnimation = &mModel->getAnimation(mState);
+        mIsRandomFrame = mAnimation->getIsRandomFrame();
+        mAnimationTime = mAnimation->getAnimationTime();
+        setTextureRect(mAnimation->getRect(mFrameNo));
+        mFramesAmount = mAnimation->size();
     }
     else{
-        mMaxFrameNo = 0;
+        mFramesAmount = 0;
+        mAnimation = nullptr;
+        mIsRandomFrame = false;
+        mAnimationTime = 1;
+        mTickNo = 0;
+        mFrameNo = 0;
     }
 }
 
 void Item::nextFrame()
 {
-    if (!mModel)
+    if (!mAnimation)
         return;
-    if (mFrameNo >= mMaxFrameNo)
+    if (mFramesAmount == 0){
+        mTickNo = 0;
         mFrameNo = 0;
-    else
-        mFrameNo++;
-    setTextureRect((*mFrames)[mFrameNo]);
+        return;
+    }
+    mTickNo = (mTickNo + 1) % mAnimationTime;
+    double frame_rate = (double)mAnimationTime / mFramesAmount;
+    double temp_frame = mTickNo / frame_rate;
+    if ((int)temp_frame != mFrameNo){
+        mFrameNo = (int)temp_frame;
+        setTextureRect(mAnimation->getRect(mFrameNo));
+    }
 }
 
 Item& Item::operator = (const Item& other)
 {
     mModel = other.mModel;
     mFrameNo = other.mFrameNo;
-    mFrames = other.mFrames;
-    mMaxFrameNo = other.mMaxFrameNo;
+    mAnimation = other.mAnimation;
+    mFramesAmount = other.mFramesAmount;
     mState = other.mState;
-    mTypeID = other.mTypeID;
-    mIsUpdated = false;
 
     return *this;
 }
@@ -54,8 +67,7 @@ Item& Item::operator = (const Item& other)
 void Item::setModel(const std::shared_ptr<const Model>& model)
 {
     mModel = model;
-    setTexture(*mModel->getTexture());
-    setState(0);
+    setTexture(*(mModel->getTexture()));
 }
 
 std::shared_ptr<const Model> Item::getModel() const
@@ -63,8 +75,8 @@ std::shared_ptr<const Model> Item::getModel() const
     return mModel;
 }
 
-void Item::setFrame(unsigned frame){
-    mFrameNo = frame % (mMaxFrameNo + 1);
+void Item::setFrame(size_t frame){
+    mFrameNo = frame % mFramesAmount;
 }
 
 /*
@@ -77,3 +89,28 @@ const sf::Vector2u& Item::getLatticePosition() const {
     return mLatticePosition;
 }
 */
+
+void Item::initFrame(){
+    if (mFramesAmount == 0){
+        mTickNo = 0;
+        mFrameNo = 0;
+        return;
+    }
+    if (mIsRandomFrame){
+        mTickNo  = rand() % mAnimationTime;
+        double frame_rate = (double)mAnimationTime / mFramesAmount;
+        mFrameNo = (int)(mTickNo / frame_rate);
+    }
+    else{
+        mTickNo = 0;
+        mFrameNo = 0;
+    }
+}
+
+void Item::initState(){
+    setState(0);
+}
+
+size_t Item::getState() const{
+    return mState;
+}

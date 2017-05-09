@@ -9,40 +9,47 @@
 class Item : public sf::Sprite
 {
 private:
+    // Provides access to graphics
+    std::shared_ptr<const Model> mModel;
+
+    // For faster access:
+    //
+    // Current frame series
+    const AnimationState* mAnimation;
     // Max frame number. Needed as the Object doesn't necessary use all the
     // animation
     // mMaxFrameNo == 0 <=> the Object is static
     // Nevertheless, it can change it's state and sprite in this situation
-    unsigned mMaxFrameNo;
-    // Do we need to switch to another
-    bool mIsUpdated;
-    // Provides access to graphics
-    std::shared_ptr<const Model> mModel;
-    // Current frame series
-    const std::vector<sf::IntRect>* mFrames;
-
-protected:
-    // Current state; update is done according to it
-    unsigned mState;
-
-    int mTypeID;
+    size_t mFramesAmount;
     // Current animation (action) frame
-    unsigned mFrameNo;
+    // Calculated according to mTickNo
+    size_t mFrameNo;
+    // Not to be confused with mFrameNo
+    // Actual tick that is 0 <= nTickNo < mAnimationTime
+    // The mFrameNo is calculated according to it
+    size_t mTickNo;
+    // If the animation starts from random frame
+    bool mIsRandomFrame;
+    size_t mAnimationTime;
+    // Current state; update is done according to it
+    size_t mState;
 public:
-    Item(const sf::Vector2f& position = sf::Vector2f(0,0), unsigned state = 0);
+    Item(const sf::Vector2f& position = sf::Vector2f(0,0), size_t state = 0);
     ~Item();
     Item& operator = (const Item& other);
     void setModel(const std::shared_ptr<const Model>& model);
     std::shared_ptr<const Model> getModel() const;
-    // Returns current sprite
-    // The object manages it's view itself
-
-    void setState(unsigned state);
+    void setState(size_t state);
+    size_t getState() const;
     // Sets frame equal to 'frame % maxFrameNo'
     // Always finishes without error
-    void setFrame(unsigned frame);
+    void setFrame(size_t frame);
+    // Next tick actually, changes the frame only if it is time to
     void nextFrame();
-
+    // Initializes frame according to the AnimationState properties
+    void initFrame();
+    // Initializes state (may be rewritten to change default value)
+    void initState();
 };
 
 #endif // ITEM_HPP

@@ -1,28 +1,32 @@
 #include "model.hpp"
+#define DEBUG
+#include "debug.h"
 #include <iostream>
+#include "tileinfo/tile_ids.hpp"
 
-Model::Model(unsigned nStates, const std::shared_ptr<const sf::Texture>& texture) :
-    mTexture(texture),
-    mTextureRects(nStates),
-    mIsRandomFrame(false)
+Model::Model(const std::shared_ptr<const sf::Texture>& texture) :
+    mTexture(texture)
 {
+    mBadState.setName("undefined");
 }
 
-bool Model::getIsRandomFrame() const{
-    return mIsRandomFrame;
-}
-void Model::setIsRandomFrame(bool value){
-    mIsRandomFrame = value;
-}
-
-std::vector<sf::IntRect>& Model::getAnimation(unsigned state){
+const AnimationState& Model::getAnimation(int state_id) const{
     try{
-        return mTextureRects.at(state);
+        return mAnimations.at(state_id);
     }
     catch (const std::out_of_range& oor){
-        std::cerr << "[Model] No frame animation for state =  " << state << "\n";
-        return mTextureRects[0];
+        PERROR("No animation for state 0x%x", state_id);
+        try{
+            return mAnimations.at(0);
+        }
+        catch(...){
+            return mBadState;
+        }
     }
+}
+
+void Model::loadAnimation(int state_id, const AnimationState& animation_state){
+    mAnimations[state_id] = animation_state;
 }
 
 const std::shared_ptr<const sf::Texture> &Model::getTexture() const
@@ -30,29 +34,15 @@ const std::shared_ptr<const sf::Texture> &Model::getTexture() const
     return mTexture;
 }
 
-const std::vector<sf::IntRect>& Model::getTextureRectSeries(unsigned state) const
-{
-    try{
-        return mTextureRects.at(state);
-    }
-    catch (const std::out_of_range& oor){
-        std::cerr << "[Model] No frame rectangle series for state =  " << state << "\n";
-        return mTextureRects[0];
-    }
-}
-
-void Model::pushTextureRect(const sf::IntRect& textureRect, unsigned state)
-{
-    mTextureRects[state].push_back(textureRect);
-}
-
-size_t Model::getNFrames(unsigned state) const
-{
-    return mTextureRects[state].size();
-}
-
 void Model::setTexture(const std::shared_ptr<const sf::Texture>& texture)
 {
     mTexture = texture;
-    mTextureRects.clear();
+}
+
+void Model::setName(const std::string& name){
+    mName = name;
+}
+
+const std::string& Model::getName() const{
+    return mName;
 }

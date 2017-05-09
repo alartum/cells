@@ -26,18 +26,7 @@ void UpdateThread(Field& F)
     while(F.isOpen()){
         //std::this_thread::sleep_for(std::chrono::milliseconds(800));
         if (F.isOpen()) {
-            for (int i = 0; i < 8; i++) {
-                F.calcSpritePosition(i, 7);
-                F.clear();
-                F.drawTiles();
-                F.drawEntities();
-                F.display();
-                if (i % 3 == 0) {
-                    F.nextFrame();
-                }
-                std::chrono::milliseconds(200);
-            }
-            
+            F.showAnimation();
             RM(F.mMap, F.mEntities);
             F.syncronize();
         }
@@ -47,11 +36,17 @@ void UpdateThread(Field& F)
 
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
+<<<<<<< HEAD
      
     sf::Vector2u fieldSize(30, 30);
     sf::Vector2u windowSize(600, 600);
+=======
+>>>>>>> dfdd19cfef307de2e569cfc9bc469c87fdf6044d
 
-    Field F(fieldSize, windowSize);
+    Field F;
+    F.loadConfig("tileinfo/config.lua");
+    F.fitView();
+
     GenerateRandomMap mapGenerator(5, 0.01, 0.15, 3);
     GenerateRandomMap& gen = mapGenerator;
     F.generateTiles(gen);
@@ -63,13 +58,12 @@ int test_field(int argc, char** argv, char** env) {
     //MapDump()(F.mMap, F.mEntities);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
-    sample->loadConfig("tileinfo/config.lua");
+    sample->loadConfig("tileinfo/mm_config.lua");
     LOG("Model manager initialized");
     F.setModelManager(sample);
     F.loadTileTextures();
     F.loadEntityTextures();
     LOG("Textures loaded");
-    F.fitView();
     
     //for (auto & iter: F.mEntities) {
     //    std::cout << OBJECT_GRASS_EATING_ID << " " << OBJECT_PREDATOR_ID << " " << iter.getTypeID() << std::endl;

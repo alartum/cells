@@ -26,13 +26,19 @@ private:
     Matrix<Tile>                        mMap;
     // Number of ticks between the field updates
     // The animation frames are inserted uniformly
-    int mNAnimationTicks;
+    size_t                              mAnimationTime;
+    // The amount of time between frames
+    size_t                              mFrameDelay;
+    size_t                              mMaxFPS;
 
     std::shared_ptr<const ModelManager> mModelManager;
 
     void setTilePositions();
+    void fancyEdges();
+    int getEdgeType(unsigned y, unsigned x);
 public:    
-    Field(sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels);
+    Field(sf::Vector2u sizeInTiles  = sf::Vector2u(20, 20),
+          sf::Vector2u sizeInPixels = sf::Vector2u(600,600));
     
     ~Field();
     void fitView();
@@ -67,8 +73,11 @@ public:
     
     void nextFrame();
 
-    void setNAnimationTicks(int nAnimationTicks);
-    int getNAnimationTicks() const;
+    void setAnimationTime(int animation_time);
+    int getAnimationTime() const;
+
+    void showAnimation();
+    void loadConfig(const std::string config_file);
 };
 
 #endif

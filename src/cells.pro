@@ -12,7 +12,8 @@ HEADERS += \
     game_item/gameitem.hpp \
     entity/entity.hpp \
     tileinfo/tile_ids.hpp \
-    debug.h
+    debug.h \
+    animation_state/animationstate.hpp
 
 SOURCES += \
     field/field.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
     model_manager/modelmanager.cpp \
     game_item/gameitem.cpp \
     entity/entity.cpp \
+    animation_state/animationstate.cpp
 
 LIBS += -lX11
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system
