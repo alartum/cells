@@ -29,7 +29,7 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
     cache.fill ( -1 );
     for ( unsigned i = 0; i < En.size(); i++ ) {
         cache.at ( En[i].getTileTo().x, En[i].getTileTo().y ) = i;
-        //En[i].mFuturePosition = sf::Vector2u ( 0, 0 );
+        En[i].setFuturePosition(En[i].getTileTo());
     }
     color.assign ( En.size(), 0 );
     /*

@@ -34,7 +34,8 @@ LIBS += -lX11
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system
 LIBS += -lre2
 
-CONFIG += c++14
+CXX_COMPILER = g++-6
+CONFIG += c++14 
 INCLUDEPATH += /usr/include/lua5.3
 INCLUDEPATH += /usr/include/sol
 LIBS += -llua5.3
