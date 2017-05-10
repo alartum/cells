@@ -36,7 +36,6 @@ void UpdateThread(Field& F)
 
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
-
     Field F;
     F.loadConfig("tileinfo/config.lua");
     F.fitView();
