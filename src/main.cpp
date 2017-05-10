@@ -40,9 +40,9 @@ int test_field(int argc, char** argv, char** env) {
     F.loadConfig("tileinfo/config.lua");
     F.fitView();
 
-    GenerateRandomMap mapGenerator(5, 0.01, 0.15, 3);
-    GenerateRandomMap& gen = mapGenerator;
-    F.generateTiles(gen);
+    GenerateConnetedMap mapGenerator(5, 0.01, 0.2, 0.2);
+    //GenerateRandomMap& gen = mapGenerator;
+    F.generateTiles(mapGenerator);
     LOG("Map generated");
 
     GenerateRandomEntity entityGenerator(10, 1, 0, 30, 20, 1, 3, 9);

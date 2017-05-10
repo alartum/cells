@@ -27,6 +27,22 @@ public:
     void operator () ( Matrix<Tile>& map );
 };
 
+class GenerateConnetedMap : public GenerateMap {
+// Генерация островков травы с помощью нормального распределения с диагональной
+// ковариационной матрицей, значения которой распределены равнометрно между
+// grassDispersionMin, grassDispersionMax.
+// Плотность распределения островков равномерная.
+// Тип генерируемой карты не зависит от размера пареданной "Matrix< Tile >& map".
+protected:
+    unsigned    grassGroupCount;        // Количество островков "травы"
+    double      grassDispersionMin;     // Дисперсия "травы" (минимальное значени)
+    double      grassDispersionMax;     // Дисперсия "травы" (максимальное значение)
+    double      grassDensity;           // Плотность "травяных" островков (положительное число около 7-20, 7 - наиболее плотная)
+public:
+    GenerateConnetedMap( unsigned grassGroupCount, double grassDispersionMin, double grassDispersionMax, double grassDensity );
+    void operator () ( Matrix<Tile>& map );
+};
+
 class MapDump {
 public:
     MapDump();
