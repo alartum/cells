@@ -1,7 +1,7 @@
 #include "animationstate.hpp"
 #include <stdexcept>
 #define DEBUG
-#include "debug.h"
+#include "../debug.h"
 
 AnimationState::AnimationState(size_t nframes, double global_frames, bool is_random_frame) :
     std::vector<sf::IntRect>(nframes),

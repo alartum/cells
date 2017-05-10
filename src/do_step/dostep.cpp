@@ -29,8 +29,7 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
     cache.fill ( -1 );
     for ( unsigned i = 0; i < En.size(); i++ ) {
         cache.at ( En[i].getTileTo().x, En[i].getTileTo().y ) = i;
-        // FUCK
-        //En[i].mFuturePosition = sf::Vector2u ( 0, 0 );
+        En[i].setFuturePosition(En[i].getTileTo());
     }
     color.assign ( En.size(), 0 );
     /*
@@ -122,9 +121,8 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
                                     flag = true;
                                 }
                         }
-                        
-                        if (new_position.x < 0 || new_position.y < 0 || 
-                            new_position.x >= cache.getHeight() || new_position.y >= cache.getHeight()) {
+
+                        if (new_position.x >= cache.getHeight() || new_position.y >= cache.getHeight()) {
                             color[entityID] = 2;
                             En[entityID].setFuturePosition(En[entityID].getTileTo());
                             flag = true;

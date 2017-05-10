@@ -36,13 +36,6 @@ void UpdateThread(Field& F)
 
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
-<<<<<<< HEAD
-     
-    sf::Vector2u fieldSize(30, 30);
-    sf::Vector2u windowSize(600, 600);
-=======
->>>>>>> dfdd19cfef307de2e569cfc9bc469c87fdf6044d
-
     Field F;
     F.loadConfig("tileinfo/config.lua");
     F.fitView();

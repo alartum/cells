@@ -1,6 +1,6 @@
 #include "../object/object.hpp"
 #define DEBUG
-#include "debug.h"
+#include "../debug.h"
 
 Object::Object ( int objectType,
                  const sf::Vector2u& tileFrom,
