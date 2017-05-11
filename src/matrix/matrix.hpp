@@ -16,11 +16,12 @@ template <typename T>
 class Matrix : public std::vector<T>
 {
 public:
+    Matrix (const Matrix& other);
     Matrix (unsigned height = 0, unsigned width = 0);
     Matrix (unsigned height, unsigned width, const T& element);
     Matrix (unsigned height, unsigned width, T&& element);
     // Возвращает ссылку элемент с данной позицией
-    T& at (unsigned y, unsigned x);
+    T &at(unsigned x, unsigned y);
     // Заполняет матрицу элементом element
     inline void fill (const T& element);
     // Изменяет высоту
@@ -74,6 +75,12 @@ private:
 };
 
 template <typename T>
+inline Matrix<T>::Matrix(const Matrix& other) :
+    std::vector<T>(other), mHeight(other.mHeight), mWidth(other.mWidth)
+{
+}
+
+template <typename T>
 inline Matrix<T>::Matrix (unsigned height, unsigned width):
     std::vector<T>(height * width, T()), mHeight (height), mWidth (width)
 {
@@ -95,7 +102,7 @@ inline Matrix<T>::Matrix (unsigned height, unsigned width, T&& element):
 }
 
 template <typename T>
-inline T &Matrix<T>::at(unsigned y, unsigned x)
+inline T &Matrix<T>::at(unsigned x, unsigned y)
 {
     return std::vector<T>::at(x * mWidth + y);
 }
@@ -145,16 +152,17 @@ inline void Matrix<T>::setSize(unsigned height, unsigned width)
     
     unsigned lWidth = mWidth;
     unsigned lHeight = mHeight;
-    std::vector< T > buffer(*this);
+    Matrix< T > buffer(*this);
 
     mWidth = width;
     mHeight = height;
 
     std::vector<T>::resize(mHeight * mWidth);
+    std::fill(std::vector<T>::begin(), std::vector<T>::end(), T());
 
     for (unsigned i = 0; i < std::min(lHeight, mHeight); i++)
         for (unsigned j = 0; j < std::min(lWidth, mWidth); j++)
-            std::vector<T>::at(i * mHeight + j) = buffer.at(i * lHeight + j);
+            at(i, j) = buffer.at(i, j);
 }
 
 

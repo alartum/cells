@@ -13,7 +13,7 @@ max_FPS = 60
 -- animation sequence for one state
 -- HIGHER VALUES = LOWER SPEED
 -- HIGHER VALUES = BETTER QUALITY
-animation_time = 30
+animation_time = 10
 
 
 -- Use only when long delay is really

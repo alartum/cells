@@ -44,6 +44,7 @@ public:
     // Sets frame equal to 'frame % maxFrameNo'
     // Always finishes without error
     void setFrame(size_t frame);
+    size_t getFrame() const;
     // Next tick actually, changes the frame only if it is time to
     void nextFrame();
     // Initializes frame according to the AnimationState properties

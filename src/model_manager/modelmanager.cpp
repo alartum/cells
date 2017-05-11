@@ -2,7 +2,7 @@
 #include "modelmanager.hpp"
 #include <memory>
 #include <SFML/Graphics/Texture.hpp>
-#define DEBUG
+//#define DEBUG
 #include "../debug.h"
 ModelManager::ModelManager()
 {
@@ -92,7 +92,7 @@ void ModelManager::loadModel(const sol::table& properties){
         int stateNo = key.as<int>();
         LOG("[0x%x] %s", stateNo, name.c_str());
         auto loadFrame = [&state_cpy](sol::object key, sol::table frame){
-            std::clog << "{" << key.as<int>() << "}";
+            LOG("{%d}", key.as<int>());
             int frameNo = key.as<int>();
             sol::table top_left;
             LOAD_VAR(top_left, frame);
@@ -113,7 +113,6 @@ void ModelManager::loadModel(const sol::table& properties){
         };
         frames.for_each(loadFrame);
         model_ptr->loadAnimation(stateNo, state_cpy);
-        std::clog << std::endl;
     };
     states.for_each(loadState);
     addModel(id, model_ptr);

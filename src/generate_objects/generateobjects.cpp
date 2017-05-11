@@ -47,7 +47,7 @@ GenerateRandomEntity::GenerateRandomEntity (
 {};
 
 
-
+#include "../generate_map/generatemap.hpp"
 void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity >& R ) {
     LOG("GenerateRandomEntity:\n"
         "               size = (%u, %u)\n"

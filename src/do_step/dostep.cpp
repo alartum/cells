@@ -48,7 +48,7 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
     // " ///////////////////////////////////////////////////////////// 
     
     for ( int i = 0; i < ( int ) cache.getHeight(); i++ )
-        for ( int j = 0; j < ( int ) cache.getHeight(); j++ ) {
+        for ( int j = 0; j < ( int ) cache.getWidth(); j++ ) {
             // If grass eating entity
             int entityID = cache.at ( i, j );
             if ( entityID > -1 && color[entityID] == 0 && En[entityID].getTypeID() == OBJECT_PREDATOR_ID) {
@@ -90,7 +90,7 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
     
     
     for ( int i = 0; i < ( int ) cache.getHeight(); i++ )
-        for ( int j = 0; j < ( int ) cache.getHeight(); j++ ) {
+        for ( int j = 0; j < ( int ) cache.getWidth(); j++ ) {
             // If grass eating entity
             int entityID = cache.at ( i, j );
             if ( entityID > -1 && color[entityID] == 0 && 

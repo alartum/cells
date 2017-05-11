@@ -29,7 +29,7 @@ void UpdateThread(Field& F)
             F.showAnimation();
             RM(F.mMap, F.mEntities);
             F.syncronize();
-        }
+    }
     }
 }
 
