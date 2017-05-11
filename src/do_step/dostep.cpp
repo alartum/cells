@@ -36,12 +36,12 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
     //LOG("STEP1");
     color.assign ( En.size(), 0 );
 
-    LOG("CACHE");
+    /*LOG("CACHE");
     for (int i = 0; i < cache.getHeight(); i++) {
         for (int j = 0; j < cache.getWidth(); j++)
             std::cout << std::setw(4) << cache.at(i, j) << " ";
         std::cout << std::endl;
-    }
+    }*/
     
     // Clean and multiply
    
