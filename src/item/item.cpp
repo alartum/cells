@@ -114,3 +114,7 @@ void Item::initState(){
 size_t Item::getState() const{
     return mState;
 }
+
+ size_t Item::getFrame() const{
+     return mFrameNo;
+ }

@@ -1,7 +1,7 @@
 #include <chrono>
 #include <thread>
 #include "field.hpp"
-//#define DEBUG
+#define DEBUG
 #include "../debug.h"
 
 Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels) :
@@ -25,12 +25,12 @@ Field::~Field() {
      for (unsigned i = 0; i < mMap.getHeight(); i++)
          for (unsigned j = 0; j < mMap.getWidth(); j++) {
              mMap.at(i, j).setPosition(mTileSize.x * j, mTileSize.y * i);
-             //LOG("POS = (%f, %f)", mMap.at(i, j).getPosition().x, mMap.at(i, j).getPosition().y);
+             LOG("POS = (%f, %f)", mMap.at(i, j).getPosition().x, mMap.at(i, j).getPosition().y);
          }
  }
 
 void Field::fitView(){
-    sf::Vector2u mapSize = getMapSize();
+    sf::Vector2u mapSize(mMap.getHeight(), mMap.getWidth());
     LOG("Tile size: (%u, %u)", mTileSize.x, mTileSize.y);
     LOG("Map size: (%u, %u)", mapSize.x, mapSize.y);
     LOG("Real size: (%u, %u)", getSize().x, getSize().y);
@@ -38,13 +38,13 @@ void Field::fitView(){
     // Proportions of the real size of the map
     if (realSize.x == 0 || realSize.y == 0)
         return;
-    float prop_x = (float)mapSize.x / mapSize.y;
-    float prop_y = (float)mapSize.y / mapSize.x;
+    float height_div_width = (float)mapSize.x / mapSize.y;
+    float width_div_height = (float)mapSize.y / mapSize.x;
 
-    LOG("prop_x, prop_y: (%f, %f)", prop_x, prop_y);
+    LOG("prop_x, prop_y: (%f, %f)", height_div_width, width_div_height);
     sf::Vector2u window_size = getSize();
-    sf::Vector2u x_bestFit(window_size.x, window_size.x * prop_x);
-    sf::Vector2u y_bestFit(window_size.y * prop_y, window_size.y);
+    sf::Vector2u x_bestFit(window_size.x, window_size.x * height_div_width);
+    sf::Vector2u y_bestFit(window_size.y * width_div_height, window_size.y);
     LOG("Map px size: (%u, %u)", realSize.x, realSize.y);
     LOG("X best fit: (%u, %u)", x_bestFit.x, x_bestFit.y);
     LOG("Y best fit: (%u, %u)", y_bestFit.x, y_bestFit.y);
@@ -83,6 +83,9 @@ void Field::loadEntityTextures(){
         ent.loadModel();
         ent.setState(STATE_IDLE | DIR_UP);
         ent.initFrame();
+        LOG("Info: [%s](%u, %u) --> (%u, %u)", ent.getModel()->getName().c_str(),
+            ent.getTileFrom().x, ent.getTileFrom().y,
+            ent.getTileTo().x, ent.getTileTo().y);
     }
 }
 
@@ -92,6 +95,13 @@ void Field::loadTileTextures(){
         tile.loadModel();
         tile.initState();
         tile.initFrame();
+    }
+    for (unsigned i = 0; i < mMap.getHeight(); i ++){
+        for (unsigned j = 0; j < mMap.getWidth(); j ++){
+            Tile& tile = mMap.at(i, j);
+            LOG("Info: [%s](%u, %u) ~ (%u, %u)", tile.getModel()->getName().c_str(),
+                i, j, mTileSize.x*j, mTileSize.y*i);
+        }
     }
     fancyEdges();
 }
@@ -105,7 +115,6 @@ void Field::setModelManager (const std::shared_ptr<const ModelManager>& modelMan
     setFramerateLimit(mMaxFPS);
 }
 
-//! TODO matrix coords -> absolute coords
 void Field::drawEntities() {
     for (auto& ent: mEntities){
         //LOG("Entity ID: %d", ent.getTypeID());
@@ -117,9 +126,23 @@ void Field::drawEntities() {
 
 void Field::drawTiles() {
     //LOG("ITERATION");
-    for (auto& tile: mMap){
+    /*for (auto& tile: mMap){
         draw(tile);
+    }*/
+    
+    for (unsigned i = 0; i < mMap.getHeight(); i ++){
+        for (unsigned j = 0; j < mMap.getWidth(); j ++){
+            Tile& tile = mMap.at(i, j);
+            //LOG("Info: (%u, %u)[%s]{0x%x : 0x%x}", i, j, tile.getModel()->getName().c_str(),
+            //+tile.getState(), tile.getFrame());
+            //LOG("      (%f, %f)", tile.getPosition().x, tile.getPosition().y);
+            //LOG("      {(%d, %d), (%d, %d)}", tile.getTextureRect().left, tile.getTextureRect().top,
+            //    tile.getTextureRect().width, tile.getTextureRect().height);
+            //LOG("      {%p}", tile.getTexture());
+            draw(tile);
+        }
     }
+    
 }
 
 void Field::nextFrame() {
@@ -133,6 +156,7 @@ void Field::nextFrame() {
 
 void Field::generateTiles(std::function< void(Matrix< Tile >&) > generatorMap) {
     generatorMap(mMap);
+
 }
 
 void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities) {
@@ -143,7 +167,7 @@ void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< E
     }
     #if defined(DEBUG)
         for (auto& ent: mEntities) {
-            LOG("POS=(%lg, %lg)", ent.getPosition().x, ent.getPosition().y);
+            LOG("Entity (%lg, %lg)", ent.getPosition().x, ent.getPosition().y);
         }
     #endif
 }
@@ -230,8 +254,8 @@ void Field::loadConfig(const std::string config_file){
     unsigned height, width;
     LOAD_VAR(height, field_size);
     LOAD_VAR(width, field_size);
-    sf::Vector2u f_size(width, height);
-    mMap.setSize(f_size.y, f_size.x);
+    mMap.setSize(height, width);
+    setTilePositions();
 
     sol::table window_size;
     LOAD_VAR(window_size, config);
@@ -254,7 +278,7 @@ int Field::getEdgeType(unsigned y, unsigned x){
         if (y != 0 && x != 0 && TEST_WATER(y-1, x-1)) edgeType |= DIR_UP | DIR_LEFT | DIR_ADD;
         if (y != maxY && x != 0 && TEST_WATER(y+1, x-1)) edgeType |= DIR_DOWN | DIR_LEFT | DIR_ADD;
         if (y != 0 && x != maxX && TEST_WATER(y-1, x+1)) edgeType |= DIR_UP | DIR_RIGHT | DIR_ADD;
-        if (y != maxX && x != maxY && TEST_WATER(y+1, x+1)) edgeType |= DIR_DOWN | DIR_RIGHT | DIR_ADD;
+        if (y != maxY && x != maxX && TEST_WATER(y+1, x+1)) edgeType |= DIR_DOWN | DIR_RIGHT | DIR_ADD;
     }
     if (edgeType == 0)
         return DIR_ADD;

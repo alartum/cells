@@ -36,7 +36,12 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
     //LOG("STEP1");
     color.assign ( En.size(), 0 );
 
-    
+    LOG("CACHE");
+    for (int i = 0; i < cache.getHeight(); i++) {
+        for (int j = 0; j < cache.getWidth(); j++)
+            std::cout << std::setw(4) << cache.at(i, j) << " ";
+        std::cout << std::endl;
+    }
     
     // Clean and multiply
    
@@ -95,9 +100,7 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
     /////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////
     
-    
-    
-    for ( int i = 0; i < ( int ) cache.getHeight(); i++ ) {
+    for ( int i = 0; i < ( int ) cache.getHeight(); i++ )
         for ( int j = 0; j < ( int ) cache.getWidth(); j++ ) {
             // If grass eating entity
             int entityID = cache.at ( i, j );
@@ -130,7 +133,7 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
                                 }
                         }
 
-                        if (new_position.x >= cache.getHeight() || new_position.y >= cache.getHeight()) {
+                        if (new_position.x >= cache.getHeight() || new_position.y >= cache.getWidth()) {
                             color[entityID] = 2;
                             En[entityID].setFuturePosition(En[entityID].getTileTo());
                             flag = true;
@@ -151,7 +154,6 @@ void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En )
                 }
             }
         }
-    }
     
      for (int i = 0; i < (int)En.size(); i++) {
         if (En[i].getTypeID() == OBJECT_CORPSE_ID && En[i].mProperties["living_time"] > 5) {

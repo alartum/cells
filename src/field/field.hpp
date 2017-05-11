@@ -19,7 +19,12 @@ class Field : public sf::RenderWindow
 {
     //! Is the speed up really needed?
     friend void UpdateThread(Field& F);
+//<<<<<<< HEAD
 public:
+//=======
+    friend class MapDump;
+//private:
+//>>>>>>> 421e1273bf12e7a29879a2d224824168ccf65233
     sf::Vector2u                        mTileSize;
     // Objects on the field
     std::vector< Entity >               mEntities;
@@ -38,7 +43,7 @@ public:
     void fancyEdges();
     int getEdgeType(unsigned y, unsigned x);
 public:    
-    Field(sf::Vector2u sizeInTiles  = sf::Vector2u(20, 20),
+    Field(sf::Vector2u sizeInTiles  = sf::Vector2u(1, 1),
           sf::Vector2u sizeInPixels = sf::Vector2u(600,600));
     
     ~Field();

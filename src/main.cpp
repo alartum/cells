@@ -28,8 +28,12 @@ void UpdateThread(Field& F, RandomMoving& RM)
             F.showAnimation();
             RM(F.mMap, F.mEntities);
             F.syncronize();
+//<<<<<<< HEAD
             //MapDump()(F.mMap, F.mEntities);
         }
+//=======
+//    }
+//>>>>>>> 421e1273bf12e7a29879a2d224824168ccf65233
     }
 }
 
