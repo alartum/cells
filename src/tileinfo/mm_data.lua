@@ -393,14 +393,94 @@ states = {[state_idle | dir_up] = {name = 'idle_up'},
 		  [state_walk | dir_left] = {name = 'walk_left'},
 		  [state_walk | dir_down] = {name = 'walk_down'},
 		  [state_walk | dir_right] = {name = 'walk_right'}}
+
 -- Load frames for the states
-for _, state in pairs(states) do
-	state.frames = {}
-	state.frames[0] = {top_left = {x = 0, y = 0}, 
+------------------------------------------------
+states[state_idle | dir_up].frames = {}
+for k = 0, 0 do
+	states[state_idle | dir_up].frames[k] = {top_left = {x = 0,
+                                       y = 32}, 
                      	   size = tile_size}
-	state.random_frame = true
-	state.global_frames = 1
 end
+states[state_idle | dir_up].random_frame = true
+states[state_idle | dir_up].global_frames = 1
+
+-- Load frames for the states
+------------------------------------------------
+states[state_idle | dir_left].frames = {}
+for k = 0, 0 do
+	states[state_idle | dir_left].frames[k] = {top_left = {x =0,
+                                       y = 0}, 
+                     	   size = tile_size}
+end
+states[state_idle | dir_left].random_frame = true
+states[state_idle | dir_left].global_frames = 1
+
+-- Load frames for the states
+------------------------------------------------
+states[state_idle | dir_down].frames = {}
+for k = 0, 0 do
+	states[state_idle | dir_down].frames[k] = {top_left = {x = 0,
+                                       y = 0}, 
+                     	   size = tile_size}
+end
+states[state_idle | dir_down].random_frame = true
+states[state_idle | dir_down].global_frames = 1
+
+-- Load frames for the states
+------------------------------------------------
+states[state_idle | dir_right].frames = {}
+for k = 0, 0 do
+	states[state_idle | dir_right].frames[k] = {top_left = {x = 0,
+                                       y = 32}, 
+                     	   size = tile_size}
+end
+states[state_idle | dir_right].random_frame = true
+states[state_idle | dir_right].global_frames = 1
+
+-- Load frames for the states
+------------------------------------------------
+states[state_walk | dir_up].frames = {}
+for k = 0, 4 do
+	states[state_walk | dir_up].frames[k] = {top_left = {x = k*tile_size.x,
+                                       y = 1*tile_size.y}, 
+                     	   size = tile_size}
+end
+states[state_walk | dir_up].random_frame = true
+states[state_walk | dir_up].global_frames = 1
+
+-- Load frames for the states
+------------------------------------------------
+states[state_walk | dir_left].frames = {}
+for k = 0, 4 do
+	states[state_walk | dir_left].frames[k] = {top_left = {x = k*tile_size.x,
+                                       y = 0*tile_size.y}, 
+                     	   size = tile_size}
+end
+states[state_walk | dir_left].random_frame = true
+states[state_walk | dir_left].global_frames = 1
+
+-- Load frames for the states
+------------------------------------------------
+states[state_walk | dir_down].frames = {}
+for k = 0, 4 do
+	states[state_walk | dir_down].frames[k] = {top_left = {x = k*tile_size.x,
+                                       y = 0*tile_size.y}, 
+                     	   size = tile_size}
+end
+states[state_walk | dir_down].random_frame = true
+states[state_walk | dir_down].global_frames = 1
+
+-- Load frames for the states
+------------------------------------------------
+states[state_walk | dir_right].frames = {}
+for k = 0, 4 do
+	states[state_walk | dir_right].frames[k] = {top_left = {x = k*tile_size.x,
+                                       y = 1*tile_size.y}, 
+                     	   size = tile_size}
+end
+states[state_walk | dir_right].random_frame = true
+states[state_walk | dir_right].global_frames = 1
 -- Load the 'default' state
 model.states = states
 -- Allow to start animation from random frame

@@ -37,7 +37,7 @@ void UpdateThread(Field& F)
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
     Field F;
-    F.loadConfig("tileinfo/config.lua");
+    F.loadConfig("./tileinfo/config.lua");
     F.fitView();
 
     GenerateConnetedMap mapGenerator(5, 0.01, 0.2, 0.2);
