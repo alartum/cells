@@ -95,7 +95,7 @@ inline Matrix<T>::Matrix (unsigned height, unsigned width, T&& element):
 }
 
 template <typename T>
-inline T &Matrix<T>::at(unsigned y, unsigned x)
+inline T &Matrix<T>::at(unsigned x, unsigned y)
 {
     return std::vector<T>::at(x * mWidth + y);
 }

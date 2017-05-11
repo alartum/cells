@@ -20,7 +20,7 @@
 
 void UpdateThread(Field& F)
 {
-       RandomMoving RM;
+    RandomMoving RM;
     F.setActive(true);
 
     while(F.isOpen()){
@@ -47,7 +47,7 @@ int test_field(int argc, char** argv, char** env) {
 
     GenerateRandomEntity entityGenerator(10, 1, 0, 30, 20, 1, 3, 9);
     F.generateEntities(entityGenerator);
-
+    //MapDump()(F.mMap, F.mEntities);
     //MapDump()(F.mMap, F.mEntities);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
@@ -58,28 +58,6 @@ int test_field(int argc, char** argv, char** env) {
     F.loadEntityTextures();
     LOG("Textures loaded");
     
-    //for (auto & iter: F.mEntities) {
-    //    std::cout << OBJECT_GRASS_EATING_ID << " " << OBJECT_PREDATOR_ID << " " << iter.getTypeID() << std::endl;
-    //}
-    
-    //RandomMoving RM;
-    /*
-    std::cout << (void*)(&RM) << std::endl;
-    
-    for (int i = 0; i < 10000; i++) {
-        MapDump()(F.mMap, F.mEntities);
-        LOG("Map dumped");
-        
-        //F.generateEntities(entityGenerator);
-        //F.doStep(RM);
-        RM.operator()(F.mMap, F.mEntities);
-        LOG("do step finished");
-        sleep(1);
-        F.syncronize();
-        
-    }*/
-
-    //*/
     std::thread T(UpdateThread, std::ref(F));
 
     while(F.isOpen()){

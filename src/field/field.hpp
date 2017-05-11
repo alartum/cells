@@ -19,7 +19,7 @@ class Field : public sf::RenderWindow
 {
     //! Is the speed up really needed?
     friend void UpdateThread(Field& F);
-private:
+public:
     sf::Vector2u                        mTileSize;
     // Objects on the field
     std::vector< Entity >               mEntities;

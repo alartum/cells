@@ -1,6 +1,13 @@
 #ifndef HEADER_OBJECT_HPP_INCLUDED
 #define HEADER_OBJECT_HPP_INCLUDED
 
+#include <map>
+#include <unordered_map>
+#include <set>
+#include <unordered_set>
+#include <string>
+#include <iterator>
+
 #include "../game_item/gameitem.hpp"
 
 class Object : public GameItem {
@@ -16,7 +23,8 @@ public:
              const sf::Vector2u& animationTo = sf::Vector2u ( 0, 0 ),
              unsigned state = 0
            );
-
+    std::map< std::string, int > properties;
+    
     const sf::Vector2u& getTileFrom()    const;
     const sf::Vector2u& getTileTo()      const;
     void calcSpritePosition ( const sf::Vector2u& tileSize, double stepCount, double time );
