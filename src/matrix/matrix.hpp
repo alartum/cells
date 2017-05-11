@@ -8,7 +8,7 @@
 #include <iterator>
 #include <iomanip>
 #include <algorithm>
-
+#include <vector>
 
 //! Matrix should BE a vector, not CONTAIN a vector
 //! UPD: Done

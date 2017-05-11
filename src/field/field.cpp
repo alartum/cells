@@ -137,6 +137,7 @@ void Field::generateTiles(std::function< void(Matrix< Tile >&) > generatorMap) {
 
 void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities) {
     generateEntities(mMap, mEntities);
+    //mEntitiesBufferSize = mEntities.size();
     for (auto& ent: mEntities){
         ent.calcSpritePosition(mTileSize, 0, 1);
     }
@@ -157,7 +158,6 @@ void Field::syncronize() {
         ent.updateRoute();
         ent.calcSpritePosition(mTileSize, 0, 1);
     }
-    
 }
 
 void Field::calcSpritePosition ( double time, double stepCount ) {

@@ -23,7 +23,9 @@ public:
              const sf::Vector2u& animationTo = sf::Vector2u ( 0, 0 ),
              unsigned state = 0
            );
-    std::map< std::string, int > properties;
+    std::map< std::string, int > mProperties;
+    
+    Object& operator = (Object& other);
     
     const sf::Vector2u& getTileFrom()    const;
     const sf::Vector2u& getTileTo()      const;

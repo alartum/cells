@@ -23,6 +23,7 @@ public:
     sf::Vector2u                        mTileSize;
     // Objects on the field
     std::vector< Entity >               mEntities;
+    
     Matrix<Tile>                        mMap;
     // Number of ticks between the field updates
     // The animation frames are inserted uniformly

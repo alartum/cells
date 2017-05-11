@@ -142,11 +142,11 @@ void GenerateConnetedMap::operator() ( Matrix< Tile >& map ) {
                 
                 if (xGenerated > 0 && map.at( xGenerated - 1, yGenerated ).getTypeID() == TILE_GRASS_ID)
                     flag = true;
-                else if (xGenerated + 1 < mapHeight && map.at( xGenerated + 1, yGenerated ).getTypeID() == TILE_GRASS_ID)
+                else if (xGenerated + 1 < (int)mapHeight && map.at( xGenerated + 1, yGenerated ).getTypeID() == TILE_GRASS_ID)
                     flag = true;
                 else if (yGenerated > 0 && map.at( xGenerated, yGenerated - 1 ).getTypeID() == TILE_GRASS_ID)
                     flag = true;
-                else if (yGenerated + 1 < mapWidth && map.at( xGenerated, yGenerated + 1 ).getTypeID() == TILE_GRASS_ID)
+                else if (yGenerated + 1 < (int)mapWidth && map.at( xGenerated, yGenerated + 1 ).getTypeID() == TILE_GRASS_ID)
                     flag = true;
                 
                 if (flag)

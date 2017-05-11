@@ -6,11 +6,13 @@
 class Entity : public Object
 {
 public:
-   Entity(int objectType = 0,
+    Entity(int objectType = 0,
            const sf::Vector2u& animationFrom = sf::Vector2u(0, 0),
            const sf::Vector2u& animationTo = sf::Vector2u(0, 0),
            unsigned state = 0
           );
+   
+    //Entity& operator = (Entity& other);
     // void setState (State state);
     // State getState() const;
 };

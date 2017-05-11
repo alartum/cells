@@ -13,6 +13,23 @@ Object::Object ( int objectType,
 
 };
 
+Object& Object:: operator = (Object& other) {
+    mTileFrom = other.mTileFrom;
+    mTileTo = other.mTileTo;
+    mFuturePosition = other.mFuturePosition;
+    
+    /*mModelManager = other.mModelManager;
+    setTypeID(other.mTypeID);
+    
+    mModel = other.mModel;
+    mFrameNo = other.mFrameNo;
+    mAnimation = other.mAnimation;
+    mFramesAmount = other.mFramesAmount;
+    mState = other.mState;
+    */
+    return (*this);
+}
+
 void Object::calcSpritePosition ( const sf::Vector2u& tileSize, double time, double stepCount ) {
 
     sf::Vector2f positionFrom ( mTileFrom.y * tileSize.x, mTileFrom.x * tileSize.y );

@@ -18,9 +18,8 @@
 #define DEBUG
 #include "debug.h"
 
-void UpdateThread(Field& F)
+void UpdateThread(Field& F, RandomMoving& RM)
 {
-    RandomMoving RM;
     F.setActive(true);
 
     while(F.isOpen()){
@@ -29,6 +28,7 @@ void UpdateThread(Field& F)
             F.showAnimation();
             RM(F.mMap, F.mEntities);
             F.syncronize();
+            //MapDump()(F.mMap, F.mEntities);
         }
     }
 }
@@ -45,7 +45,7 @@ int test_field(int argc, char** argv, char** env) {
     F.generateTiles(mapGenerator);
     LOG("Map generated");
 
-    GenerateRandomEntity entityGenerator(10, 1, 0, 30, 20, 1, 3, 9);
+    GenerateRandomEntity entityGenerator(10, 1, 0, 30, 40, 1, 3, 9);
     F.generateEntities(entityGenerator);
     //MapDump()(F.mMap, F.mEntities);
     //MapDump()(F.mMap, F.mEntities);
@@ -53,12 +53,13 @@ int test_field(int argc, char** argv, char** env) {
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
     sample->loadConfig("tileinfo/mm_config.lua");
     LOG("Model manager initialized");
+    RandomMoving RM(sample);
     F.setModelManager(sample);
     F.loadTileTextures();
     F.loadEntityTextures();
     LOG("Textures loaded");
     
-    std::thread T(UpdateThread, std::ref(F));
+    std::thread T(UpdateThread, std::ref(F), std::ref(RM));
 
     while(F.isOpen()){
         sf::Event event;
