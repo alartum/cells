@@ -1,3 +1,4 @@
+textures = './textures/'
 -- Number of ticks for the whole 
 -- animation sequence for one state
 animation_time = 16
@@ -6,7 +7,7 @@ tile_size = {x = 32, y = 32}
 
 -- Init the sprite sheet
 model = {} 
-model.sprite_sheet = './tileinfo/water.png'
+model.sprite_sheet = textures .. 'water.png'
 -- Create new animation state
 default = {name = 'default'}
 -- Load frames for the 'default' state
@@ -31,7 +32,7 @@ GameItem{
 
 -- Init the sprite sheet
 model = {} 
-model.sprite_sheet = './tileinfo/terrain.png'
+model.sprite_sheet = textures .. 'terrain.png'
 -- Create new animation state
 default = {name = 'default'}
 -- Load frames for the 'default' state
@@ -52,7 +53,7 @@ GameItem{
 
 -- Init the sprite sheet
 model = {} 
-model.sprite_sheet = './tileinfo/terrain.png'
+model.sprite_sheet = textures .. 'terrain.png'
 -- Create new animation state
 default = {name = 'default'}
 -- Load frames for the 'default' state
@@ -73,7 +74,7 @@ GameItem{
 
 -- Init the sprite sheet
 model = {} 
-model.sprite_sheet = './tileinfo/terrain.png'
+model.sprite_sheet = textures .. 'terrain.png'
 -- Create new animation state
 default = {name = 'default'}
 -- Load frames for the 'default' state
@@ -101,7 +102,7 @@ dir_none = 0x0
 dir_add = 0x10
 -- Init the sprite sheet
 model = {} 
-model.sprite_sheet = './tileinfo/terrain.png'
+model.sprite_sheet = textures .. 'terrain.png'
 -- Create new animation state
 states = {[dir_add] = {name = 'center'},
 		  [dir_none] = {name = 'filler'},
@@ -286,7 +287,7 @@ state_idle = 0x200
 state_walk = 0x100
 -- Init the sprite sheet
 model = {} 
-model.sprite_sheet = './tileinfo/chicken.png'
+model.sprite_sheet = textures .. 'chicken.png'
 -- Create new animation state
 states = {[state_idle | dir_up] = {name = 'eat_up'},
 		  [state_idle | dir_left] = {name = 'eat_left'},
@@ -383,7 +384,7 @@ GameItem{
 
 -- Init the sprite sheet
 model = {} 
-model.sprite_sheet = './tileinfo/wolf.png'
+model.sprite_sheet = textures .. 'wolf.png'
 -- Create new animation state
 states = {[state_idle | dir_up] = {name = 'idle_up'},
 		  [state_idle | dir_left] = {name = 'idle_left'},

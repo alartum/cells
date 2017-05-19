@@ -7,7 +7,7 @@ function GameItem(prop)
 					prop.id))
 end
 
-dofile('config.lua')
+dofile('../textures/mm_data.lua')
 
 ids_file:close()
 

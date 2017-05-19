@@ -2,7 +2,7 @@
 #define DEBUG
 #include "../debug.h"
 #include <iostream>
-#include "../tileinfo/tile_ids.hpp"
+#include "../config/tile_ids.hpp"
 
 Model::Model(const std::shared_ptr<const sf::Texture>& texture) :
     mTexture(texture)

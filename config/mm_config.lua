@@ -1,7 +1,7 @@
 -- Where to search for models config
 -- Change this to set up different texture pack
 
-models_file = "./tileinfo/mm_data.lua"
+models_file = "./textures/mm_data.lua"
 --models_file = "./tileinfo/mm_data_old_water.lua"
 --models_file = "./tileinfo/mm_data_old_ground.lua"
 

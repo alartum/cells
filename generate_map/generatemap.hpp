@@ -3,7 +3,7 @@
 
 #include "../matrix/matrix.hpp"
 #include "../tile/tile.hpp"
-#include "../tileinfo/tile_ids.hpp"
+#include "../config/tile_ids.hpp"
 #include "../entity/entity.hpp"
 class GenerateMap {
 public:

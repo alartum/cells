@@ -2,7 +2,7 @@
 #include <iostream>
 #define DEBUG
 #include "../debug.h"
-#include "../tileinfo/tile_ids.hpp"
+#include "../config/tile_ids.hpp"
 
 Item::Item(const sf::Vector2f& position, size_t state) :
     mTickNo(0)

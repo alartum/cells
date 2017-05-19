@@ -3,7 +3,7 @@
 
 #include <map>
 #include "../model/model.hpp"
-#include "../tileinfo/tile_ids.hpp"
+#include "../config/tile_ids.hpp"
 
 #include <string>
 #include <iomanip>

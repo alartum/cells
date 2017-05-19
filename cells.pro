@@ -11,7 +11,7 @@ HEADERS += \
     model_manager/modelmanager.hpp \
     game_item/gameitem.hpp \
     entity/entity.hpp \
-    tileinfo/tile_ids.hpp \
+    config/tile_ids.hpp \
     debug.h \
     animation_state/animationstate.hpp
 

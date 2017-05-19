@@ -41,7 +41,7 @@ void UpdateThread(Field& F, RandomMoving& RM)
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
     Field F;
-    F.loadConfig("./tileinfo/config.lua");
+    F.loadConfig("./config/window_config.lua");
     F.fitView();
 
     GenerateConnetedMap mapGenerator(5, 0.01, 0.2, 0.2);
@@ -55,7 +55,7 @@ int test_field(int argc, char** argv, char** env) {
     //MapDump()(F.mMap, F.mEntities);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
-    sample->loadConfig("tileinfo/mm_config.lua");
+    sample->loadConfig("./config/mm_config.lua");
     LOG("Model manager initialized");
     RandomMoving RM(sample);
     F.setModelManager(sample);
