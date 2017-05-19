@@ -1,0 +1,59 @@
+Basis:
+1)At each moment the matrix cell we are situated in must be defined
+2)Logic comes away from graphics
+3)All decisions should be state-change functions, not doing anything
+	Steps: Think, New Action, Continue
+4)Field takes care of objects' co-actions in different states
+5)Logic: objects are moving, 
+
+Scene is doing 2 types of ticks:
+1)Logical Tick
+2)N Graphic Ticks
+
+Need to be separate or united?
+Can someone perform logical decision while the other is in rendering stage?
+Definetely YES.
+
+So, after each logic step do render step and vise versa. Just proceed logic for
+those in logic stage.
+
+1 Logical Tick = N Graphic Ticks
+
+Object {Type = Entity, Item}
+
+Object
+{
+	Logic
+	Model
+}
+
+ModelInfo
+<modelID, texture>
+
+config file:
+Tree  0
+Water 1
+
+Tree  {"tree.png"}
+Water {"tiles.png"}
+
+T := Tile
+O := Object
+
+Models are stored like:
+ -> vector<vector<RenderRect> > >
+ -> shared_ptr<Texture>
+Sprites config:
+"tiles.png": water <[Normal]{100, 100, 20, 20}>
+
+"tiles.png": slime <[Stop]{(100, 100, 20, 20)
+                          (120, 120, 20, 20)
+                          (120, 120, 20, 20)}
+                    [MoveLeft]{(120, 120, 20, 20)}>
+		
+O Tree  {120, 120, 20, 20};
+
+Finally:
+-> ModelManager
+ * Load all the models according to config
+ * Parses includes to get states and pushes values according to them
