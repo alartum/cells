@@ -26,7 +26,7 @@ void UpdateThread(Field& F, RandomMoving& RM)
         //std::this_thread::sleep_for(std::chrono::milliseconds(800));
         if (F.isOpen()) {
             F.showAnimation();
-            RM(F.mMap, F.mEntities);
+            RM(F.map_, F.entities_);
             F.syncronize();
 //<<<<<<< HEAD
             //MapDump()(F.mMap, F.mEntities);
@@ -41,7 +41,13 @@ void UpdateThread(Field& F, RandomMoving& RM)
 int test_field(int argc, char** argv, char** env) {
     XInitThreads();
     Field F;
-    F.loadConfig("./config/window_config.lua");
+    try{
+        F.loadConfig("./config/window_config.lua");
+    } catch (std::exception& err){
+        PERROR("%s", err.what());
+        return EXIT_FAILURE;
+    }
+
     F.fitView();
 
     GenerateConnetedMap mapGenerator(5, 0.01, 0.2, 0.2);
@@ -55,7 +61,12 @@ int test_field(int argc, char** argv, char** env) {
     //MapDump()(F.mMap, F.mEntities);
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
-    sample->loadConfig("./config/mm_config.lua");
+    try{
+        sample->loadConfig("./config/mm_config.lua");
+    } catch (std::exception& err){
+        PERROR("%s", err.what());
+        return EXIT_FAILURE;
+    }
     LOG("Model manager initialized");
     RandomMoving RM(sample);
     F.setModelManager(sample);
@@ -76,7 +87,7 @@ int test_field(int argc, char** argv, char** env) {
     }
     T.join();
     
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 int test_algo(int argc, char** argv, char** env);

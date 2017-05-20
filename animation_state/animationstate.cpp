@@ -5,24 +5,24 @@
 
 AnimationState::AnimationState(size_t nframes, double global_frames, bool is_random_frame) :
     std::vector<sf::IntRect>(nframes),
-    mAnimationTime(global_frames),
-    mIsRandomFrame(is_random_frame)
+    animation_time_(global_frames),
+    is_random_frame_(is_random_frame)
 {
 }
 
 bool AnimationState::getIsRandomFrame() const{
-    return mIsRandomFrame;
+    return is_random_frame_;
 }
 void AnimationState::setIsRandomFrame(bool value){
-    mIsRandomFrame = value;
+    is_random_frame_ = value;
 }
 
 size_t AnimationState::getAnimationTime() const{
-    return mAnimationTime;
+    return animation_time_;
 }
 
 void AnimationState::setAnimationTime(size_t animation_time){
-    mAnimationTime = animation_time;
+    animation_time_ = animation_time;
 }
 
 sf::IntRect& AnimationState::getRect(size_t frame){
@@ -30,8 +30,8 @@ sf::IntRect& AnimationState::getRect(size_t frame){
         return at(frame);
     }
     catch(const std::out_of_range& oor){
-        PERROR("No texture rect for frame =  %lu", frame);
-        return mBadRect;
+        //PERROR("No texture rect for frame =  %lu", frame);
+        return bad_rect_;
     }
 }
 
@@ -40,18 +40,18 @@ const sf::IntRect& AnimationState::getRect(size_t frame) const{
         return at(frame);
     }
     catch(const std::out_of_range& oor){
-        PERROR("No texture rect for frame %lu", frame);
+        //PERROR("No texture rect for frame %lu", frame);
         if (size() > 0)
             return at(0);
         else
-            return mBadRect;
+            return bad_rect_;
     }
 }
 
 void AnimationState::setName(const std::string& name){
-    mName = name;
+    name_ = name;
 }
 
 const std::string& AnimationState::getName() const{
-    return mName;
+    return name_;
 }

@@ -2,7 +2,7 @@
 #include "modelmanager.hpp"
 #include <memory>
 #include <SFML/Graphics/Texture.hpp>
-//#define DEBUG
+#define DEBUG
 #include "../debug.h"
 ModelManager::ModelManager()
 {
@@ -13,18 +13,16 @@ std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
 {
     //LOG("[ModelManager.getModel()] typeID = %d", typeID);
     try{
-        return mModels.at(typeID);
+        return models_.at(typeID);
     }
     catch (...){
         try{
-        //std::cerr << "[ModelManager] No model with ID = " << typeID << "\n";
-        PERROR("No model with ID = 0x%x", typeID);
+        //PERROR("No model with ID = 0x%x", typeID);
         //LOG("Undefined: 0x%x", OBJECT_UNDEFINED_ID);
-        return mModels.at(OBJECT_UNDEFINED_ID);
+        return models_.at(OBJECT_UNDEFINED_ID);
         }
         catch(...){
-            //std::cerr << "[ModelManager] Invalid configuration\n";
-            PERROR("Invalid configuration");
+            //PERROR("Invalid configuration");
             return std::shared_ptr<const Model>();
         }
     }
@@ -32,8 +30,9 @@ std::shared_ptr<const Model> ModelManager::getModel(int typeID) const
 
 void ModelManager::addModel(int typeID, const std::shared_ptr< const Model >& model_ptr)
 {
-    mModels.insert(std::pair<int, std::shared_ptr< const Model > >(typeID, model_ptr));
+    models_.insert(std::pair<int, std::shared_ptr< const Model > >(typeID, model_ptr));
 }
+
 #define LOAD_VAR(var, from) \
 {\
     auto obj = from[#var];\
@@ -41,8 +40,8 @@ void ModelManager::addModel(int typeID, const std::shared_ptr< const Model >& mo
         var = obj;\
     }\
     else{\
-        PERROR("Can't find \"%s\" in %s", #var, #from);\
-        return;\
+        std::string err_msg = "Can't find \"" #var "\" in " #from;\
+        throw std::runtime_error(err_msg);\
     }\
 }
 
@@ -59,7 +58,7 @@ void ModelManager::loadModel(const sol::table& properties){
     LOAD_VAR(model, properties);
     std::string sprite_sheet;
     LOAD_VAR(sprite_sheet, model);
-    auto& texture_ptr = mTextureMap[sprite_sheet];
+    auto& texture_ptr = texture_map_[sprite_sheet];
     if (!texture_ptr){
         texture_ptr = std::make_shared<sf::Texture >();
         bool is_loaded = texture_ptr->loadFromFile(sprite_sheet);
@@ -75,7 +74,7 @@ void ModelManager::loadModel(const sol::table& properties){
     LOAD_VAR(states, model);
     auto model_ptr = std::make_shared<Model >(texture_ptr);
     model_ptr->setName(name);
-    int animation_time = mAnimationTime;
+    int animation_time = animation_time_;
     auto loadState = [&model_ptr, animation_time](sol::object key, sol::table state){
         sol::table frames;
         LOAD_VAR(frames, state);
@@ -123,89 +122,69 @@ void ModelManager::loadModel(const sol::table& properties){
 void ModelManager::loadConfig(const std::string& mm_config_file){
 
     sol::state mm_config;
-    mm_config.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string);
-
     LOG("Loading config file: %s", mm_config_file.c_str());
-    // Load file without execute
-    sol::load_result config_script = mm_config.load_file(mm_config_file);
-    if (!config_script.valid()){
-        PERROR("Can't load config file: %s", mm_config_file.c_str());
-        return;
-    }
-    // Execute under protection
-    sol::protected_function_result config_result = config_script();
-    if (!config_result.valid()){
-        PERROR("Wrong config file format: %s", mm_config_file.c_str());
-        return;
-    }
+    // Load and execute script
+    // May throw!
+    mm_config.script_file(mm_config_file, sol::default_on_error);
+
     size_t animation_time;
     LOAD_VAR(animation_time, mm_config);
-    mAnimationTime = animation_time;
+    animation_time_ = animation_time;
     size_t max_FPS;
     LOAD_VAR(max_FPS, mm_config);
-    mMaxFPS = max_FPS;
+    max_FPS_ = max_FPS;
     size_t frame_delay;
     LOAD_VAR(frame_delay, mm_config);
-    mFrameDelay = frame_delay;
+    frame_delay_ = frame_delay;
     sol::table tile_size;
     LOAD_VAR(tile_size, mm_config);
     int x, y;
     LOAD_VAR(x, tile_size);
     LOAD_VAR(y, tile_size);
-    mTileSize.x = x;
-    mTileSize.y = y;
+    tile_size_.x = x;
+    tile_size_.y = y;
     std::string models_file;
     LOAD_VAR(models_file, mm_config);
 
     sol::state mm_models;
-    mm_models.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string);
     // VERY IMPORTANT PLACE: std::ref(*this) != *this
     // Only passing by reference allow access to class members
     mm_models.set_function("GameItem", &ModelManager::loadModel, std::ref(*this));
     LOG("Loading config file: %s", models_file.c_str());
-    // Load file without execute
-    sol::load_result models_script = mm_models.load_file(models_file);
-    if (!models_script.valid()){
-        PERROR("Can't load models file: %s", models_file.c_str());
-        return;
-    }
-    // Execute under protection
-    sol::protected_function_result models_result = models_script();
-    if (!models_result.valid()){
-        PERROR("Wrong models file format: %s", models_file.c_str());
-        return;
-    }
+    // Load and execute script
+    // May throw!
+    mm_models.script_file(models_file, sol::default_on_error);
 }
 #undef LOAD_VAR
 
 sf::Vector2u ModelManager::getTileSize() const{
-    return mTileSize;
+    return tile_size_;
 }
 
 void ModelManager::setTileSize(sf::Vector2u size){
-    mTileSize = size;
+    tile_size_ = size;
 
 }
 
 size_t ModelManager::getAnimationTime() const{
-    return mAnimationTime;
+    return animation_time_;
 }
 void ModelManager::setAnimationTime(size_t animation_time){
-    mAnimationTime = animation_time;
+    animation_time_ = animation_time;
 }
 
 
 size_t ModelManager::getFrameDelay() const{
-    return mFrameDelay;
+    return frame_delay_;
 }
 void ModelManager::setFrameDelay(size_t frame_delay){
-    mFrameDelay = frame_delay;
+    frame_delay_ = frame_delay;
 }
 
 
 size_t ModelManager::getMaxFPS() const{
-    return mMaxFPS;
+    return max_FPS_;
 }
 void ModelManager::setMaxFPS(size_t max_FPS){
-    mMaxFPS = max_FPS;
+    max_FPS_ = max_FPS;
 }

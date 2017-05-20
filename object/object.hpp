@@ -13,17 +13,17 @@
 class Object : public GameItem {
 private:
     // To animation
-    sf::Vector2u mTileFrom;
-    sf::Vector2u mTileTo;
+    sf::Vector2u tile_from_;
+    sf::Vector2u tile_to_;
     // To dostep
-    sf::Vector2u mFuturePosition;
+    sf::Vector2u future_position_;
 public:
     Object ( int objectType = 0,
              const sf::Vector2u& animationFrom = sf::Vector2u ( 0, 0 ),
              const sf::Vector2u& animationTo = sf::Vector2u ( 0, 0 ),
              unsigned state = 0
            );
-    std::map< std::string, int > mProperties;
+    std::map< std::string, int > properties;
     
     Object& operator = (Object& other);
     

@@ -5,44 +5,44 @@
 #include "../config/tile_ids.hpp"
 
 Model::Model(const std::shared_ptr<const sf::Texture>& texture) :
-    mTexture(texture)
+    texture_(texture)
 {
-    mBadState.setName("undefined");
+    bad_state_.setName("undefined");
 }
 
 const AnimationState& Model::getAnimation(int state_id) const{
     try{
-        return mAnimations.at(state_id);
+        return animations_.at(state_id);
     }
     catch (const std::out_of_range& oor){
-        PERROR("No animation for state 0x%x", state_id);
+        //PERROR("No animation for state 0x%x", state_id);
         try{
-            return mAnimations.at(0);
+            return animations_.at(0);
         }
         catch(...){
-            return mBadState;
+            return bad_state_;
         }
     }
 }
 
 void Model::loadAnimation(int state_id, const AnimationState& animation_state){
-    mAnimations[state_id] = animation_state;
+    animations_[state_id] = animation_state;
 }
 
 const std::shared_ptr<const sf::Texture> &Model::getTexture() const
 {
-    return mTexture;
+    return texture_;
 }
 
 void Model::setTexture(const std::shared_ptr<const sf::Texture>& texture)
 {
-    mTexture = texture;
+    texture_ = texture;
 }
 
 void Model::setName(const std::string& name){
-    mName = name;
+    name_ = name;
 }
 
 const std::string& Model::getName() const{
-    return mName;
+    return name_;
 }

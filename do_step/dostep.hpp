@@ -18,11 +18,11 @@ public:
 
 class RandomMoving {
 private:
-    std::shared_ptr<const ModelManager> mModelManager;
-    Matrix< int > cache;
-    std::vector< int > color;
+    std::shared_ptr<const ModelManager> model_manager_;
+    Matrix< int > cache_;
+    std::vector< int > color_;
 public:
-    RandomMoving(std::shared_ptr<const ModelManager> mModelManager);
+    RandomMoving(std::shared_ptr<const ModelManager> model_manager_);
     void operator () ( Matrix< Tile >& map, std::vector< Entity >& En );
 };
 

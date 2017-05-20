@@ -24,26 +24,26 @@ public:
 
 class GenerateRandomEntity : public GenerateObjects {
 private:
-    double      grassEatingDensity;
-    unsigned    grassEatingDistance;
-    unsigned    grassEatingNeightborsMin;
-    unsigned    grassEatingNeightborsMax;
+    double      grasseating_density_;
+    unsigned    grasseating_distance_;
+    unsigned    grasseating_neightbors_min_;
+    unsigned    grasseating_neightbors_max_;
     
-    double      predatorsDensity;
-    unsigned    predatorsDistance;
-    unsigned    predatorNeightborsMin;
-    unsigned    predatorNeightborsMax;
+    double      predators_density_;
+    unsigned    predators_distance_;
+    unsigned    predator_neightbors_min_;
+    unsigned    predator_neightbors_max_;
     
 public:
-    GenerateRandomEntity(       double      grassEatingDensity,
-                                unsigned    grassEatingDistance,
-                                unsigned    grassEatingNeightborsMin,
-                                unsigned    grassEatingNeightborsMax,
+    GenerateRandomEntity(       double      grasseating_density,
+                                unsigned    grasseating_distance,
+                                unsigned    grasseating_neightbors_min,
+                                unsigned    grasseating_neightbors_max,
     
-                                double      predatorsDensity,
-                                unsigned    predatorsDistance,
-                                unsigned    predatorNeightborsMin,
-                                unsigned    predatorNeightborsMax
+                                double      predators_density,
+                                unsigned    predators_distance,
+                                unsigned    predator_neightbors_min,
+                                unsigned    predator_neightbors_max
     );
     
     void operator () (Matrix<Tile>& map, std::vector< Entity >& R);

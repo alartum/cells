@@ -6,7 +6,7 @@
 #include "../config/tile_ids.hpp"
 
 #include <string>
-#include <iomanip>
+#include <exception>
 #include <sol.hpp>
 
 class ModelManager
@@ -30,18 +30,18 @@ public:
     sf::Vector2u getTileSize() const;
 private:
     // Models with ID
-    std::map<int, std::shared_ptr<const Model> > mModels;
+    std::map<int, std::shared_ptr<const Model> > models_;
     // Handler for Lua config
     void loadModel(const sol::table &properties);
-    std::map<std::string, std::shared_ptr<sf::Texture> > mTextureMap;
+    std::map<std::string, std::shared_ptr<sf::Texture> > texture_map_;
     // Appropriate tile size for the current texture pack
-    sf::Vector2u mTileSize;
+    sf::Vector2u tile_size_;
     // Number of ticks between the field updates
     // The animation frames are inserted uniformly
-    size_t mAnimationTime;
+    size_t animation_time_;
     // Time is milliseconds between animation frames
-    size_t mFrameDelay;
-    size_t mMaxFPS;
+    size_t frame_delay_;
+    size_t max_FPS_;
 };
 
 #endif // MODELMANAGER_HPP

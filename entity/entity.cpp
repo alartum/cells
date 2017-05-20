@@ -7,7 +7,7 @@ Entity::Entity(int entityType,
           ) :
   Object(entityType, tileFrom, tileTo, state)
 {
-    mProperties["living_time"] = 0;
+    properties["living_time"] = 0;
 }
 
 

@@ -24,26 +24,25 @@ void GenerateObjects::operator () (Matrix<Tile>& map, std::vector< Entity > & R)
 {
 }
 
-GenerateRandomEntity::GenerateRandomEntity (       
-                        double      grassEatingDensity,
-                        unsigned    grassEatingDistance,
-                        unsigned    grassEatingNeightborsMin,
-                        unsigned    grassEatingNeightborsMax,
-    
-                        double      predatorsDensity,
-                        unsigned    predatorsDistance,
-                        unsigned    predatorNeightborsMin,
-                        unsigned    predatorNeightborsMax
+GenerateRandomEntity::GenerateRandomEntity (double      grasseating_density,
+                        unsigned    grasseating_distance,
+                        unsigned    grasseating_neightbors_min,
+                        unsigned    grasseating_neightbors_max,
+
+                        double      predators_density,
+                        unsigned    predators_distance,
+                        unsigned    predator_neightbors_min,
+                        unsigned    predator_neightbors_max
                       ) :
-                grassEatingDensity              (grassEatingDensity),
-                grassEatingDistance             (grassEatingDistance),
-                grassEatingNeightborsMin        (grassEatingNeightborsMin),
-                grassEatingNeightborsMax        (grassEatingNeightborsMax),
+                grasseating_density_              (grasseating_density),
+                grasseating_distance_             (grasseating_distance),
+                grasseating_neightbors_min_        (grasseating_neightbors_min),
+                grasseating_neightbors_max_        (grasseating_neightbors_max),
                 
-                predatorsDensity                (predatorsDensity),
-                predatorsDistance               (predatorsDistance),
-                predatorNeightborsMin           (predatorNeightborsMin),
-                predatorNeightborsMax           (predatorNeightborsMax)
+                predators_density_                (predators_density),
+                predators_distance_               (predators_distance),
+                predator_neightbors_min_           (predator_neightbors_min),
+                predator_neightbors_max_           (predator_neightbors_max)
 {};
 
 
@@ -61,8 +60,8 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
         "               predatorNeightborsMin = %u\n"
         "               predatorNeightborsMax = %u\n",
         map.getHeight(), map.getWidth(),
-        grassEatingDensity, grassEatingDistance, grassEatingNeightborsMin, grassEatingNeightborsMax,
-        predatorsDensity, predatorsDistance, predatorNeightborsMin, predatorNeightborsMax
+        grasseating_density_, grasseating_distance_, grasseating_neightbors_min_, grasseating_neightbors_max_,
+        predators_density_, predators_distance_, predator_neightbors_min_, predator_neightbors_max_
     );
     
     
@@ -79,48 +78,48 @@ void GenerateRandomEntity::operator() (Matrix< Tile >& map, std::vector< Entity 
     std::uniform_int_distribution< unsigned >   yDistribution(0, IDS.getWidth()-1);
     
     // Grass-eating
-    for (int i = 0; (double)i * grassEatingDensity < IDS.getHeight() * IDS.getWidth(); i++) {
+    for (int i = 0; (double)i * grasseating_density_ < IDS.getHeight() * IDS.getWidth(); i++) {
             unsigned xCurrent = xDistribution(mtGenerator);
             unsigned yCurrent = yDistribution(mtGenerator);
 
-            if (map.at(xCurrent, yCurrent).getTypeID() != TILE_GRASS_ID ||
+            if (map.at(xCurrent, yCurrent).getID() != TILE_GRASS_ID ||
                 IDS.at(xCurrent, yCurrent) != OBJECT_UNDEFINED_ID){
                 continue;
             }
             unsigned grassNeightbors = 0;
             
-            for (int i = -(int)grassEatingDistance + (int)xCurrent; i <= (int)grassEatingDistance + (int)xCurrent; i++)
-                for (int j = -(int)grassEatingDistance + (int)yCurrent; j <= (int)grassEatingDistance + (int)yCurrent; j++) {
+            for (int i = -(int)grasseating_distance_ + (int)xCurrent; i <= (int)grasseating_distance_ + (int)xCurrent; i++)
+                for (int j = -(int)grasseating_distance_ + (int)yCurrent; j <= (int)grasseating_distance_ + (int)yCurrent; j++) {
                     if (i >= 0 && i < (int)IDS.getHeight() && j >= 0 && j < (int)IDS.getWidth())
-                        if (map.at(i, j).getTypeID() == TILE_GRASS_ID)
+                        if (map.at(i, j).getID() == TILE_GRASS_ID)
                             grassNeightbors += 1;
                 }
                 
             
-            if (grassNeightbors >= grassEatingNeightborsMin && grassNeightbors <= grassEatingNeightborsMax)
+            if (grassNeightbors >= grasseating_neightbors_min_ && grassNeightbors <= grasseating_neightbors_max_)
                 IDS.at(xCurrent, yCurrent) = OBJECT_GRASS_EATING_ID;
     }
     
     // Predators
-     for (int i = 0; (double)i * predatorsDensity < IDS.getHeight() * IDS.getWidth(); i++) {
+     for (int i = 0; (double)i * predators_density_ < IDS.getHeight() * IDS.getWidth(); i++) {
             unsigned xCurrent = xDistribution(mtGenerator);
             unsigned yCurrent = yDistribution(mtGenerator);
             
-           if (map.at(xCurrent, yCurrent).getTypeID() != TILE_GRASS_ID ||
+           if (map.at(xCurrent, yCurrent).getID() != TILE_GRASS_ID ||
                 IDS.at(xCurrent, yCurrent) != OBJECT_UNDEFINED_ID)
                 continue;
                 
             
             unsigned grassNeightbors = 0;
             
-            for (int i = -(int)predatorsDistance + (int)xCurrent; i <= (int)predatorsDistance + (int)xCurrent; i++)
-                for (int j = -(int)predatorsDistance + (int)yCurrent; j <= (int)predatorsDistance + (int)yCurrent; j++) {
+            for (int i = -(int)predators_distance_ + (int)xCurrent; i <= (int)predators_distance_ + (int)xCurrent; i++)
+                for (int j = -(int)predators_distance_ + (int)yCurrent; j <= (int)predators_distance_ + (int)yCurrent; j++) {
                     if (i >= 0 && i < (int)IDS.getHeight() && j >= 0 && j < (int)IDS.getWidth())
-                        if (map.at(i, j).getTypeID() == TILE_GRASS_ID)
+                        if (map.at(i, j).getID() == TILE_GRASS_ID)
                             grassNeightbors += 1;
                 }
             
-            if (grassNeightbors >= predatorNeightborsMin && grassNeightbors <= predatorNeightborsMax)
+            if (grassNeightbors >= predator_neightbors_min_ && grassNeightbors <= predator_neightbors_max_)
                 IDS.at(xCurrent, yCurrent) = OBJECT_PREDATOR_ID;
     }
     

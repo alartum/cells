@@ -8,15 +8,15 @@ Object::Object ( int objectType,
                  unsigned state
                ) :
     GameItem ( objectType, sf::Vector2f ( 0, 0 ), state ),
-    mTileFrom ( tileFrom ),
-    mTileTo ( tileTo ) {
+    tile_from_ ( tileFrom ),
+    tile_to_ ( tileTo ) {
 
 };
 
 Object& Object:: operator = (Object& other) {
-    mTileFrom = other.mTileFrom;
-    mTileTo = other.mTileTo;
-    mFuturePosition = other.mFuturePosition;
+    tile_from_ = other.tile_from_;
+    tile_to_ = other.tile_to_;
+    future_position_ = other.future_position_;
     
     /*mModelManager = other.mModelManager;
     setTypeID(other.mTypeID);
@@ -32,42 +32,42 @@ Object& Object:: operator = (Object& other) {
 
 void Object::calcSpritePosition ( const sf::Vector2u& tileSize, double time, double stepCount ) {
 
-    sf::Vector2f positionFrom ( mTileFrom.y * tileSize.x, mTileFrom.x * tileSize.y );
-    sf::Vector2f positionTo ( mTileTo.y * tileSize.x, mTileTo.x * tileSize.y );
+    sf::Vector2f positionFrom ( tile_from_.y * tileSize.x, tile_from_.x * tileSize.y );
+    sf::Vector2f positionTo ( tile_to_.y * tileSize.x, tile_to_.x * tileSize.y );
     sf::Vector2f objectCurentPosition ( positionFrom.x + time / stepCount * ( positionTo.x - positionFrom.x ),
                                         positionFrom.y + time / stepCount * ( positionTo.y - positionFrom.y ) );
     setPosition ( objectCurentPosition );
 }
 
 const sf::Vector2u& Object::getTileFrom() const {
-    return mTileFrom;
+    return tile_from_;
 }
 
 const sf::Vector2u& Object::getTileTo() const {
-    return mTileTo;
+    return tile_to_;
 }
 
 void Object::setTileFrom(const sf::Vector2u& tile_from){
-    mTileFrom = tile_from;
+    tile_from_ = tile_from;
 }
 
 void Object::setTileTo(const sf::Vector2u& tile_to){
-    mTileTo = tile_to;
+    tile_to_ = tile_to;
 }
 
 const sf::Vector2u& Object::getFuturePosition() const{
-    return mFuturePosition;
+    return future_position_;
 }
 
 void Object::setFuturePosition(const sf::Vector2u& future_position){
-    mFuturePosition = future_position;
+    future_position_ = future_position;
 }
 
 void Object::updateRoute(){
-    mTileFrom = mTileTo;
-    mTileTo = mFuturePosition;
-    sf::Vector2i direction((int)mTileTo.x - (int)mTileFrom.x,
-                           (int)mTileTo.y - (int)mTileFrom.y);
+    tile_from_ = tile_to_;
+    tile_to_ = future_position_;
+    sf::Vector2i direction((int)tile_to_.x - (int)tile_from_.x,
+                           (int)tile_to_.y - (int)tile_from_.y);
     int dir;
     // Don't ask me about this numbers
     // Coordinates of matrix + Coordinates of field

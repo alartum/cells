@@ -10,29 +10,29 @@ class Item : public sf::Sprite
 {
 private:
     // Provides access to graphics
-    std::shared_ptr<const Model> mModel;
+    std::shared_ptr<const Model> model_;
 
     // For faster access:
     //
     // Current frame series
-    const AnimationState* mAnimation;
+    const AnimationState* animation_;
     // Max frame number. Needed as the Object doesn't necessary use all the
     // animation
     // mMaxFrameNo == 0 <=> the Object is static
     // Nevertheless, it can change it's state and sprite in this situation
-    size_t mFramesAmount;
+    size_t frames_amount_;
     // Current animation (action) frame
     // Calculated according to mTickNo
-    size_t mFrameNo;
+    size_t frame_no_;
     // Not to be confused with mFrameNo
     // Actual tick that is 0 <= nTickNo < mAnimationTime
     // The mFrameNo is calculated according to it
-    size_t mTickNo;
+    size_t tick_no_;
     // If the animation starts from random frame
-    bool mIsRandomFrame;
-    size_t mAnimationTime;
+    bool is_random_frame_;
+    size_t animation_time_;
     // Current state; update is done according to it
-    size_t mState;
+    size_t state_;
 public:
     Item(const sf::Vector2f& position = sf::Vector2f(0,0), size_t state = 0);
     ~Item();

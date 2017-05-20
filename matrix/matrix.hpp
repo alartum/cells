@@ -1,17 +1,10 @@
 #ifndef HEADER_MATRIX_HPP_INCLUDED
 #define HEADER_MATRIX_HPP_INCLUDED
 
-#include <vector>
-#include <functional>
-#include <stdexcept>
 #include <iostream>
-#include <iterator>
 #include <iomanip>
-#include <algorithm>
 #include <vector>
 
-//! Matrix should BE a vector, not CONTAIN a vector
-//! UPD: Done
 template <typename T>
 class Matrix : private std::vector<T>
 {
@@ -45,9 +38,8 @@ public:
 protected:
     bool isInRange (unsigned x, unsigned y) const;
 private:
-    unsigned mHeight, mWidth;
+    unsigned height_, width_;
 
-    // Оператор вывода в поток
     friend std::ostream & operator << (std::ostream & ostr, Matrix & M)
     {
         ostr << "Matrix height: " << M.getHeight() << ", width: " << M.getWidth() << std::endl;
@@ -63,48 +55,48 @@ private:
     Matrix< T > & operator = (const Matrix< T > Other) const
     {
         std::vector<T>::operator =(Other);
-        mWidth = Other.mWidth;
-        mHeight = Other.mHeight;
+        width_ = Other.width_;
+        height_ = Other.height_;
     }
 
     Matrix< T > & operator = (const Matrix< T > & Other) const
     {
         std::vector<T>::operator =(Other);
-        mWidth = Other.mWidth;
-        mHeight = Other.mHeight;
+        width_ = Other.width_;
+        height_ = Other.height_;
     }
 
     Matrix< T > & operator = (const Matrix< T > && Other) const
     {
         std::vector<T>::operator =(Other);
-        mWidth = Other.mWidth;
-        mHeight = Other.mHeight;
+        width_ = Other.width_;
+        height_ = Other.height_;
     }
 };
 
 template <typename T>
 Matrix<T>::Matrix(const Matrix& other) :
-    std::vector<T>(other), mHeight(other.mHeight), mWidth(other.mWidth)
+    std::vector<T>(other), height_(other.height_), width_(other.width_)
 {
 }
 
 template <typename T>
 Matrix<T>::Matrix (unsigned height, unsigned width):
-    std::vector<T>(height * width, T()), mHeight (height), mWidth (width)
+    std::vector<T>(height * width, T()), height_ (height), width_ (width)
 {
 
 }
 
 template <typename T>
 Matrix<T>::Matrix (unsigned height, unsigned width, const T &element):
-    std::vector<T>(height * width, T()), mHeight (height), mWidth (width)
+    std::vector<T>(height * width, T()), height_ (height), width_ (width)
 {
     
 }
 
 template <typename T>
 Matrix<T>::Matrix (unsigned height, unsigned width, T&& element):
-    std::vector<T>(height * width, T()), mHeight (height), mWidth (width)
+    std::vector<T>(height * width, T()), height_ (height), width_ (width)
 {
 
 }
@@ -112,14 +104,14 @@ Matrix<T>::Matrix (unsigned height, unsigned width, T&& element):
 template <typename T>
 T &Matrix<T>::at(unsigned y, unsigned x)
 {
-    return std::vector<T>::at(y * mWidth + x);
+    return std::vector<T>::at(y * width_ + x);
 }
 
 
 template <typename T>
 bool Matrix<T>::isInRange(unsigned x, unsigned y) const
 {
-    return ((x < mHeight) && (y < mWidth));
+    return ((x < height_) && (y < width_));
 }
 
 template <typename T>
@@ -131,45 +123,45 @@ void Matrix<T>::fill(const T &element)
 template <typename T>
 unsigned Matrix<T>::getHeight() const
 {
-    return mHeight;
+    return height_;
 }
 
 template <typename T>
 unsigned Matrix<T>::getWidth() const
 {
-    return mWidth;
+    return width_;
 }
 
 template <typename T>
 void Matrix<T>::setHeight (unsigned height)
 {
-    setSize(height, mWidth);
+    setSize(height, width_);
 }
 
 template <typename T>
 void Matrix<T>::setWidth(unsigned width)
 {
-    setSize(mHeight, width);
+    setSize(height_, width);
 }
 
 template <typename T>
 void Matrix<T>::setSize(unsigned height, unsigned width)
 {
-    if (height == mHeight && width == mWidth)
+    if (height == height_ && width == width_)
         return;
     
-    unsigned lWidth = mWidth;
-    unsigned lHeight = mHeight;
+    unsigned lWidth = width_;
+    unsigned lHeight = height_;
     Matrix< T > buffer(*this);
 
-    mWidth = width;
-    mHeight = height;
+    width_ = width;
+    height_ = height;
 
-    std::vector<T>::resize(mHeight * mWidth);
+    std::vector<T>::resize(height_ * width_);
     std::fill(std::vector<T>::begin(), std::vector<T>::end(), T());
 
-    for (unsigned i = 0; i < std::min(lHeight, mHeight); i++)
-        for (unsigned j = 0; j < std::min(lWidth, mWidth); j++)
+    for (unsigned i = 0; i < std::min(lHeight, height_); i++)
+        for (unsigned j = 0; j < std::min(lWidth, width_); j++)
             at(i, j) = buffer.at(i, j);
 }
 

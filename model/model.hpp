@@ -20,11 +20,11 @@ public:
     void setName(const std::string& name);
     const std::string& getName() const;
 private:
-    std::string mName;
+    std::string name_;
     // Multiple entries for one texture are unwanted
-    std::shared_ptr<const sf::Texture> mTexture;
-    std::map<int, AnimationState> mAnimations;
-    AnimationState mBadState;
+    std::shared_ptr<const sf::Texture> texture_;
+    std::map<int, AnimationState> animations_;
+    AnimationState bad_state_;
 };
 
 #endif // MODEL_HPP

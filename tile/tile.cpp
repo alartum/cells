@@ -9,12 +9,12 @@ Tile::Tile(int tileType,
 }
 
 Tile::Tile ( const Tile& other ) : 
-    GameItem (other.mTypeID, other.getPosition(), other.getState()) {
+    GameItem (other.ID_, other.getPosition(), other.getState()) {
     setModelManager(other.getModelManager());
 }
 
 Tile::Tile ( Tile&& other ) : 
-    GameItem (other.mTypeID, other.getPosition(), other.getState()) {
+    GameItem (other.ID_, other.getPosition(), other.getState()) {
     setModelManager(other.getModelManager());
 }
 

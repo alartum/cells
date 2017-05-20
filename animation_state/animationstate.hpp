@@ -19,9 +19,9 @@ public:
     sf::IntRect& getRect(size_t frame);
     const sf::IntRect& getRect(size_t frame) const;
 private:
-    std::string mName;
+    std::string name_;
     // Is it allowed to start animation from random frame
-    bool mIsRandomFrame;
+    bool is_random_frame_;
     // Number of global animation frames (provided by field)
     // we want to play the animation for
     //
@@ -31,9 +31,9 @@ private:
     //
     //    So, we want the animation to repeat with
     //    period of 2*8 = 16 basic ticks
-    size_t mAnimationTime;
+    size_t animation_time_;
     // For error handling
-    sf::IntRect mBadRect;
+    sf::IntRect bad_rect_;
 };
 
 #endif // ANIMATIONSTATE_HPP

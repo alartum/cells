@@ -19,25 +19,22 @@ class Field : public sf::RenderWindow
 {
     //! Is the speed up really needed?
     friend void UpdateThread(Field& F);
-//<<<<<<< HEAD
+
 public:
-//=======
     friend class MapDump;
-//private:
-//>>>>>>> 421e1273bf12e7a29879a2d224824168ccf65233
-    sf::Vector2u                        mTileSize;
+    sf::Vector2u                        tile_size_;
     // Objects on the field
-    std::vector< Entity >               mEntities;
+    std::vector< Entity >               entities_;
     
-    Matrix<Tile>                        mMap;
+    Matrix<Tile>                        map_;
     // Number of ticks between the field updates
     // The animation frames are inserted uniformly
-    size_t                              mAnimationTime;
+    size_t                              animation_time_;
     // The amount of time between frames
-    size_t                              mFrameDelay;
-    size_t                              mMaxFPS;
+    size_t                              frame_delay_;
+    size_t                              max_FPS_;
 
-    std::shared_ptr<const ModelManager> mModelManager;
+    std::shared_ptr<const ModelManager> model_manager_;
 
     void setTilePositions();
     void fancyEdges();
@@ -56,7 +53,7 @@ public:
     sf::Vector2u getMapSize() const;
     void setTileSize(sf::Vector2u size);
     sf::Vector2u getTileSize() const;
-    void setModelManager (const std::shared_ptr<const ModelManager>& modelManagerPtr);
+    void setModelManager (const std::shared_ptr<const ModelManager>& model_manager_ptr);
 
     // Отрисовать только объекты
     void drawEntities();
@@ -65,17 +62,17 @@ public:
     void drawTiles();
         
     // Функция генерации тайлов поля
-    void generateTiles          (std::function< void(Matrix< Tile >&) > generatorMap);
+    void generateTiles    (std::function< void(Matrix< Tile >&) > generator_map);
     
     // Функция генерации объектов на поле
-    void generateEntities       (std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generateEntities);
+    void generateEntities (std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generate_entities);
     
     // Функция пересчета состояния поля на один игровой шаг
-    void doStep                 (std::function< void(Matrix< Tile >&, std::vector< Entity >&) > do_step);
+    void doStep           (std::function< void(Matrix< Tile >&, std::vector< Entity >&) > do_step);
 
     void syncronize();
     
-    void calcSpritePosition ( double time, double stepCount );
+    void calcSpritePosition ( double time, double step_count );
     
     void nextFrame();
 

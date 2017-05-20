@@ -11,20 +11,20 @@ public:
     GameItem(int typeID = 0,
              const sf::Vector2f& position = sf::Vector2f(0,0),
              unsigned state = 0);
-    int getTypeID() const;
+    int getID() const;
     // Updates ID and reloads the texture
     //! Time expensive
-    void setTypeID(int TypeID);
-    void setModelManager (const std::shared_ptr<const ModelManager>& modelManager_ptr);
+    void setID(int ID);
+    void setModelManager (const std::shared_ptr<const ModelManager>& model_manager_ptr);
     std::shared_ptr<const ModelManager> getModelManager() const;
     void loadModel();
     GameItem& operator = (const GameItem& other);
 
 protected:
     // Type ID to handle textures correctly
-    int mTypeID;
+    int ID_;
     // Model that provides textures
-    std::shared_ptr<const ModelManager> mModelManager;
+    std::shared_ptr<const ModelManager> model_manager;
 };
 
 #endif // GAMEITEM_HPP
