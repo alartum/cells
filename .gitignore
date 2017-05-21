@@ -50,5 +50,3 @@ CMakeCache.txt
 *.layout
 *.codelite/*
 
-#KDevelop
-*.kdev4
