@@ -19,6 +19,7 @@ public:
     std::shared_ptr<const ModelManager> getModelManager() const;
     void loadModel();
     GameItem& operator = (const GameItem& other);
+    std::map< std::string, int > properties;
 
 protected:
     // Type ID to handle textures correctly

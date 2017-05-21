@@ -5,8 +5,9 @@
 
 AnimationState::AnimationState(size_t nframes, double global_frames, bool is_random_frame) :
     std::vector<sf::IntRect>(nframes),
-    animation_time_(global_frames),
-    is_random_frame_(is_random_frame)
+    is_random_frame_(is_random_frame),
+    animation_time_(global_frames)
+    
 {
 }
 

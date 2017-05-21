@@ -100,9 +100,6 @@ void Field::loadTileTextures(){
     for (unsigned i = 0; i < map_.getHeight(); i ++){
         for (unsigned j = 0; j < map_.getWidth(); j ++){
             Tile& tile = map_.at(i, j);
-            /*LOG("Info: [%s](%u, %u) ~ (%u, %u)", tile.getModel()->getName().c_str(),
-                i, j, mTileSize.x*j, mTileSize.y*i);
-                */
         }
     }
     fancyEdges();
