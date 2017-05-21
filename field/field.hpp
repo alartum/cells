@@ -1,5 +1,8 @@
 #ifndef HEADER_FIELD_HPP_INCLUDED
 #define HEADER_FIELD_HPP_INCLUDED
+
+#include <QTimer>
+
 #include <functional>
 
 #include <SFML/Graphics.hpp>
@@ -14,12 +17,11 @@
 #include "../do_step/dostep.hpp"
 #include "../model_manager/modelmanager.hpp"
 #include "../do_step/dostep.hpp"
+#include "../qsfmlwidget/qsfmlwidget.hpp"
 
-class Field : public sf::RenderWindow
+class Field : public QSFMLWidget
 {
-    //! Is the speed up really needed?
-    friend void UpdateThread(Field& F);
-
+    Q_OBJECT
 public:
     friend class MapDump;
     sf::Vector2u                        tile_size_;
@@ -31,10 +33,14 @@ public:
     // The animation frames are inserted uniformly
     size_t                              animation_time_;
     // The amount of time between frames
-    size_t                              frame_delay_;
+    QTimer                              timer_;
     size_t                              max_FPS_;
 
     std::shared_ptr<const ModelManager> model_manager_;
+
+    std::function< void(Matrix< Tile >&) > generate_map_;
+    std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generate_entities_;
+    std::function< void(Matrix< Tile >&, std::vector< Entity >&) > do_step_;
 
     void setTilePositions();
     void fancyEdges();
@@ -62,13 +68,13 @@ public:
     void drawTiles();
         
     // Функция генерации тайлов поля
-    void generateTiles    (std::function< void(Matrix< Tile >&) > generator_map);
+    void generateTiles    ();
     
     // Функция генерации объектов на поле
-    void generateEntities (std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generate_entities);
+    void generateEntities ();
     
     // Функция пересчета состояния поля на один игровой шаг
-    void doStep           (std::function< void(Matrix< Tile >&, std::vector< Entity >&) > do_step);
+    void doStep           ();
 
     void syncronize();
     
@@ -81,6 +87,13 @@ public:
 
     void showAnimation();
     void loadConfig(const std::string config_file);
+
+public slots:
+    // Do step and animation
+    void proceed();
+    // Begin and stop the simulation process
+    void start();
+    void stop();
 };
 
 #endif

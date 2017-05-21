@@ -1,45 +1,26 @@
+#include <QApplication>
+
 #include <thread>
 #include <iostream>
 #include <memory>
 
-#include <SFML/Window.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <X11/Xlib.h>
-
+#include "field/field.hpp"
 #include "item/item.hpp"
 #include "model/model.hpp"
 #include "matrix/matrix.hpp"
 #include "model_manager/modelmanager.hpp"
 #include "generate_map/generatemap.hpp"
 #include "do_step/dostep.hpp"
-#include "field/field.hpp"
+
+#include <SFML/Window.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 // for log messages
 #define DEBUG
 #include "debug.h"
 
-void UpdateThread(Field& F, RandomMoving& RM)
-{
-    F.setActive(true);
-
-    while(F.isOpen()){
-        //std::this_thread::sleep_for(std::chrono::milliseconds(800));
-        if (F.isOpen()) {
-            F.showAnimation();
-            RM(F.map_, F.entities_);
-            F.syncronize();
-//<<<<<<< HEAD
-            //MapDump()(F.mMap, F.mEntities);
-        }
-//=======
-//    }
-//>>>>>>> 421e1273bf12e7a29879a2d224824168ccf65233
-    }
-}
-
-
 int test_field(int argc, char** argv, char** env) {
-    XInitThreads();
+    QApplication a(argc, argv);
     Field F;
     try{
         F.loadConfig("./config/window_config.lua");
@@ -48,15 +29,17 @@ int test_field(int argc, char** argv, char** env) {
         return EXIT_FAILURE;
     }
 
-    F.fitView();
+    //F.fitView();
 
     GenerateConnetedMap mapGenerator(5, 0.01, 0.2, 0.2);
     //GenerateRandomMap& gen = mapGenerator;
-    F.generateTiles(mapGenerator);
+    F.generate_map_ = mapGenerator;
+    F.generateTiles();
     LOG("Map generated");
 
     GenerateRandomEntity entityGenerator(10, 1, 0, 30, 40, 1, 3, 9);
-    F.generateEntities(entityGenerator);
+    F.generate_entities_ = entityGenerator;
+    F.generateEntities();
     //MapDump()(F.mMap, F.mEntities);
     //MapDump()(F.mMap, F.mEntities);
 
@@ -69,24 +52,15 @@ int test_field(int argc, char** argv, char** env) {
     }
     LOG("Model manager initialized");
     RandomMoving RM(sample);
+    F.do_step_ = RM;
     F.setModelManager(sample);
     F.loadTileTextures();
     F.loadEntityTextures();
     LOG("Textures loaded");
     
-    std::thread T(UpdateThread, std::ref(F), std::ref(RM));
+    F.start();
+    F.show();
 
-    while(F.isOpen()){
-        sf::Event event;
-        while(F.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                F.close();
-                break;
-            }
-        }
-    }
-    T.join();
-    
     return EXIT_SUCCESS;
 }
 

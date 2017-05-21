@@ -5,20 +5,20 @@
 #include "../debug.h"
 
 Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels) :
-    sf::RenderWindow(sf::VideoMode(sizeInPixels.x, sizeInPixels.y), "Field"),
+    QSFMLWidget(nullptr, QPoint(20, 20), QSize(sizeInPixels.x, sizeInPixels.y)),
     tile_size_    (32, 32),
     map_         (sizeInTiles.x, sizeInTiles.y),
     animation_time_ (8),
-    frame_delay_ (200),
     max_FPS_(60)
 {
+    timer_.setInterval(200);
+    connect(&timer_, SIGNAL(timeout), this, SLOT(proceed));
     setActive(false);
     setFramerateLimit(max_FPS_);
     setTilePositions();
 }
 
 Field::~Field() {
-    
 }
 
  void Field::setTilePositions(){
@@ -112,9 +112,9 @@ void Field::setModelManager (const std::shared_ptr<const ModelManager>& model_ma
     model_manager_ = model_manager_ptr;
     tile_size_ = model_manager_->getTileSize();
     animation_time_ = model_manager_->getAnimationTime();
-    frame_delay_ = model_manager_->getFrameDelay();
+    timer_.setInterval (model_manager_->getFrameDelay());
     max_FPS_ = model_manager_->getMaxFPS();
-    setFramerateLimit(max_FPS_);
+    setFramerateLimit (max_FPS_);
 }
 
 void Field::drawEntities() {
@@ -156,13 +156,13 @@ void Field::nextFrame() {
     }
 }
 
-void Field::generateTiles(std::function< void(Matrix< Tile >&) > generator_map) {
-    generator_map(map_);
+void Field::generateTiles() {
+    generate_map_(map_);
 
 }
 
-void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > generate_entities) {
-    generate_entities(map_, entities_);
+void Field::generateEntities() {
+    generate_entities_(map_, entities_);
     for (auto& ent: entities_){
         ent.calcSpritePosition(tile_size_, 0, 1);
     }
@@ -174,8 +174,8 @@ void Field::generateEntities(std::function< void(Matrix< Tile >&, std::vector< E
 }
 
 
-void Field::doStep(std::function< void(Matrix< Tile >&, std::vector< Entity >&) > do_step) {
-    do_step(map_, entities_);
+void Field::doStep() {
+    do_step_(map_, entities_);
 }
 
 void Field::syncronize() {
@@ -211,8 +211,8 @@ void Field::showAnimation(){
         drawEntities();
         display();
         nextFrame();
-        if (frame_delay_ != 0){
-            std::this_thread::sleep_for(std::chrono::milliseconds(frame_delay_));
+        if (timer_.interval() != 0){
+            std::this_thread::sleep_for(std::chrono::milliseconds(timer_.interval()));
         }
     }
     /*std::chrono::time_point<std::chrono::system_clock> after =
@@ -287,4 +287,18 @@ void Field::fancyEdges(){
                 tile.setState(getEdgeType(y, x));
             }
         }
+}
+
+void Field::proceed(){
+    showAnimation();
+    doStep();
+    syncronize();
+}
+
+void Field::start(){
+    timer_.start();
+}
+
+void Field::stop(){
+    timer_.stop();
 }
