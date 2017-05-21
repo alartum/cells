@@ -4,18 +4,25 @@
 #define DEBUG
 #include "../debug.h"
 
-Field::Field (sf::Vector2u sizeInTiles, sf::Vector2u sizeInPixels) :
-    QSFMLWidget(nullptr, QPoint(20, 20), QSize(sizeInPixels.x, sizeInPixels.y)),
+Field::Field (QWidget* parent,
+              const QPoint& pos,
+              const sf::Vector2u& sizeInTiles,
+              const sf::Vector2u& sizeInPixels) :
+    QSFMLWidget(parent, pos, QSize(sizeInPixels.x, sizeInPixels.y)),
     tile_size_    (32, 32),
     map_         (sizeInTiles.x, sizeInTiles.y),
     animation_time_ (8),
-    max_FPS_(60)
+    max_FPS_(60),
+    animation_frame_(0)
 {
-    timer_.setInterval(200);
-    connect(&timer_, SIGNAL(timeout), this, SLOT(proceed));
-    setActive(false);
+    setFixedSize(QSize(sizeInPixels.x, sizeInPixels.y));
+    timer_.setInterval(1000);
+    connect(&timer_, SIGNAL(timeout()), this, SLOT(proceed()));
     setFramerateLimit(max_FPS_);
     setTilePositions();
+}
+
+void Field::onInit(){
 }
 
 Field::~Field() {
@@ -30,33 +37,35 @@ Field::~Field() {
  }
 
 void Field::fitView(){
-    sf::Vector2u mapSize(map_.getHeight(), map_.getWidth());
     LOG("Tile size: (%u, %u)", tile_size_.x, tile_size_.y);
-    LOG("Map size: (%u, %u)", mapSize.x, mapSize.y);
-    LOG("Real size: (%u, %u)", getSize().x, getSize().y);
-    sf::Vector2u realSize(tile_size_.x * mapSize.y, tile_size_.y * mapSize.x);
+    LOG("Map size: (%u, %u)", map_.getWidth(), map_.getHeight());
+    LOG("Real size: (%u, %u)", size().width(), size().height());
+    sf::Vector2u map_pix_size(map_.getWidth() * tile_size_.x,
+                            map_.getHeight() * tile_size_.y);
     // Proportions of the real size of the map
-    if (realSize.x == 0 || realSize.y == 0)
+    if (map_pix_size.x == 0 || map_pix_size.y == 0)
         return;
-    float height_div_width = (float)mapSize.x / mapSize.y;
-    float width_div_height = (float)mapSize.y / mapSize.x;
+    float height_div_width = (float)size().height() / size().width();
+    float width_div_height = (float)size().width() / size().height();
 
     LOG("prop_x, prop_y: (%f, %f)", height_div_width, width_div_height);
-    sf::Vector2u window_size = getSize();
-    sf::Vector2u x_bestFit(window_size.x, window_size.x * height_div_width);
-    sf::Vector2u y_bestFit(window_size.y * width_div_height, window_size.y);
-    LOG("Map px size: (%u, %u)", realSize.x, realSize.y);
+    sf::Vector2u x_bestFit(map_pix_size.x, map_pix_size.x * height_div_width);
+    sf::Vector2u y_bestFit(map_pix_size.y * width_div_height, map_pix_size.y);
+    LOG("Map px size: (%u, %u)", map_pix_size.x, map_pix_size.y);
     LOG("X best fit: (%u, %u)", x_bestFit.x, x_bestFit.y);
     LOG("Y best fit: (%u, %u)", y_bestFit.x, y_bestFit.y);
-    if (x_bestFit.y <= window_size.y)
-        setSize(x_bestFit);
-    else
-        setSize(y_bestFit);
 
-    sf::View fieldView(sf::FloatRect(0, 0, realSize.x, realSize.y));
+    sf::View field_view;
+    if (x_bestFit.y <= map_pix_size.y)
+        field_view.reset(sf::FloatRect(0, 0, x_bestFit.x, x_bestFit.y));
+    else
+        field_view.reset(sf::FloatRect(0, 0, y_bestFit.x, y_bestFit.y));
+    field_view.setViewport(sf::FloatRect(0.f, 0.f, 1.f, 1.f));
+    setSize(sf::Vector2u(size().width(), size().height()));
+    VAR_LOG(getSize().x);
+    VAR_LOG(getSize().y);
     // Use default viewport
-    setView(fieldView);
-    LOG("New size: (%u, %u)", getSize().x, getSize().y);
+    setView(field_view);
 }
 
 void Field::setMapSize(sf::Vector2u size){
@@ -204,17 +213,13 @@ void Field::showAnimation(){
     std::chrono::time_point<std::chrono::system_clock> before =
         std::chrono::system_clock::now();
 */
-    for (int i = 0; i < animation_time_; i++) {
-        calcSpritePosition(i, animation_time_-1);
-        clear();
-        drawTiles();
-        drawEntities();
-        display();
-        nextFrame();
-        if (timer_.interval() != 0){
-            std::this_thread::sleep_for(std::chrono::milliseconds(timer_.interval()));
-        }
-    }
+    calcSpritePosition(animation_frame_, animation_time_-1);
+    clear();
+    drawTiles();
+    drawEntities();
+    display();
+    nextFrame();
+
     /*std::chrono::time_point<std::chrono::system_clock> after =
         std::chrono::system_clock::now();
     auto duration = after.time_since_epoch() - before.time_since_epoch();
@@ -254,8 +259,9 @@ void Field::loadConfig(const std::string config_file){
     LOAD_VAR(window_size, config);
     LOAD_VAR(height, window_size);
     LOAD_VAR(width, window_size);
-    sf::Vector2u w_size(width, height);
-    setSize(w_size);
+    setFixedSize(width, height);
+
+    fitView();
 }
 
 #define TEST_WATER(y, x) (map_.at(y, x).getID() & TILE_WATER_ID)
@@ -290,9 +296,15 @@ void Field::fancyEdges(){
 }
 
 void Field::proceed(){
-    showAnimation();
-    doStep();
-    syncronize();
+    if (animation_frame_ < animation_time_){
+        showAnimation();
+        animation_frame_++;
+    }
+    else{
+        doStep();
+        syncronize();
+        animation_frame_ = 0;
+    }
 }
 
 void Field::start(){

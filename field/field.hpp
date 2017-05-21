@@ -2,7 +2,9 @@
 #define HEADER_FIELD_HPP_INCLUDED
 
 #include <QTimer>
-
+#include <QPoint>
+#include <QWidget>
+#include "../qsfmlwidget/qsfmlwidget.hpp"
 #include <functional>
 
 #include <SFML/Graphics.hpp>
@@ -17,7 +19,6 @@
 #include "../do_step/dostep.hpp"
 #include "../model_manager/modelmanager.hpp"
 #include "../do_step/dostep.hpp"
-#include "../qsfmlwidget/qsfmlwidget.hpp"
 
 class Field : public QSFMLWidget
 {
@@ -32,6 +33,8 @@ public:
     // Number of ticks between the field updates
     // The animation frames are inserted uniformly
     size_t                              animation_time_;
+    // Current animation frame in [0, animation_time_)
+    size_t                              animation_frame_;
     // The amount of time between frames
     QTimer                              timer_;
     size_t                              max_FPS_;
@@ -45,9 +48,12 @@ public:
     void setTilePositions();
     void fancyEdges();
     int getEdgeType(unsigned y, unsigned x);
+protected:
+    void onInit();
 public:    
-    Field(sf::Vector2u sizeInTiles  = sf::Vector2u(1, 1),
-          sf::Vector2u sizeInPixels = sf::Vector2u(600,600));
+    Field(QWidget* parent = nullptr, const QPoint& pos = QPoint(),
+          const sf::Vector2u& sizeInTiles = sf::Vector2u(1, 1),
+          const sf::Vector2u& sizeInPixels = sf::Vector2u(600,600));
     
     ~Field();
     void fitView();

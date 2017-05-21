@@ -13,11 +13,8 @@ public:
     virtual void showEvent(QShowEvent*);
     virtual QPaintEngine* paintEngine() const;
     virtual ~QSFMLWidget();
-    virtual void OnInit();
 protected:
     void display();
-private:
-    bool is_init_;
 signals:
 
 public slots:

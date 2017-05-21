@@ -2,7 +2,7 @@
 #include "modelmanager.hpp"
 #include <memory>
 #include <SFML/Graphics/Texture.hpp>
-#define DEBUG
+//#define DEBUG
 #include "../debug.h"
 ModelManager::ModelManager()
 {

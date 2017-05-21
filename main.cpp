@@ -29,8 +29,6 @@ int test_field(int argc, char** argv, char** env) {
         return EXIT_FAILURE;
     }
 
-    //F.fitView();
-
     GenerateConnetedMap mapGenerator(5, 0.01, 0.2, 0.2);
     //GenerateRandomMap& gen = mapGenerator;
     F.generate_map_ = mapGenerator;
@@ -58,10 +56,10 @@ int test_field(int argc, char** argv, char** env) {
     F.loadEntityTextures();
     LOG("Textures loaded");
     
-    F.start();
     F.show();
+    F.start();
 
-    return EXIT_SUCCESS;
+    return a.exec();
 }
 
 int test_algo(int argc, char** argv, char** env);
