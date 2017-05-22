@@ -2,13 +2,12 @@
 #include <iostream>
 #define DEBUG
 #include "../debug.h"
-#include "../config/tile_ids.hpp"
 
 Item::Item(const sf::Vector2f& position, size_t state) :
     tick_no_(0)
 {
     setPosition(position);
-    setState(STATE_UNDEFINED_ID);
+    setState(state);
 }
 
 Item::~Item()
@@ -47,8 +46,8 @@ void Item::nextFrame()
     tick_no_ = (tick_no_ + 1) % animation_time_;
     double frame_rate = (double)animation_time_ / frames_amount_;
     double temp_frame = tick_no_ / frame_rate;
-    if ((int)temp_frame != frame_no_){
-        frame_no_ = (int)temp_frame;
+    if (static_cast<size_t>(temp_frame) != frame_no_){
+        frame_no_ = static_cast<size_t>(temp_frame);
         setTextureRect(animation_->getRect(frame_no_));
     }
 }

@@ -97,11 +97,7 @@ void Field::loadTileTextures(){
         tile.initState();
         tile.initFrame();
     }
-    for (unsigned i = 0; i < map_.getHeight(); i ++){
-        for (unsigned j = 0; j < map_.getWidth(); j ++){
-            Tile& tile = map_.at(i, j);
-        }
-    }
+
     fancyEdges();
 }
 
@@ -201,7 +197,7 @@ void Field::showAnimation(){
     std::chrono::time_point<std::chrono::system_clock> before =
         std::chrono::system_clock::now();
 */
-    for (int i = 0; i < animation_time_; i++) {
+    for (size_t i = 0; i < animation_time_; i++) {
         calcSpritePosition(i, animation_time_-1);
         clear();
         drawTiles();
@@ -258,8 +254,8 @@ void Field::loadConfig(const std::string config_file){
 #define TEST_WATER(y, x) (map_.at(y, x).getID() & TILE_WATER_ID)
 int Field::getEdgeType(unsigned y, unsigned x){
     int edgeType = 0;
-    int maxX = map_.getWidth() -1;
-    int maxY = map_.getHeight()-1;
+    unsigned maxX = map_.getWidth() -1;
+    unsigned maxY = map_.getHeight()-1;
     if (y != 0 && TEST_WATER(y-1, x)) edgeType |= DIR_UP;
     if (y != maxY && TEST_WATER(y+1, x)) edgeType |= DIR_DOWN;
     if (x != 0 && TEST_WATER(y, x-1)) edgeType |= DIR_LEFT;

@@ -5,6 +5,7 @@
 #include "../model/model.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
+#include "../config/tile_ids.hpp"
 
 class Item : public sf::Sprite
 {
@@ -34,7 +35,8 @@ private:
     // Current state; update is done according to it
     size_t state_;
 public:
-    Item(const sf::Vector2f& position = sf::Vector2f(0,0), size_t state = 0);
+    Item(const sf::Vector2f& position = sf::Vector2f(0,0),
+         size_t state = STATE_UNDEFINED_ID);
     ~Item();
     Item& operator = (const Item& other);
     void setModel(const std::shared_ptr<const Model>& model);
