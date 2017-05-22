@@ -1,3 +1,7 @@
+QT       += core gui
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 HEADERS += \
     field/field.hpp \
     matrix/matrix.hpp \
@@ -13,7 +17,9 @@ HEADERS += \
     entity/entity.hpp \
     config/tile_ids.hpp \
     debug.h \
-    animation_state/animationstate.hpp
+    animation_state/animationstate.hpp \
+    qsfmlwidget/qsfmlwidget.hpp \
+    do_step/cachedfunction.hpp
 
 SOURCES += \
     field/field.cpp \
@@ -28,14 +34,19 @@ SOURCES += \
     model_manager/modelmanager.cpp \
     game_item/gameitem.cpp \
     entity/entity.cpp \
-    animation_state/animationstate.cpp
+    animation_state/animationstate.cpp \
+    qsfmlwidget/qsfmlwidget.cpp
 
 LIBS += -lX11
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system
-LIBS += -lre2
 
 CXX_COMPILER = g++-6
 CONFIG += c++14 
 INCLUDEPATH += /usr/include/lua5.3
 INCLUDEPATH += /usr/include/sol
 LIBS += -llua5.3
+
+DISTFILES += \
+    config/id_manager.lua \
+    config/mm_config.lua \
+    config/window_config.lua

@@ -5,6 +5,7 @@ models_file = "./textures/mm_data.lua"
 --models_file = "./tileinfo/mm_data_old_water.lua"
 --models_file = "./tileinfo/mm_data_old_ground.lua"
 
+-- OBSOLETE
 -- Upper bound for frames per second value
 max_FPS = 60
 
@@ -16,11 +17,8 @@ max_FPS = 60
 animation_time = 10
 
 
--- Use only when long delay is really
--- needed. Usually max_FPS does the job.
--- HIGHER VALUES = HIGHER SPEED
--- frame_delay = 0 works nicely
-frame_delay    = 0
+-- Delay between animation frames
+frame_delay    = 20
 
 
 -- Default tile size
