@@ -28,6 +28,8 @@ private:
     void predatorsMovingStage( Matrix< Tile >& map, std::vector< Entity >& En );
     void deleteCorpses( Matrix< Tile >& map, std::vector< Entity >& En );
     void multiplicationStage( Matrix< Tile >& map, std::vector< Entity >& En );
+    void grassEatingFeedStage( Matrix< Tile >& map, std::vector< Entity >& En );
+    void deathStage( Matrix< Tile >& map, std::vector< Entity >& En );
     
 public:
     RandomMoving(std::shared_ptr<const ModelManager> model_manager_);
