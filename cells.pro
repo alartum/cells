@@ -46,6 +46,7 @@ INCLUDEPATH += /usr/include/lua5.3
 INCLUDEPATH += /usr/include/sol
 LIBS += -llua5.3
 
+
 DISTFILES += \
     config/id_manager.lua \
     config/mm_config.lua \

@@ -31,12 +31,12 @@ int test_field(int argc, char** argv, char** env) {
 
     GenerateConnetedMap mapGenerator(5, 0.01, 0.2, 0.2);
     //GenerateRandomMap& gen = mapGenerator;
-    F.generate_map_ = mapGenerator;
+    F.setGenerateMap(mapGenerator);
     F.generateTiles();
     LOG("Map generated");
 
     GenerateRandomEntity entityGenerator(10, 1, 0, 30, 40, 1, 3, 9);
-    F.generate_entities_ = entityGenerator;
+    F.setGenerateEntities(entityGenerator);
     F.generateEntities();
     //MapDump()(F.mMap, F.mEntities);
     //MapDump()(F.mMap, F.mEntities);
@@ -50,7 +50,7 @@ int test_field(int argc, char** argv, char** env) {
     }
     LOG("Model manager initialized");
     RandomMoving RM(sample);
-    F.do_step_ = RM;
+    F.setDoStep(RM);
     F.setModelManager(sample);
     F.loadTileTextures();
     F.loadEntityTextures();

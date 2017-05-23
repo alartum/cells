@@ -433,6 +433,7 @@ moc_field.cpp: /usr/include/qt5/QtCore/QTimer \
 		/usr/include/qt5/QtGui/qvector2d.h \
 		/usr/include/qt5/QtGui/qtouchdevice.h \
 		qsfmlwidget/qsfmlwidget.hpp \
+		/usr/include/qt5/QtGui/QKeyEvent \
 		tile/tile.hpp \
 		game_item/gameitem.hpp \
 		item/item.hpp \
@@ -689,6 +690,7 @@ field.o: field/field.cpp field/field.hpp \
 		/usr/include/qt5/QtGui/qvector2d.h \
 		/usr/include/qt5/QtGui/qtouchdevice.h \
 		qsfmlwidget/qsfmlwidget.hpp \
+		/usr/include/qt5/QtGui/QKeyEvent \
 		tile/tile.hpp \
 		game_item/gameitem.hpp \
 		item/item.hpp \
@@ -895,6 +897,7 @@ main.o: main.cpp /usr/include/qt5/QtWidgets/QApplication \
 		/usr/include/qt5/QtCore/QPoint \
 		/usr/include/qt5/QtWidgets/QWidget \
 		qsfmlwidget/qsfmlwidget.hpp \
+		/usr/include/qt5/QtGui/QKeyEvent \
 		tile/tile.hpp \
 		game_item/gameitem.hpp \
 		item/item.hpp \

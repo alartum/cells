@@ -1,6 +1,7 @@
 #include <chrono>
 #include <thread>
 #include "field.hpp"
+#include <algorithm>
 #define DEBUG
 #include "../debug.h"
 
@@ -13,59 +14,91 @@ Field::Field (QWidget* parent,
     map_         (sizeInTiles.x, sizeInTiles.y),
     animation_time_ (8),
     animation_frame_(0),
-    max_FPS_(60)
+
+    max_FPS_(60),
+    moving_(false),
+    last_point_(0, 0),
+    minimap_shown_(false)
 {
     setFixedSize(QSize(sizeInPixels.x, sizeInPixels.y));
-    timer_.setInterval(1000);
+    setSize(sizeInPixels);
+    field_view_.setViewport(sf::FloatRect(0.f, 0.f, 1.f, 1.f));
+    if (sizeInPixels.x != 0 && sizeInPixels.y != 0)
+        view_aspect_ratio_ = static_cast<double>(sizeInPixels.x) / sizeInPixels.y;
+    timer_.setInterval(0);
     connect(&timer_, SIGNAL(timeout()), this, SLOT(proceed()));
     setFramerateLimit(max_FPS_);
     setTilePositions();
 }
 
-void Field::onInit(){
-}
-
 Field::~Field() {
 }
 
- void Field::setTilePositions(){
-     for (unsigned i = 0; i < map_.getHeight(); i++)
-         for (unsigned j = 0; j < map_.getWidth(); j++) {
-             map_.at(i, j).setPosition(tile_size_.x * j, tile_size_.y * i);
-             //LOG("POS = (%f, %f)", mMap.at(i, j).getPosition().x, mMap.at(i, j).getPosition().y);
-         }
+std::function<void (Matrix<Tile> &)> Field::getGenerateMap() const
+{
+    return generate_map_;
+}
+
+void Field::setGenerateMap(const std::function<void (Matrix<Tile> &)> &generate_map)
+{
+    generate_map_ = generate_map;
+}
+
+std::function<void (Matrix<Tile> &, std::vector<Entity> &)> Field::getGenerateEntities() const
+{
+    return generate_entities_;
+}
+
+void Field::setGenerateEntities(const std::function<void (Matrix<Tile> &, std::vector<Entity> &)> &generate_entities)
+{
+    generate_entities_ = generate_entities;
+}
+
+std::function<void (Matrix<Tile> &, std::vector<Entity> &)> Field::getDoStep() const
+{
+    return do_step_;
+}
+
+void Field::setDoStep(const std::function<void (Matrix<Tile> &, std::vector<Entity> &)> &do_step)
+{
+    do_step_ = do_step;
+}
+
+void Field::setTilePositions(){
+    for (unsigned i = 0; i < map_.getHeight(); i++)
+        for (unsigned j = 0; j < map_.getWidth(); j++)
+            map_.at(i, j).setPosition(tile_size_.x * j, tile_size_.y * i);
  }
 
-void Field::fitView(){
-    LOG("Tile size: (%u, %u)", tile_size_.x, tile_size_.y);
-    LOG("Map size: (%u, %u)", map_.getWidth(), map_.getHeight());
-    LOG("Real size: (%u, %u)", size().width(), size().height());
-    sf::Vector2u map_pix_size(map_.getWidth() * tile_size_.x,
-                            map_.getHeight() * tile_size_.y);
-    // Proportions of the real size of the map
-    if (map_pix_size.x == 0 || map_pix_size.y == 0)
-        return;
-    float height_div_width = (float)size().height() / size().width();
-    float width_div_height = (float)size().width() / size().height();
+void Field::updateValidRect(){
+    valid_rect_.left   = field_view_.getSize().x / 2;
+    valid_rect_.top    = field_view_.getSize().y / 2;
+    valid_rect_.width  = map_.getWidth() * tile_size_.x
+                         - field_view_.getSize().x;
+    valid_rect_.height = map_.getHeight() * tile_size_.y
+                         - field_view_.getSize().y;
+}
 
-    LOG("prop_x, prop_y: (%f, %f)", height_div_width, width_div_height);
-    sf::Vector2u x_bestFit(map_pix_size.x, map_pix_size.x * height_div_width);
-    sf::Vector2u y_bestFit(map_pix_size.y * width_div_height, map_pix_size.y);
-    LOG("Map px size: (%u, %u)", map_pix_size.x, map_pix_size.y);
-    LOG("X best fit: (%u, %u)", x_bestFit.x, x_bestFit.y);
-    LOG("Y best fit: (%u, %u)", y_bestFit.x, y_bestFit.y);
+void Field::zoomIn(){
+    // Normalize
+    field_view_.setSize(view_aspect_ratio_, 1.f);
+    // Get multiplication coefficient
+    float x_zoom = tile_size_.x / view_aspect_ratio_;
+    float y_zoom = tile_size_.y;
 
-    sf::View field_view;
-    if (x_bestFit.y <= map_pix_size.y)
-        field_view.reset(sf::FloatRect(0, 0, x_bestFit.x, x_bestFit.y));
-    else
-        field_view.reset(sf::FloatRect(0, 0, y_bestFit.x, y_bestFit.y));
-    field_view.setViewport(sf::FloatRect(0.f, 0.f, 1.f, 1.f));
-    setSize(sf::Vector2u(size().width(), size().height()));
-    VAR_LOG(getSize().x);
-    VAR_LOG(getSize().y);
-    // Use default viewport
-    setView(field_view);
+    // Fit the field
+    field_view_.zoom(std::max(x_zoom, y_zoom));
+}
+
+void Field::zoomOut(){
+    // Normalize
+    field_view_.setSize(view_aspect_ratio_, 1.f);
+    // Get multiplication coefficient
+    float x_zoom = map_.getWidth() * tile_size_.x / view_aspect_ratio_;
+    float y_zoom = map_.getHeight() * tile_size_.y;
+
+    // Fit the field
+    field_view_.zoom(std::min(x_zoom, y_zoom));
 }
 
 void Field::setMapSize(sf::Vector2u size){
@@ -87,15 +120,10 @@ sf::Vector2u Field::getMapSize() const{
 
 void Field::loadEntityTextures(){
     for (auto& ent: entities_){
-        //LOG("Entity ID: %d", ent.getTypeID());
         ent.setModelManager(model_manager_);
         ent.loadModel();
         ent.setState(STATE_IDLE | DIR_UP);
         ent.initFrame();
-        /*LOG("Info: [%s](%u, %u) --> (%u, %u)", ent.getModel()->getName().c_str(),
-            ent.getTileFrom().x, ent.getTileFrom().y,
-            ent.getTileTo().x, ent.getTileTo().y);
-            */
     }
 }
 
@@ -121,32 +149,13 @@ void Field::setModelManager (const std::shared_ptr<const ModelManager>& model_ma
 
 void Field::drawEntities() {
     for (auto& ent: entities_){
-        //LOG("Entity ID: %d", ent.getTypeID());
-        //LOG("Entity pos: %f, %f", ent.getPosition().x, ent.getPosition().y);
-        //ent.nextFrame();
         draw(ent);
     }
 }
 
 void Field::drawTiles() {
-    for (auto& tile: map_){
+    for (auto& tile: map_)
         draw(tile);
-    }
-    
-    /*for (unsigned i = 0; i < mMap.getHeight(); i ++){
-        for (unsigned j = 0; j < mMap.getWidth(); j ++){
-            Tile& tile = mMap.at(i, j);
-            //LOG("Info: (%u, %u)[%s]{0x%x : 0x%x}", i, j, tile.getModel()->getName().c_str(),
-            //+tile.getState(), tile.getFrame());
-            //LOG("      (%f, %f)", tile.getPosition().x, tile.getPosition().y);
-            //LOG("      {(%d, %d), (%d, %d)}", tile.getTextureRect().left, tile.getTextureRect().top,
-            //    tile.getTextureRect().width, tile.getTextureRect().height);
-            //LOG("      {%p}", tile.getTexture());
-            draw(tile);
-        }
-    }
-    */
-    
 }
 
 void Field::nextFrame() {
@@ -165,25 +174,14 @@ void Field::generateTiles() {
 
 void Field::generateEntities() {
     generate_entities_(map_, entities_);
-    for (auto& ent: entities_){
+    for (auto& ent: entities_)
         ent.calcSpritePosition(tile_size_, 0, 1);
-    }
-    /*
-        for (auto& ent: mEntities) {
-            LOG("Entity (%lg, %lg)", ent.getPosition().x, ent.getPosition().y);
-        }
-    */
 }
 
 
 void Field::doStep() {
     do_step_(map_, entities_);
 	calcStatistics();
-	
-	for ( std::map< int, int >::iterator it = statistics_.begin(); it != statistics_.end(); it++)
-		std::cout << it->first << "-" << it->second << "   ";
-	std::cout << std::endl;
-	
 }
 
 void Field::syncronize() {
@@ -259,8 +257,8 @@ void Field::loadConfig(const std::string config_file){
     LOAD_VAR(height, window_size);
     LOAD_VAR(width, window_size);
     setFixedSize(width, height);
-
-    fitView();
+    setSize(sf::Vector2u(width, height));
+    validateView();
 }
 
 #define TEST_WATER(y, x) (map_.at(y, x).getID() & TILE_WATER_ID)
@@ -314,8 +312,96 @@ void Field::stop(){
     timer_.stop();
 }
 
+
 void Field::calcStatistics() {
 	statistics_.clear();
 	for ( auto & iter: entities_ )
 		statistics_[iter.getID()] += 1;
+}
+
+void Field::keyPressEvent(QKeyEvent * event){
+    switch (event->key())
+    {
+    case Qt::Key_M:
+        toggleMinimap();
+    }
+}
+
+void Field::moveView(const QPoint &from, const QPoint &to){
+    // Map projections
+    sf::Vector2f from_map = mapPixelToCoords(sf::Vector2i(from.x(), from.y()),
+                                            field_view_);
+    sf::Vector2f to_map = mapPixelToCoords(sf::Vector2i(to.x(), to.y()),
+                                            field_view_);
+    field_view_.move(from_map - to_map);
+    validateViewCenter();
+    setView(field_view_);
+}
+
+void Field::validateViewCenter(){
+    sf::Vector2f center = field_view_.getCenter();
+
+    center.x = std::max(center.x, valid_rect_.left);
+    center.x = std::min(center.x, valid_rect_.left + valid_rect_.width);
+
+    center.y = std::max(center.y, valid_rect_.top);
+    center.y = std::min(center.y, valid_rect_.top + valid_rect_.height);
+
+    field_view_.setCenter(center);
+}
+
+void Field::mousePressEvent(QMouseEvent *event){
+    if (event->button() == Qt::LeftButton) {
+        last_point_ = event->pos();
+        moving_ = true;
+    }
+}
+
+void Field::mouseMoveEvent(QMouseEvent *event)
+{
+    if ((event->buttons() & Qt::LeftButton) && moving_){
+        moveView(last_point_, event->pos());
+        last_point_ = event->pos();
+    }
+}
+
+void Field::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton && moving_) {
+        moveView(last_point_, event->pos());
+        moving_ = false;
+    }
+}
+
+void Field::toggleMinimap(){
+    if (minimap_shown_){
+        LOG("Minimap OFF");
+        minimap_shown_ = false;
+    } else{
+        LOG("Minimap ON");
+        minimap_shown_ = true;
+    }
+}
+
+void Field::validateViewSize(){
+    sf::Vector2f size = field_view_.getSize();
+    if (size.x        < static_cast<float>(tile_size_.x)
+            || size.y < static_cast<float>(tile_size_.y))
+        zoomIn();
+    else if (size.x    > static_cast<float>(map_.getWidth()  * tile_size_.x)
+             || size.y > static_cast<float>(map_.getHeight() * tile_size_.y))
+        zoomOut();
+}
+
+#define ZOOM_SENSITIVITY 500
+void Field::wheelEvent(QWheelEvent* event){
+    field_view_.zoom(1 - static_cast<float>(event->delta()) / ZOOM_SENSITIVITY);
+    validateView();
+}
+
+void Field::validateView(){
+    validateViewSize();
+    updateValidRect();
+    validateViewCenter();
+    setView(field_view_);
 }

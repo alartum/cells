@@ -8,8 +8,11 @@
 #include <functional>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/View.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Window/VideoMode.hpp>
+#include <QKeyEvent>
+#include <SFML/Graphics/Rect.hpp>
 
 #include "../tile/tile.hpp"
 #include "../matrix/matrix.hpp"
@@ -23,7 +26,7 @@
 class Field : public QSFMLWidget
 {
     Q_OBJECT
-public:
+private:
     friend class MapDump;
     sf::Vector2u                        tile_size_;
     // Objects on the field
@@ -38,6 +41,7 @@ public:
     // The amount of time between frames
     QTimer                              timer_;
     size_t                              max_FPS_;
+	std::map< int, int > statistics_;
 
     std::shared_ptr<const ModelManager> model_manager_;
 
@@ -48,48 +52,75 @@ public:
     void setTilePositions();
     void fancyEdges();
     int getEdgeType(unsigned y, unsigned x);
-	
-	std::map< int, int > statistics_;
-	
+    void calcSpritePosition (double time, double step_count);
+    // MINIMAP INTERFACE //
+    sf::View minimap_;
+    bool minimap_shown_;
+    // VIEW MOVING INTERFACE //
+    // Aspect Ratio = Window's Width / Window's Height
+    float view_aspect_ratio_;
+    sf::View field_view_;
+    // Are we mooving the view (left mouse button pressed)
+    bool moving_;
+    // The last place where the mouse was spotted
+    QPoint last_point_;
+    // Valid positions for the view center
+    sf::FloatRect valid_rect_;
+    // Sets the maximum possible view
+    void zoomOut();
+    // Sets the minimum possible view
+    void zoomIn();
+    // Moves view by given offset in WIDGET's COORDINATES if possible
+    void moveView(const QPoint& from, const QPoint& to);
+    // Updates if the the view is updated
+    void updateValidRect();
+    void validateViewCenter();
+    void validateViewSize();
+    void validateView();
 protected:
-    void onInit();
+    void keyPressEvent(QKeyEvent * event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *);
 public:    
     Field(QWidget* parent = nullptr, const QPoint& pos = QPoint(),
           const sf::Vector2u& sizeInTiles = sf::Vector2u(1, 1),
           const sf::Vector2u& sizeInPixels = sf::Vector2u(600,600));
     
     ~Field();
-    void fitView();
+    void toggleMinimap();
     // Sets model manager for every tile
     void loadTileTextures();
     // Sets model manager for every entity
     void loadEntityTextures();
+    void drawEntities     ();
+    void drawTiles        ();
+    void generateTiles    ();
+    void generateEntities ();
+    // Функция пересчета состояния поля на один игровой шаг
+    void doStep           	();
+	void calcStatistics		();
+    // Save changes done by doStep
+    void syncronize			();
+    void nextFrame();
+    void showAnimation();
+    void loadConfig(const std::string config_file);
+
+    // SETTERS & GETTERS //
+    std::function<void (Matrix<Tile> &)> getGenerateMap() const;
+    void setGenerateMap(const std::function<void (Matrix<Tile> &)> &generate_map);
+    std::function<void (Matrix<Tile> &, std::vector<Entity> &)> getGenerateEntities() const;
+    void setGenerateEntities(const std::function<void (Matrix<Tile> &, std::vector<Entity> &)> &generate_entities);
+    std::function<void (Matrix<Tile> &, std::vector<Entity> &)> getDoStep() const;
+    void setDoStep(const std::function<void (Matrix<Tile> &, std::vector<Entity> &)> &do_step);
     void setMapSize(sf::Vector2u size);
     sf::Vector2u getMapSize() const;
     void setTileSize(sf::Vector2u size);
     sf::Vector2u getTileSize() const;
     void setModelManager (const std::shared_ptr<const ModelManager>& model_manager_ptr);
-
-    // Отрисовать только объекты
-    void drawEntities();
-    // Отрисовать только тайлы
-    void drawTiles();
-    // Функция генерации тайлов поля
-    void generateTiles    ();
-    // Функция генерации объектов на поле
-    void generateEntities ();
-    
-    // Функция пересчета состояния поля на один игровой шаг
-    void doStep				();
-	void calcStatistics		();
-
-    void syncronize();
-    void calcSpritePosition ( double time, double step_count );
-    void nextFrame();
     void setAnimationTime(int animation_time);
     int getAnimationTime() const;
-    void showAnimation();
-    void loadConfig(const std::string config_file);
 
 public slots:
     // Do step and animation
