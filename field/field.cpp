@@ -178,6 +178,12 @@ void Field::generateEntities() {
 
 void Field::doStep() {
     do_step_(map_, entities_);
+	calcStatistics();
+	
+	for ( std::map< int, int >::iterator it = statistics_.begin(); it != statistics_.end(); it++)
+		std::cout << it->first << "-" << it->second << "   ";
+	std::cout << std::endl;
+	
 }
 
 void Field::syncronize() {
@@ -306,4 +312,10 @@ void Field::start(){
 
 void Field::stop(){
     timer_.stop();
+}
+
+void Field::calcStatistics() {
+	statistics_.clear();
+	for ( auto & iter: entities_ )
+		statistics_[iter.getID()] += 1;
 }

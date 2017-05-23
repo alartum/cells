@@ -48,6 +48,9 @@ public:
     void setTilePositions();
     void fancyEdges();
     int getEdgeType(unsigned y, unsigned x);
+	
+	std::map< int, int > statistics_;
+	
 protected:
     void onInit();
 public:    
@@ -69,28 +72,22 @@ public:
 
     // Отрисовать только объекты
     void drawEntities();
-
     // Отрисовать только тайлы
     void drawTiles();
-        
     // Функция генерации тайлов поля
     void generateTiles    ();
-    
     // Функция генерации объектов на поле
     void generateEntities ();
     
     // Функция пересчета состояния поля на один игровой шаг
-    void doStep           ();
+    void doStep				();
+	void calcStatistics		();
 
     void syncronize();
-    
     void calcSpritePosition ( double time, double step_count );
-    
     void nextFrame();
-
     void setAnimationTime(int animation_time);
     int getAnimationTime() const;
-
     void showAnimation();
     void loadConfig(const std::string config_file);
 
