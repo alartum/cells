@@ -254,19 +254,21 @@ void RandomMoving::predatorsMovingStage ( Matrix< Tile >& map, std::vector< Enti
 
                 bool flag = false;
                 sf::Vector2f force;
-                for ( int i0 = -4; i0 <= 4; i0++ )
-                    for ( int j0 = -4; j0 <= 4; j0++ ) {
+                for ( int i0 = -5; i0 <= 5; i0++ )
+                    for ( int j0 = -5; j0 <= 5; j0++ ) {
                         if ( i + i0 >= 0 && i + i0 < ( int ) cache_.getHeight() && j + j0 >= 0 && j + j0 < ( int ) cache_.getWidth() ) {
                             int aimId = cache_.at ( i + i0, j + j0 );
                             if ( aimId == -1 )
                                 continue;
-                            if ( En[aimId].getID() != OBJECT_GRASS_EATING_ID )
-                                continue;
-
-                            int dist = i0 * i0 + j0 * j0;
-
-                            force.x += ( double ) i0 / dist;
-                            force.y += ( double ) j0 / dist;
+							int dist = i0 * i0 + j0 * j0;
+                            if ( En[aimId].getID() == OBJECT_GRASS_EATING_ID ) {
+								force.x += ( double ) i0 / dist;
+								force.y += ( double ) j0 / dist;
+							}
+							else if ( dist > 0 && En[aimId].getID() == OBJECT_PREDATOR_ID && En[currentEntityId].properties["time_without_feed"] < 6) {
+								force.x += ( double ) i0 / dist / 1.5;
+								force.y += ( double ) j0 / dist / 1.5;
+							}
                         }
                     }
 
@@ -416,9 +418,26 @@ void RandomMoving::multiplicationStage ( Matrix< Tile >& map, std::vector< Entit
     int sz = En.size();
 
     for ( int i = 0; i < sz; i++ )  {
-        if ( En[i].getID() == OBJECT_GRASS_EATING_ID && En[i].properties["living_time"] > 15 ) {
-            sf::Vector2u child_position = En[i].getTileTo();
-            switch ( rand() % 100 ) {
+        if ( En[i].getID() == OBJECT_GRASS_EATING_ID && En[i].properties["living_time"] > 15 && (rand() % 4 == 0) ) {
+			
+			sf::Vector2u child_position = En[i].getTileTo();
+			
+			int neightbors = 0;
+			for ( int dx = -1; dx <= 1; dx++ )
+				for ( int dy = -1; dy <= 1; dy++ )
+					if ( dx + child_position.x >= 0 && dx + child_position.x < cache_.getHeight() && 
+						dy + child_position.y >= 0 && dy + child_position.y < cache_.getWidth()
+					) {
+						int neightborId = cache_.at( dx + child_position.x, dy + child_position.y );
+						if ( neightborId != -1 && En[neightborId].getID() == OBJECT_GRASS_EATING_ID )
+							neightbors += 1;
+					}
+			
+			if (neightbors < 2)
+				continue;
+			
+            
+            switch ( rand() % 4 ) {
             case 0:
                 child_position.x += 1;
                 break;
@@ -457,8 +476,22 @@ void RandomMoving::multiplicationStage ( Matrix< Tile >& map, std::vector< Entit
     
     
      for ( int i = 0; i < sz; i++ )  {
-        if ( En[i].getID() == OBJECT_PREDATOR_ID && En[i].properties["living_time"] > 25 && En[i].properties["time_without_feed"] < 3 && (rand() % 30 == 0)) {
+        if ( En[i].getID() == OBJECT_PREDATOR_ID && En[i].properties["living_time"] > 20 && En[i].properties["time_without_feed"] < 6 && (rand() % 7 == 0)) {
             sf::Vector2u child_position = En[i].getTileTo();
+			
+			int neightbors = 0;
+			for ( int dx = -1; dx <= 1; dx++ )
+				for ( int dy = -1; dy <= 1; dy++ )
+					if ( dx + child_position.x >= 0 && dx + child_position.x < cache_.getHeight() && 
+						dy + child_position.y >= 0 && dy + child_position.y < cache_.getWidth()
+					) {
+						int neightborId = cache_.at( dx + child_position.x, dy + child_position.y );
+						if ( neightborId != -1 && En[neightborId].getID() == OBJECT_PREDATOR_ID )
+							neightbors += 1;
+					}
+			
+			if (neightbors < 2)
+				continue;
             switch ( rand() % 4 ) {
             case 0:
                 child_position.x += 1;
