@@ -39,6 +39,7 @@ public:
          size_t state = STATE_UNDEFINED_ID);
     ~Item();
     Item& operator = (const Item& other);
+    void loadModel();
     void setModel(const std::shared_ptr<const Model>& model);
     std::shared_ptr<const Model> getModel() const;
     void setState(size_t state);

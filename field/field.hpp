@@ -50,7 +50,6 @@ private:
     std::function< void(Matrix< Tile >&, std::vector< Entity >&) > do_step_;
 
     void setTilePositions();
-    void fancyEdges();
     int getEdgeType(unsigned y, unsigned x);
     void calcSpritePosition (double time, double step_count);
     // MINIMAP INTERFACE //

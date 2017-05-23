@@ -14,9 +14,7 @@ Item::~Item()
 {
 }
 
-void Item::setState(size_t state)
-{
-    state_ = state;
+void Item::loadModel(){
     if (model_){
         animation_ = &model_->getAnimation(state_);
         is_random_frame_ = animation_->getIsRandomFrame();
@@ -32,6 +30,12 @@ void Item::setState(size_t state)
         tick_no_ = 0;
         frame_no_ = 0;
     }
+}
+
+void Item::setState(size_t state)
+{
+    state_ = state;
+    loadModel();
 }
 
 void Item::nextFrame()
@@ -107,7 +111,10 @@ void Item::initFrame(){
 }
 
 void Item::initState(){
-    setState(0);
+    if (state_ == STATE_UNDEFINED_ID)
+        setState(0);
+    else
+        loadModel();
 }
 
 size_t Item::getState() const{

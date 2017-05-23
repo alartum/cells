@@ -11,8 +11,73 @@ GenerateMap::GenerateMap() {
     ;
 }
 
+#define TEST_WATER(y, x) (map.at(y, x).getID() & TILE_WATER_ID)
+int GenerateRandomMap::getEdgeType(Matrix< Tile >& map, unsigned y, unsigned x){
+    int edgeType = 0;
+    unsigned maxX = map.getWidth() -1;
+    unsigned maxY = map.getHeight()-1;
+    if (y != 0 && TEST_WATER(y-1, x)) edgeType |= DIR_UP;
+    if (y != maxY && TEST_WATER(y+1, x)) edgeType |= DIR_DOWN;
+    if (x != 0 && TEST_WATER(y, x-1)) edgeType |= DIR_LEFT;
+    if (x != maxX && TEST_WATER(y, x+1)) edgeType |= DIR_RIGHT;\
+    if (edgeType == 0){
+        if (y != 0 && x != 0 && TEST_WATER(y-1, x-1)) edgeType |= DIR_UP | DIR_LEFT | DIR_ADD;
+        if (y != maxY && x != 0 && TEST_WATER(y+1, x-1)) edgeType |= DIR_DOWN | DIR_LEFT | DIR_ADD;
+        if (y != 0 && x != maxX && TEST_WATER(y-1, x+1)) edgeType |= DIR_UP | DIR_RIGHT | DIR_ADD;
+        if (y != maxY && x != maxX && TEST_WATER(y+1, x+1)) edgeType |= DIR_DOWN | DIR_RIGHT | DIR_ADD;
+    }
+    if (edgeType == 0)
+        return DIR_ADD;
+    return edgeType;
+}
+#undef TEST_WATER
+
+void GenerateRandomMap::fancyEdges(Matrix< Tile >& map ){
+    for (unsigned y = 0; y < map.getHeight(); y++)
+        for (unsigned x = 0; x < map.getWidth(); x++) {
+            Tile& tile = map.at(y, x);
+            if (tile.getID() & TILE_GRASS_ID){
+                tile.setState(getEdgeType(map, y, x));
+            }
+        }
+}
+
+
+#define TEST_WATER(y, x) (map.at(y, x).getID() & TILE_WATER_ID)
+int GenerateConnetedMap::getEdgeType(Matrix< Tile >& map, unsigned y, unsigned x){
+    int edgeType = 0;
+    unsigned maxX = map.getWidth() -1;
+    unsigned maxY = map.getHeight()-1;
+    if (y != 0 && TEST_WATER(y-1, x)) edgeType |= DIR_UP;
+    if (y != maxY && TEST_WATER(y+1, x)) edgeType |= DIR_DOWN;
+    if (x != 0 && TEST_WATER(y, x-1)) edgeType |= DIR_LEFT;
+    if (x != maxX && TEST_WATER(y, x+1)) edgeType |= DIR_RIGHT;\
+    if (edgeType == 0){
+        if (y != 0 && x != 0 && TEST_WATER(y-1, x-1)) edgeType |= DIR_UP | DIR_LEFT | DIR_ADD;
+        if (y != maxY && x != 0 && TEST_WATER(y+1, x-1)) edgeType |= DIR_DOWN | DIR_LEFT | DIR_ADD;
+        if (y != 0 && x != maxX && TEST_WATER(y-1, x+1)) edgeType |= DIR_UP | DIR_RIGHT | DIR_ADD;
+        if (y != maxY && x != maxX && TEST_WATER(y+1, x+1)) edgeType |= DIR_DOWN | DIR_RIGHT | DIR_ADD;
+    }
+    if (edgeType == 0)
+        return DIR_ADD;
+    return edgeType;
+}
+#undef TEST_WATER
+
+void GenerateConnetedMap::fancyEdges(Matrix< Tile >& map ){
+    for (unsigned y = 0; y < map.getHeight(); y++)
+        for (unsigned x = 0; x < map.getWidth(); x++) {
+            Tile& tile = map.at(y, x);
+            if (tile.getID() & TILE_GRASS_ID){
+                tile.setState(getEdgeType(map, y, x));
+                VAR_LOG(tile.getState());
+            }
+        }
+}
+
+
 void GenerateMap::operator() ( Matrix< Tile >& map ) {
-    //std::cout << "ЗаебалоСюдаХодить" << std::endl;;
+
 }
 
 
@@ -21,7 +86,7 @@ void GenerateMap::operator() ( Matrix< Tile >& map ) {
 GenerateRandomMap::GenerateRandomMap (unsigned grassGroupCount, double grassDispersionMin, double grassDispersionMax, double grassDensity ) :
     grass_group_count_(grassGroupCount), grass_dispersion_min_(grassDispersionMin), grass_dispersion_max_(grassDispersionMax), grass_density_(grassDensity) 
 {
-    
+
 }
 
 void GenerateRandomMap::operator() ( Matrix< Tile >& map ) {
@@ -74,6 +139,7 @@ void GenerateRandomMap::operator() ( Matrix< Tile >& map ) {
             ).setID(TILE_GRASS_ID);
         }
     }
+    fancyEdges(map);
 }
 
 
@@ -154,6 +220,7 @@ void GenerateConnetedMap::operator() ( Matrix< Tile >& map ) {
             }
         }
     }
+    fancyEdges(map);
 }
 
 
