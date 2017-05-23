@@ -1,4 +1,5 @@
 [Project]
-Name=cells_kdevelop
-Manager=KDevCMakeManager
+CreatedFrom=cells_kdevelop.kdev4
+Manager=KDevCustomMakeManager
+Name=cells
 VersionControl=

@@ -96,7 +96,7 @@ Matrix<T>::Matrix (unsigned height, unsigned width, const T &element):
 
 template <typename T>
 Matrix<T>::Matrix (unsigned height, unsigned width, T&& element):
-    std::vector<T>(height * width, T()), height_ (height), width_ (width)
+    std::vector<T>(height * width, element), height_ (height), width_ (width)
 {
 
 }

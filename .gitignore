@@ -50,3 +50,6 @@ CMakeCache.txt
 *.layout
 *.codelite/*
 
+#Qt moc files
+
+moc*

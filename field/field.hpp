@@ -41,6 +41,7 @@ private:
     // The amount of time between frames
     QTimer                              timer_;
     size_t                              max_FPS_;
+	std::map< int, int > statistics_;
 
     std::shared_ptr<const ModelManager> model_manager_;
 
@@ -54,7 +55,6 @@ private:
     void calcSpritePosition (double time, double step_count);
     // MINIMAP INTERFACE //
     sf::View minimap_;
-    bool minimap_shown_;
     // VIEW MOVING INTERFACE //
     // Aspect Ratio = Window's Width / Window's Height
     float view_aspect_ratio_;
@@ -63,6 +63,7 @@ private:
     bool moving_;
     // The last place where the mouse was spotted
     QPoint last_point_;
+    bool minimap_shown_;
     // Valid positions for the view center
     sf::FloatRect valid_rect_;
     // Sets the maximum possible view
@@ -100,9 +101,10 @@ public:
     void generateTiles    ();
     void generateEntities ();
     // Функция пересчета состояния поля на один игровой шаг
-    void doStep           ();
+    void doStep           	();
+	void calcStatistics		();
     // Save changes done by doStep
-    void syncronize       ();
+    void syncronize			();
     void nextFrame();
     void drawAnimation();
     void loadConfig(const std::string config_file);

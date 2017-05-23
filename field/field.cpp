@@ -14,6 +14,7 @@ Field::Field (QWidget* parent,
     map_         (sizeInTiles.x, sizeInTiles.y),
     animation_time_ (8),
     animation_frame_(0),
+
     max_FPS_(60),
     moving_(false),
     last_point_(0, 0),
@@ -180,6 +181,7 @@ void Field::generateEntities() {
 
 void Field::doStep() {
     do_step_(map_, entities_);
+	calcStatistics();
 }
 
 void Field::syncronize() {
@@ -313,6 +315,13 @@ void Field::start(){
 
 void Field::stop(){
     timer_.stop();
+}
+
+
+void Field::calcStatistics() {
+	statistics_.clear();
+	for ( auto & iter: entities_ )
+		statistics_[iter.getID()] += 1;
 }
 
 void Field::keyPressEvent(QKeyEvent * event){
