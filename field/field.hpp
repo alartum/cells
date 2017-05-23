@@ -76,6 +76,8 @@ private:
     void validateViewCenter();
     void validateViewSize();
     void validateView();
+
+    void drawMinimap();
 protected:
     void keyPressEvent(QKeyEvent * event);
     void mousePressEvent(QMouseEvent* event);
@@ -102,7 +104,7 @@ public:
     // Save changes done by doStep
     void syncronize       ();
     void nextFrame();
-    void showAnimation();
+    void drawAnimation();
     void loadConfig(const std::string config_file);
 
     // SETTERS & GETTERS //

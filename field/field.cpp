@@ -17,7 +17,7 @@ Field::Field (QWidget* parent,
     max_FPS_(60),
     moving_(false),
     last_point_(0, 0),
-    minimap_shown_(false)
+    minimap_shown_(true)
 {
     setFixedSize(QSize(sizeInPixels.x, sizeInPixels.y));
     setSize(sizeInPixels);
@@ -203,17 +203,16 @@ int Field::getAnimationTime() const{
     return animation_time_;
 }
 
-void Field::showAnimation(){
+void Field::drawAnimation(){
     /*
     std::chrono::time_point<std::chrono::system_clock> before =
         std::chrono::system_clock::now();
 */
+    // Prepare to draw the field
+    setView(field_view_);
     calcSpritePosition(animation_frame_, animation_time_-1);
-    clear();
     drawTiles();
     drawEntities();
-    display();
-    nextFrame();
 
     /*std::chrono::time_point<std::chrono::system_clock> after =
         std::chrono::system_clock::now();
@@ -292,10 +291,16 @@ void Field::fancyEdges(){
 
 void Field::proceed(){
     if (animation_frame_ < animation_time_){
-        showAnimation();
+        clear();
+        drawAnimation();
+        drawMinimap();
+        display();
+        nextFrame();
         animation_frame_++;
     }
     else{
+        drawMinimap();
+        display();
         doStep();
         syncronize();
         animation_frame_ = 0;
@@ -314,7 +319,8 @@ void Field::keyPressEvent(QKeyEvent * event){
     switch (event->key())
     {
     case Qt::Key_M:
-        toggleMinimap();
+        minimap_shown_ = !minimap_shown_;
+        break;
     }
 }
 
@@ -326,7 +332,6 @@ void Field::moveView(const QPoint &from, const QPoint &to){
                                             field_view_);
     field_view_.move(from_map - to_map);
     validateViewCenter();
-    setView(field_view_);
 }
 
 void Field::validateViewCenter(){
@@ -364,16 +369,6 @@ void Field::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-void Field::toggleMinimap(){
-    if (minimap_shown_){
-        LOG("Minimap OFF");
-        minimap_shown_ = false;
-    } else{
-        LOG("Minimap ON");
-        minimap_shown_ = true;
-    }
-}
-
 void Field::validateViewSize(){
     sf::Vector2f size = field_view_.getSize();
     if (size.x        < static_cast<float>(tile_size_.x)
@@ -394,5 +389,53 @@ void Field::validateView(){
     validateViewSize();
     updateValidRect();
     validateViewCenter();
-    setView(field_view_);
+}
+
+#include <SFML/Graphics/RectangleShape.hpp>
+
+template<typename T>
+void zoom(sf::Vector2<T>& v, float factor){
+    v.x *= factor;
+    v.y *= factor;
+}
+
+void Field::drawMinimap(){
+    if (minimap_shown_){
+        float map_aspect_ratio_ = static_cast<float>(map_.getWidth()) / map_.getHeight();
+        sf::Vector2f viewport(map_aspect_ratio_, 1.f);
+        sf::Vector2f minimap_rect(0.25f, 0.25f);
+        sf::Vector2f offset(0.005f, 0.005f);
+        zoom(viewport, std::min(minimap_rect.x / map_aspect_ratio_,
+                                minimap_rect.y / 1.f));
+        minimap_.setViewport(sf::FloatRect(1-viewport.x - 2*offset.x,
+                                           0,
+                                           viewport.x+2*offset.x,
+                                           viewport.y+2*offset.y));
+        minimap_.reset(sf::FloatRect(0, 0, 1, 1));
+        // Prepare to draw the map
+        setView(minimap_);
+
+        // Draw a rectangle behind the minimap
+        sf::RectangleShape miniback;
+        miniback.setPosition(0,0);
+        miniback.setSize(sf::Vector2f(1, 1));
+        miniback.setFillColor(sf::Color::Black);
+
+        draw(miniback);
+        minimap_.setViewport(sf::FloatRect(1-viewport.x - offset.x,
+                                           offset.y,
+                                           viewport.x,
+                                           viewport.y));
+        minimap_.reset(sf::FloatRect(0, 0, map_.getWidth()*tile_size_.x,
+                                     map_.getHeight()*tile_size_.y));
+        // Prepare to draw the map
+        setView(minimap_);
+        drawTiles();
+        sf::RectangleShape current_view; // We want to draw a rectangle behind the minimap
+        current_view.setPosition(field_view_.getCenter().x - field_view_.getSize().x/2,
+                             field_view_.getCenter().y - field_view_.getSize().y/2);
+        current_view.setSize(field_view_.getSize());
+        current_view.setFillColor(sf::Color(255, 255, 255, 80));
+        draw(current_view);
+    }
 }
