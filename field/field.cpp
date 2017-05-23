@@ -12,8 +12,8 @@ Field::Field (QWidget* parent,
     tile_size_    (32, 32),
     map_         (sizeInTiles.x, sizeInTiles.y),
     animation_time_ (8),
-    max_FPS_(60),
-    animation_frame_(0)
+    animation_frame_(0),
+    max_FPS_(60)
 {
     setFixedSize(QSize(sizeInPixels.x, sizeInPixels.y));
     timer_.setInterval(1000);

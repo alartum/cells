@@ -40,7 +40,7 @@ SOURCES += \
 LIBS += -lX11
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system
 
-CXX_COMPILER = g++-6
+QMAKE_CXX = g++-6
 CONFIG += c++14 
 INCLUDEPATH += /usr/include/lua5.3
 INCLUDEPATH += /usr/include/sol

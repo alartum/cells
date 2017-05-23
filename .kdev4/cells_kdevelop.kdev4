@@ -1,18 +1,32 @@
 [Buildset]
-BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x1c\x00c\x00e\x00l\x00l\x00s\x00_\x00k\x00d\x00e\x00v\x00e\x00l\x00o\x00p)
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\n\x00c\x00e\x00l\x00l\x00s)
 
 [CMake]
-Build Directory Count=1
-Current Build Directory Index=0
+Build Directory Count=0
+Current Build Directory Index=-1
 ProjectRootRelative=./
 
-[CMake][CMake Build Directory 0]
-Build Directory Path=file:///home/alexander/github/cells/build
-Build Type=Debug
-CMake Binary=file:///usr/bin/cmake
-Environment Profile=
-Extra Arguments=
-Install Directory=file:///usr/local
+[Cppcheck]
+checkConfig=true
+checkInformation=true
+checkMissingInclude=true
+checkPerformance=true
+checkPortability=true
+checkStyle=true
+checkUnusedFunction=true
+extraParameters=-I /usr/include -I /usr/include/c++/6 -I /usr/include/x86_64-linux-gnu/c++/6/ -I /usr/include/x86_64-linux-gnu/ -I /usr/include/x86_64-linux-gnu/
+forceCheck=true
+inconclusiveAnalysis=true
+useSystemIncludes=true
+
+[CustomDefinesAndIncludes][ProjectPath0]
+Path=.
+parseAmbiguousAsCPP=false
+parserArguments=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunused-parameter -Wunreachable-code -Wall -std=c++14
+parserArgumentsC=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunused-parameter -Wunreachable-code -Wall -std=gnu11
+
+[CustomDefinesAndIncludes][ProjectPath0][Compiler]
+Name=GCC
 
 [Launch]
 Launch Configurations=Launch Configuration 0
@@ -20,20 +34,23 @@ Launch Configurations=Launch Configuration 0
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
 Configured Launchers=nativeAppLauncher
-Name=New Application Launcher
+Name=New Compiled Binary Launcher
 Type=Native Application
 
 [Launch][Launch Configuration 0][Data]
 Arguments=
 Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 Dependency Action=Nothing
-EnvironmentGroup=default
-Executable=file:///home/alexander/github/cells/
+EnvironmentGroup=
+Executable=file:///home/alexander/github/cells/cells
 External Terminal=konsole --noclose --workdir %workdir -e %exe
-Project Target=cells_kdevelop,cells
+Project Target=
 Use External Terminal=false
 Working Directory=file:///home/alexander/github/cells
-isExecutable=false
+isExecutable=true
+
+[MakeBuilder]
+Default Target=cells
 
 [Project]
 VersionControlSupport=kdevgit
