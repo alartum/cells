@@ -150,7 +150,7 @@ GenerateComplexMap::GenerateComplexMap ( unsigned int grassGroupCount, double gr
 
 void GenerateComplexMap::operator() ( Matrix< Tile >& map ) {
 	PERROR("HERE");
-     LOG("ConnectedMapGenerate:\n"
+     LOG("ComplexMapGenerate:\n"
         "               size = (%u, %u)\n"
         "               grassGroupCount = %u\n"
         "               grassDispersionMin = %lg\n"
