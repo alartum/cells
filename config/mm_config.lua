@@ -14,11 +14,11 @@ max_FPS = 60
 -- animation sequence for one state
 -- HIGHER VALUES = LOWER SPEED
 -- HIGHER VALUES = BETTER QUALITY
-animation_time = 2
+animation_time = 10
 
 
 -- Delay between animation frames
-frame_delay    = 10
+frame_delay    = 20
 
 
 -- Default tile size
