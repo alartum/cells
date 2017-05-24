@@ -69,7 +69,6 @@ GameWindow::GameWindow(QWidget *parent) :
 
     plot_.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     plot_.xAxis->setLabel("Time");
-    plot_.yAxis->setRange(0, field_.getTileSize().x * field_.getTileSize().y);
     plot_.yAxis->setLabel("Amount");
 
     plot_.addGraph();
@@ -85,6 +84,7 @@ GameWindow::GameWindow(QWidget *parent) :
     red_pen.setColor(Qt::darkRed);
     red_pen.setWidthF(4);
     plot_.graph(1)->setPen(red_pen);
+    plot_.yAxis->setRangeLower(0);
 
     plot_timer_.setInterval(500);
     connect(&plot_timer_, SIGNAL(timeout()), this, SLOT(updatePlot()));
@@ -132,6 +132,7 @@ void GameWindow::updatePlot(){
     plot_.graph(0)->addData(time_, field_.getStatistics().at(OBJECT_GRASS_EATING_ID));
     plot_.graph(1)->addData(time_, field_.getStatistics().at(OBJECT_PREDATOR_ID));
     plot_.rescaleAxes();
+    plot_.yAxis->setRangeLower(0);
     plot_.replot();
     time_++;
 }
