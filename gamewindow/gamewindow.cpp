@@ -50,10 +50,10 @@ GameWindow::GameWindow(QWidget *parent) :
     QAction* resume_action = gameMenu->addAction(tr("&Resume"));
     connect(resume_action, SIGNAL(triggered(bool)), &field_, SLOT(start()));
     connect(resume_action, SIGNAL(triggered(bool)), &plot_timer_, SLOT(start()));
-    /*QAction* resume_action = gameMenu->addAction(tr("R&estart"));
-    connect(resume_action, SIGNAL(triggered(bool)), &field_, SLOT(start()));
-    connect(resume_action, SIGNAL(triggered(bool)), &plot_timer_, SLOT(start()));
-*/
+    QAction* restart_action = gameMenu->addAction(tr("R&estart"));
+    connect(restart_action, SIGNAL(triggered(bool)), this, SLOT(restartField()));
+
+
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     plot_.setMinimumSize(300, 300);
@@ -97,12 +97,10 @@ void GameWindow::initField(){
     GenerateConnetedMap mapGenerator(5, 0.01, 0.2, 0.2);
     //GenerateRandomMap& gen = mapGenerator;
     field_.setGenerateMap(mapGenerator);
-    field_.generateTiles();
     LOG("Map generated");
 
     GenerateRandomEntity entityGenerator(10, 1, 0, 30, 40, 1, 3, 9);
     field_.setGenerateEntities(entityGenerator);
-    field_.generateEntities();
 
     std::shared_ptr< ModelManager > sample = std::make_shared< ModelManager >();
     sample->loadConfig("./config/mm_config.lua");
@@ -110,8 +108,7 @@ void GameWindow::initField(){
     RandomMoving RM(sample);
     field_.setDoStep(RM);
     field_.setModelManager(sample);
-    field_.loadTileTextures();
-    field_.loadEntityTextures();
+    field_.init();
     LOG("Textures loaded");
 
     field_.show();
@@ -140,7 +137,15 @@ void GameWindow::updatePlot(){
 }
 
 void GameWindow::restartField(){
-    field_.generateTiles();
-    field_.generateEntities();
+    plot_timer_.stop();
+    time_ = 0;
+    field_.stop();
 
+    field_.init();
+    plot_.graph(0)->data()->clear();
+    plot_.graph(1)->data()->clear();
+    plot_.replot();
+
+    field_.start();
+    plot_timer_.start();
 }
