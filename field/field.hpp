@@ -41,7 +41,7 @@ private:
     // The amount of time between frames
     QTimer                              timer_;
     size_t                              max_FPS_;
-	std::map< int, int > statistics_;
+    std::map< int, int > statistics_;
 
     std::shared_ptr<const ModelManager> model_manager_;
 
@@ -122,6 +122,9 @@ public:
     void setModelManager (const std::shared_ptr<const ModelManager>& model_manager_ptr);
     void setAnimationTime(int animation_time);
     int getAnimationTime() const;
+
+    const std::map<int, int>& getStatistics() const;
+    void setStatistics(const std::map<int, int> &statistics);
 
 public slots:
     // Do step and animation

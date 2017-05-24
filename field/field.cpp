@@ -20,6 +20,7 @@ Field::Field (QWidget* parent,
     last_point_(0, 0),
     minimap_shown_(true)
 {
+    srand(time(0));
     setFixedSize(QSize(sizeInPixels.x, sizeInPixels.y));
     setSize(sizeInPixels);
     field_view_.setViewport(sf::FloatRect(0.f, 0.f, 1.f, 1.f));
@@ -62,6 +63,16 @@ std::function<void (Matrix<Tile> &, std::vector<Entity> &)> Field::getDoStep() c
 void Field::setDoStep(const std::function<void (Matrix<Tile> &, std::vector<Entity> &)> &do_step)
 {
     do_step_ = do_step;
+}
+
+const std::map<int, int> &Field::getStatistics() const
+{
+    return statistics_;
+}
+
+void Field::setStatistics(const std::map<int, int> &statistics)
+{
+    statistics_ = statistics;
 }
 
 void Field::setTilePositions(){
@@ -287,6 +298,8 @@ void Field::stop(){
 
 void Field::calcStatistics() {
 	statistics_.clear();
+    statistics_[OBJECT_GRASS_EATING_ID] = 0;
+    statistics_[OBJECT_PREDATOR_ID] = 0;
 	for ( auto & iter: entities_ )
 		statistics_[iter.getID()] += 1;
 }

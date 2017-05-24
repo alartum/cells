@@ -14,7 +14,7 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-
+#include "gamewindow/gamewindow.hpp"
 // for log messages
 #define DEBUG
 #include "debug.h"
@@ -62,12 +62,17 @@ int test_field(int argc, char** argv, char** env) {
     return a.exec();
 }
 
-int test_algo(int argc, char** argv, char** env);
+int test_window(int argc, char** argv, char** env){
+    QApplication a(argc, argv);
+    GameWindow w;
+
+    w.show();
+
+    return a.exec();
+}
 
 int main(int argc, char ** argv, char** env)
 {
-    srand(time(0));
-    test_field(argc, argv, env);
-    //test_algo(argc, argv, env);
-    return 0;
+    //test_field(argc, argv, env);
+    return test_window(argc, argv, env);
 }

@@ -68,10 +68,8 @@ void GenerateConnetedMap::fancyEdges(Matrix< Tile >& map ){
     for (unsigned y = 0; y < map.getHeight(); y++)
         for (unsigned x = 0; x < map.getWidth(); x++) {
             Tile& tile = map.at(y, x);
-            if (tile.getID() & TILE_GRASS_ID){
+            if (tile.getID() & TILE_GRASS_ID)
                 tile.setState(getEdgeType(map, y, x));
-                VAR_LOG(tile.getState());
-            }
         }
 }
 
