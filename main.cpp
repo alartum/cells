@@ -29,7 +29,7 @@ int test_field(int argc, char** argv, char** env) {
         return EXIT_FAILURE;
     }
 
-    GenerateConnetedMap mapGenerator(5, 0.01, 0.2, 0.2);
+    GenerateComplexMap mapGenerator(10, 0.02, 0.23, 0.2);
     //GenerateRandomMap& gen = mapGenerator;
     F.setGenerateMap(mapGenerator);
     F.generateTiles();

@@ -94,7 +94,7 @@ GameWindow::GameWindow(QWidget *parent) :
 void GameWindow::initField(){
     field_.loadConfig("./config/window_config.lua");
 
-    GenerateConnetedMap mapGenerator(5, 0.01, 0.2, 0.2);
+    GenerateComplexMap mapGenerator(10, 0.05, 0.21, 0.2);
     //GenerateRandomMap& gen = mapGenerator;
     field_.setGenerateMap(mapGenerator);
     field_.generateTiles();

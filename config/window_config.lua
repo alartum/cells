@@ -1,5 +1,5 @@
 -- Field size in tiles
-field_size = {height = 10, width = 10}
+field_size = {height = 50, width = 50}
 
 -- Maximum window size in pixels
 -- The actual size will be chosen in runtime
