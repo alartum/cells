@@ -428,3 +428,10 @@ void Field::drawMinimap(){
         draw(current_view);
     }
 }
+
+void Field::init(){
+    generateTiles();
+    loadTileTextures();
+    generateEntities();
+    loadEntityTextures();
+}

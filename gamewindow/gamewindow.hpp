@@ -36,6 +36,7 @@ public slots:
     void showPlot();
     void showHelp();
     void updatePlot();
+    void restartField();
 };
 
 #endif // GAMEWINDOW_HPP

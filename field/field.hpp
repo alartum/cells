@@ -88,7 +88,8 @@ public:
     Field(QWidget* parent = nullptr, const QPoint& pos = QPoint(),
           const sf::Vector2u& sizeInTiles = sf::Vector2u(1, 1),
           const sf::Vector2u& sizeInPixels = sf::Vector2u(600,600));
-    
+    // Genrerates the entire new map
+    void init();
     ~Field();
     void toggleMinimap();
     // Sets model manager for every tile

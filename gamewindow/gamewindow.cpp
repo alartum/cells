@@ -24,7 +24,6 @@ GameWindow::GameWindow(QWidget *parent) :
     time_(0)
 {
     setCentralWidget(&field_);
-    setFixedSize(field_.size());
 
     QMenu* fileMenu = menuBar()->addMenu(tr("&Options"));
     QAction* plot_action = fileMenu->addAction(tr("&Plots"));
@@ -55,6 +54,8 @@ GameWindow::GameWindow(QWidget *parent) :
     connect(resume_action, SIGNAL(triggered(bool)), &field_, SLOT(start()));
     connect(resume_action, SIGNAL(triggered(bool)), &plot_timer_, SLOT(start()));
 */
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
     plot_.setMinimumSize(300, 300);
     plot_.setInteraction(QCP::iRangeZoom, true);
     plot_.setInteraction(QCP::iRangeDrag, true);
@@ -136,4 +137,10 @@ void GameWindow::updatePlot(){
     plot_.rescaleAxes();
     plot_.replot();
     time_++;
+}
+
+void GameWindow::restartField(){
+    field_.generateTiles();
+    field_.generateEntities();
+
 }
