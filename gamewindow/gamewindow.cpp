@@ -47,9 +47,17 @@ GameWindow::GameWindow(QWidget *parent) :
     QMenu* gameMenu = menuBar()->addMenu(tr("&Game"));
     QAction* stop_action = gameMenu->addAction(tr("&Stop"));
     connect(stop_action, SIGNAL(triggered(bool)), &field_, SLOT(stop()));
+    connect(stop_action, SIGNAL(triggered(bool)), &plot_timer_, SLOT(stop()));
     QAction* resume_action = gameMenu->addAction(tr("&Resume"));
     connect(resume_action, SIGNAL(triggered(bool)), &field_, SLOT(start()));
-
+    connect(resume_action, SIGNAL(triggered(bool)), &plot_timer_, SLOT(start()));
+    /*QAction* resume_action = gameMenu->addAction(tr("R&estart"));
+    connect(resume_action, SIGNAL(triggered(bool)), &field_, SLOT(start()));
+    connect(resume_action, SIGNAL(triggered(bool)), &plot_timer_, SLOT(start()));
+*/
+    plot_.setMinimumSize(300, 300);
+    plot_.setInteraction(QCP::iRangeZoom, true);
+    plot_.setInteraction(QCP::iRangeDrag, true);
 
     plot_.setLocale(QLocale(QLocale::English, QLocale::UnitedKingdom)); // period as decimal separator and comma as thousand separator
     plot_.legend->setVisible(true);
@@ -123,7 +131,6 @@ void GameWindow::showHelp(){
 }
 
 void GameWindow::updatePlot(){
-    VAR_LOG(field_.getStatistics().at(OBJECT_GRASS_EATING_ID));
     plot_.graph(0)->addData(time_, field_.getStatistics().at(OBJECT_GRASS_EATING_ID));
     plot_.graph(1)->addData(time_, field_.getStatistics().at(OBJECT_PREDATOR_ID));
     plot_.rescaleAxes();

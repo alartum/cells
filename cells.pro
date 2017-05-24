@@ -21,7 +21,8 @@ HEADERS += \
     qsfmlwidget/qsfmlwidget.hpp \
     do_step/cachedfunction.hpp \
     gamewindow/gamewindow.hpp \
-    ../../lib/qcustomplot/qcustomplot.h
+    lib/qcustomplot.h \
+    lib/sol.hpp
 
 SOURCES += \
     field/field.cpp \
@@ -39,16 +40,14 @@ SOURCES += \
     animation_state/animationstate.cpp \
     qsfmlwidget/qsfmlwidget.cpp \
     gamewindow/gamewindow.cpp \
-    ../../lib/qcustomplot/qcustomplot.cpp
+    lib/qcustomplot.cpp
 
 LIBS += -lX11
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system
 
 QMAKE_CXX = g++-6
 CONFIG += c++14 
-INCLUDEPATH += /usr/include/lua5.3 \
-               /usr/include/sol \
-               /usr/include/qcustomplot
+INCLUDEPATH += /usr/include/lua5.3
 
 LIBS += -llua5.3
 

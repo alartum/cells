@@ -7,7 +7,7 @@
 
 #include <string>
 #include <exception>
-#include <sol.hpp>
+#include "../lib/sol.hpp"
 
 class ModelManager
 {

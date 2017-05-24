@@ -5,7 +5,7 @@
 #include "../field/field.hpp"
 #include <QTextEdit>
 #include <QTextDocument>
-#include <qcustomplot.h>
+#include "../lib/qcustomplot.h"
 #include <QTimer>
 #include <QMap>
 #include <QVector>

@@ -265,9 +265,9 @@ void RandomMoving::predatorsMovingStage ( Matrix< Tile >& map, std::vector< Enti
 								force.x += ( double ) i0 / dist;
 								force.y += ( double ) j0 / dist;
 							}
-							else if ( dist > 0 && En[aimId].getID() == OBJECT_PREDATOR_ID && En[currentEntityId].properties["time_without_feed"] < 6) {
-								force.x += ( double ) i0 / dist / 1.5;
-								force.y += ( double ) j0 / dist / 1.5;
+                            else if ( dist > 0 && En[aimId].getID() == OBJECT_PREDATOR_ID && En[currentEntityId].properties["time_without_feed"] < 8) {
+                                force.x += ( double ) i0 / dist * 2.5;
+                                force.y += ( double ) j0 / dist * 2.5;
 							}
                         }
                     }
@@ -421,7 +421,7 @@ void RandomMoving::multiplicationStage ( Matrix< Tile >& map, std::vector< Entit
         if ( En[i].getID() == OBJECT_GRASS_EATING_ID && En[i].properties["living_time"] > 15 && (rand() % 4 == 0) ) {
 			
 			sf::Vector2u child_position = En[i].getTileTo();
-			
+            /*
 			int neightbors = 0;
 			for ( int dx = -1; dx <= 1; dx++ )
 				for ( int dy = -1; dy <= 1; dy++ )
@@ -432,9 +432,9 @@ void RandomMoving::multiplicationStage ( Matrix< Tile >& map, std::vector< Entit
 						if ( neightborId != -1 && En[neightborId].getID() == OBJECT_GRASS_EATING_ID )
 							neightbors += 1;
 					}
-			
-			if (neightbors < 2)
-				continue;
+            */
+            //if (neightbors < 2)
+            //	continue;
 			
             
             switch ( rand() % 4 ) {
@@ -476,7 +476,7 @@ void RandomMoving::multiplicationStage ( Matrix< Tile >& map, std::vector< Entit
     
     
      for ( int i = 0; i < sz; i++ )  {
-        if ( En[i].getID() == OBJECT_PREDATOR_ID && En[i].properties["living_time"] > 20 && En[i].properties["time_without_feed"] < 6 && (rand() % 7 == 0)) {
+        if ( En[i].getID() == OBJECT_PREDATOR_ID && En[i].properties["living_time"] > 20/* && En[i].properties["time_without_feed"] < 6*/ && (rand() % 7 == 0)) {
             sf::Vector2u child_position = En[i].getTileTo();
 			
 			int neightbors = 0;
