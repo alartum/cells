@@ -2,6 +2,7 @@
 #include <thread>
 #include "field.hpp"
 #include <algorithm>
+#include <QRect>
 #define DEBUG
 #include "../debug.h"
 
@@ -336,7 +337,16 @@ void Field::validateViewCenter(){
 }
 
 void Field::mousePressEvent(QMouseEvent *event){
-    if (event->button() == Qt::LeftButton) {
+    QRect minimap_rect(minimap_.getViewport().left * getSize().x,
+                       minimap_.getViewport().top * getSize().y,
+                       minimap_.getViewport().width * getSize().x,
+                       minimap_.getViewport().height * getSize().y);
+    if (minimap_shown_ && minimap_rect.contains(event->pos())){
+        sf::Vector2i pos(event->pos().x(), event->pos().y());
+        field_view_.setCenter(mapPixelToCoords(pos, minimap_));
+        validateViewCenter();
+    }
+    else if (event->button() == Qt::LeftButton) {
         last_point_ = event->pos();
         moving_ = true;
     }
