@@ -267,13 +267,19 @@ void GenerateComplexMap::operator() ( Matrix< Tile >& map ) {
         }
     }
     
-    grassDispersionDistribution = std::uniform_real_distribution< double >(grass_dispersion_min_ / 8, grass_dispersion_max_ / 8);
+    grassDispersionDistribution = std::uniform_real_distribution< double >(grass_dispersion_min_ / 7, grass_dispersion_max_ / 7);
 	
-    for (unsigned i = 0; i < grass_group_count_ * 2; i++) {
+    for (unsigned i = 0; i < grass_group_count_ * 4; i++) {
         
 		// Координаты текущего центра
         double xCoord = grassCentreDistribution(mtGenerator);
         double yCoord = grassCentreDistribution(mtGenerator);
+		
+		int xCentreGenerated = static_cast< int >(xCoord * mapHeight);
+		int yCentreGenerated = static_cast< int >(yCoord * mapWidth);
+		
+		if (map.at ( xCentreGenerated, yCentreGenerated ).getID() != TILE_GRASS_ID )
+			continue;
         
 		// Распределения травы вокруг центра
         std::normal_distribution< double > xGrassDistribution(xCoord, grassDispersionDistribution(mtGenerator));
