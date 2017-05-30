@@ -22,7 +22,7 @@ DoStep::DoStep() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-RandomMoving::RandomMoving ( std::shared_ptr<const ModelManager> modelManager ) : model_manager_ ( modelManager )  {
+RandomMoving::RandomMoving ( std::shared_ptr<const ModelManager> modelManager ) : model_manager_ ( modelManager ), is_cache_full_(false)  {
 }
 
 #define COLOR_WAIT 0
@@ -31,9 +31,11 @@ RandomMoving::RandomMoving ( std::shared_ptr<const ModelManager> modelManager ) 
 
 void RandomMoving::initializationStage ( Matrix< Tile >& map, std::vector< Entity >& En ) {
     cache_.setSize ( map.getHeight(), map.getWidth() );
-    cache_.fill ( -1 );
+	if (!is_cache_full_)
+		cache_.fill ( -1 );
     for ( unsigned i = 0; i < En.size(); i++ ) {
-        cache_.at ( En[i].getTileTo().x, En[i].getTileTo().y ) = i;
+		if (!is_cache_full_)
+			cache_.at ( En[i].getTileTo().x, En[i].getTileTo().y ) = i;
         En[i].setFuturePosition ( En[i].getTileTo() );
         En[i].properties["living_time"] += 1;
         En[i].properties["time_without_feed"] += 1;
@@ -43,7 +45,8 @@ void RandomMoving::initializationStage ( Matrix< Tile >& map, std::vector< Entit
         for ( unsigned j = 0; j < map.getWidth(); j++ )
             if ( map.at ( i, j ).properties["feed"] == 0 && (rand() % 5 == 0) )
                 map.at ( i, j ).properties["feed"] = 1;
-
+			
+	is_cache_full_ = true;
     color_.assign ( En.size(), COLOR_WAIT );
 }
 
@@ -383,11 +386,13 @@ void RandomMoving::predatorsMovingStage ( Matrix< Tile >& map, std::vector< Enti
         }
 }
 
-void RandomMoving::deleteCorpses ( Matrix< Tile >& map, std::vector< Entity >& En ) {
+void RandomMoving::deleteCorpsesStage ( Matrix< Tile >& map, std::vector< Entity >& En ) {
     for ( int i = 0; i < ( int ) En.size(); i++ ) {
         if ( En[i].getID() == OBJECT_CORPSE_ID && En[i].properties["living_time"] > 3 ) {
             
             sf::Vector2u corpse_position = En[i].getTileTo();
+			cache_.at( corpse_position.x, corpse_position.y ) = -1;
+			
             for ( int di = -1; di <= 1; di++ )
                 for (int dj = -1; dj <= 1; dj++ ) {
                     if ( ( int )corpse_position.x + di >= 0 && ( int )corpse_position.x + di < ( int )map.getHeight() &&
@@ -406,7 +411,10 @@ void RandomMoving::deleteCorpses ( Matrix< Tile >& map, std::vector< Entity >& E
                 En[i].setFuturePosition ( En[En.size() - 1].getFuturePosition() );
                 En[i].setState ( STATE_IDLE | DIR_UP );
                 En[i].initFrame();
-
+				
+				sf::Vector2u old_position = En[En.size() - 1].getFuturePosition();
+				cache_.at(old_position.x, old_position.y) = i;
+				
             }
             En.resize ( En.size() - 1 );
             i -= 1;
@@ -482,10 +490,10 @@ void RandomMoving::multiplicationStage ( Matrix< Tile >& map, std::vector< Entit
 			int neightbors = 0;
 			for ( int dx = -1; dx <= 1; dx++ )
 				for ( int dy = -1; dy <= 1; dy++ )
-					if ( dx + child_position.x >= 0 && dx + child_position.x < cache_.getHeight() && 
-						dy + child_position.y >= 0 && dy + child_position.y < cache_.getWidth()
+					if ( dx + (int)child_position.x >= 0 && dx + (int)child_position.x < (int)cache_.getHeight() && 
+						dy + (int)child_position.y >= 0 && dy + (int)child_position.y < (int)cache_.getWidth()
 					) {
-						int neightborId = cache_.at( dx + child_position.x, dy + child_position.y );
+						int neightborId = cache_.at( dx + (int)child_position.x, dy + (int)child_position.y );
 						if ( neightborId != -1 && En[neightborId].getID() == OBJECT_PREDATOR_ID )
 							neightbors += 1;
 					}
@@ -506,8 +514,7 @@ void RandomMoving::multiplicationStage ( Matrix< Tile >& map, std::vector< Entit
                 child_position.y += 1;
                 break;
             }
-            if ( child_position.x < 0 || child_position.x >= map.getHeight() ||
-                    child_position.y < 0 || child_position.y >= map.getWidth()
+            if ( child_position.x >= map.getHeight() || child_position.y >= map.getWidth()
                ) {
                 ;
             } else {
@@ -548,14 +555,23 @@ void RandomMoving::grassEatingFeedStage ( Matrix< Tile >& map, std::vector< Enti
 
 
 void RandomMoving::operator() ( Matrix< Tile >& map, std::vector< Entity >& En ) {
+	//LOG("initializationStage");
     initializationStage ( map, En );
+	//LOG("huntingStage");
     huntingStage ( map, En );
+	//LOG("grassEatingFeedStage");
     grassEatingFeedStage( map, En );
+	//LOG("deathStage");
     deathStage( map, En );
+	//LOG("grassEatingMovingStage");
     grassEatingMovingStage ( map, En );
+	//LOG("predatorsMovingStage");
     predatorsMovingStage ( map, En );
-    deleteCorpses ( map, En );
+	//LOG("deleteCorpsesStage");
+    deleteCorpsesStage ( map, En );
+	//LOG("multiplicationStage");
     multiplicationStage ( map, En );
+	//LOG("All stages finished");
 }
 
 

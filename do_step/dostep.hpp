@@ -21,12 +21,13 @@ private:
     std::shared_ptr<const ModelManager> model_manager_;
     Matrix< int > cache_;
     std::vector< int > color_;
+	bool is_cache_full_;
     
     void initializationStage( Matrix< Tile >& map, std::vector< Entity >& En );
     void huntingStage( Matrix< Tile >& map, std::vector< Entity >& En );
     void grassEatingMovingStage( Matrix< Tile >& map, std::vector< Entity >& En );
     void predatorsMovingStage( Matrix< Tile >& map, std::vector< Entity >& En );
-    void deleteCorpses( Matrix< Tile >& map, std::vector< Entity >& En );
+    void deleteCorpsesStage( Matrix< Tile >& map, std::vector< Entity >& En );
     void multiplicationStage( Matrix< Tile >& map, std::vector< Entity >& En );
     void grassEatingFeedStage( Matrix< Tile >& map, std::vector< Entity >& En );
     void deathStage( Matrix< Tile >& map, std::vector< Entity >& En );

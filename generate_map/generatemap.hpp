@@ -17,7 +17,7 @@ protected:
     void fancyEdges(Matrix<Tile> &map);
     int  getEdgeType(Matrix< Tile >& map, unsigned y, unsigned x);
 
-    std::mt19937        mtGenerator;
+    std::minstd_rand        mtGenerator;
 public:
     GenerateMap();
     void operator () ( Matrix<Tile>& map );

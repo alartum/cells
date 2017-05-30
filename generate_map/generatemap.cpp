@@ -14,7 +14,7 @@
 
 GenerateMap::GenerateMap() {
 	std::random_device  tempRandomDevice;
-    mtGenerator = std::mt19937(tempRandomDevice());
+    mtGenerator = std::minstd_rand(tempRandomDevice());
 }
 
 void GenerateMap::operator() ( Matrix< Tile >& map ) {

@@ -14,7 +14,7 @@ CC            = gcc
 CXX           = g++-6
 DEFINES       = -DQT_NO_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIE $(DEFINES)
-CXXFLAGS      = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIE $(DEFINES)
+CXXFLAGS      = -m64 -pipe -std=c++14 -O3 -fomit-frame-pointer -march=corei7 -O2 -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 INCPATH       = -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I. -I/usr/include/lua5.3 -I/usr/include/qt5 -I/usr/include/qt5/QtPrintSupport -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I.
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
@@ -1713,6 +1713,7 @@ field.o: field/field.cpp field/field.hpp \
 		entity/entity.hpp \
 		generate_map/generatemap.hpp \
 		do_step/dostep.hpp \
+		/usr/include/qt5/QtCore/QRect \
 		debug.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o field.o field/field.cpp
 

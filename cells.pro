@@ -46,7 +46,7 @@ LIBS += -lX11
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system
 
 QMAKE_CXX = g++-6
-CONFIG += c++14 
+QMAKE_CXXFLAGS += -std=c++14 -O3 -fomit-frame-pointer -march=corei7
 INCLUDEPATH += /usr/include/lua5.3
 
 LIBS += -llua5.3
