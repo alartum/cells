@@ -139,8 +139,8 @@ void RandomMoving::grassEatingMovingStage ( Matrix< Tile >& map, std::vector< En
                     }
 
 #define TRY_TO_MOVE(new_position, flag) \
-                if (new_position.x >= 0 && new_position.x < cache_.getHeight() && \
-                    new_position.y >= 0 && new_position.y < cache_.getWidth()) \
+                if (( int )new_position.x >= 0 && new_position.x < cache_.getHeight() && \
+                    ( int )new_position.y >= 0 && new_position.y < cache_.getWidth()) \
                     if ( cache_.at ( new_position.x, new_position.y ) == -1 &&                         \
                                 map.at ( new_position.x, new_position.y ).getID() == TILE_GRASS_ID ) {          \
                             flag = true;                                                                        \

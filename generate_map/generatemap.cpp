@@ -2,6 +2,7 @@
 #include <random>
 #include <numeric>
 #include <iterator>
+#include <list>
 #include <algorithm>
 
 #define DEBUG
@@ -153,6 +154,8 @@ void GenerateComplexMap::operator() ( Matrix< Tile >& map ) {
 	// Относительное положение центра травы
     std::uniform_real_distribution< double >    grassCentreDistribution(0, 1);
     
+	
+	
 	for (unsigned i = 0; i < grass_group_count_; i++) {
 		// Координаты текущего центра
         double xCoord = grassCentreDistribution(mtGenerator);
@@ -176,7 +179,34 @@ void GenerateComplexMap::operator() ( Matrix< Tile >& map ) {
 		
 		addIsland( map, xCoord, yCoord, 1.0 / 7.0, false, TILE_GRASS_ID);
 	}
-    
+	
+	// Smoothing in large scales
+	//if (map.getWidth() > 50 && map.getHeight() > 50) {
+		for (int i = 0; i <  map.getHeight() * map.getWidth() * 15; i++ ) {
+				double xCoord = grassCentreDistribution(mtGenerator);
+				double yCoord = grassCentreDistribution(mtGenerator);
+				int xGenerated = static_cast< int >(xCoord * mapHeight);
+				int yGenerated = static_cast< int >(yCoord * mapWidth);
+				
+				int tile_type = map.at( xGenerated, yGenerated ).getID();
+				int neightbors = 0;
+				if (xGenerated > 0 && map.at( xGenerated - 1, yGenerated ).getID() != tile_type)
+					neightbors++;
+				if (yGenerated > 0 && map.at( xGenerated, yGenerated - 1 ).getID() != tile_type)
+					neightbors++;
+				if (xGenerated + 1 < map.getHeight() && map.at( xGenerated + 1, yGenerated ).getID() != tile_type)
+					neightbors++;
+				if (yGenerated + 1 < map.getWidth() && map.at( xGenerated, yGenerated + 1 ).getID() != tile_type)
+					neightbors++;
+				
+				if (neightbors >= 3 ) {
+					if (tile_type == TILE_GRASS_ID)
+						map.at( xGenerated, yGenerated ).setID(TILE_WATER_ID);
+					else if (tile_type == TILE_WATER_ID)
+						map.at( xGenerated, yGenerated ).setID(TILE_GRASS_ID);
+				}
+			}
+	//}
     GenerateMap::fancyEdges(map);
 }
 
