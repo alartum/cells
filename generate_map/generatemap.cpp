@@ -14,7 +14,7 @@
 /////////////////////////////////////////////////////////////////////////////////////
 
 GenerateMap::GenerateMap() {
-	std::random_device  tempRandomDevice;
+    std::random_device  tempRandomDevice;
     mtGenerator = std::minstd_rand(tempRandomDevice());
 }
 
@@ -66,7 +66,7 @@ void GenerateMap::fancyEdges(Matrix< Tile >& map ){
 
 
 GenerateRandomMap::GenerateRandomMap (unsigned grassGroupCount, double grassDispersionMin, double grassDispersionMax, double grassDensity ) :
-	GenerateMap(), 
+    GenerateMap(), 
     grass_group_count_(grassGroupCount), grass_dispersion_min_(grassDispersionMin), grass_dispersion_max_(grassDispersionMax), grass_density_(grassDensity) 
 {
 }
@@ -127,13 +127,13 @@ void GenerateRandomMap::operator() ( Matrix< Tile >& map ) {
 /////////////////////////////////////////////////////////////////////////////////////
 
 GenerateComplexMap::GenerateComplexMap ( unsigned int grassGroupCount, double grassDispersionMin, double grassDispersionMax, double grassDensity ) :
-	GenerateMap(), 
+    GenerateMap(), 
     grass_group_count_(grassGroupCount), grass_dispersion_min_(grassDispersionMin), grass_dispersion_max_(grassDispersionMax), grass_density_(grassDensity) {
 }
 
 
 void GenerateComplexMap::operator() ( Matrix< Tile >& map ) {
-	LOG("ComplexMapGenerate:\n"
+    LOG("ComplexMapGenerate:\n"
         "               size = (%u, %u)\n"
         "               grassGroupCount = %u\n"
         "               grassDispersionMin = %lg\n"
@@ -142,88 +142,88 @@ void GenerateComplexMap::operator() ( Matrix< Tile >& map ) {
         map.getHeight(), map.getWidth(),
         grass_group_count_, grass_dispersion_min_, grass_dispersion_max_, grass_density_);
   
-	// Размеры поля
+    // Размеры поля
     unsigned mapHeight  = map.getHeight();
     unsigned mapWidth   = map.getWidth();
-	
-	// Заполнение водой
+    
+    // Заполнение водой
     for (unsigned i = 0; i < mapHeight; i++)
         for (unsigned j = 0; j < mapWidth; j++)
             map.at(i, j).setID(TILE_WATER_ID);
-		
-	// Относительное положение центра травы
+        
+    // Относительное положение центра травы
     std::uniform_real_distribution< double >    grassCentreDistribution(0, 1);
     
-	
-	
-	for (unsigned i = 0; i < grass_group_count_; i++) {
-		// Координаты текущего центра
+    
+    
+    for (unsigned i = 0; i < grass_group_count_; i++) {
+        // Координаты текущего центра
         double xCoord = grassCentreDistribution(mtGenerator);
         double yCoord = grassCentreDistribution(mtGenerator);
-		
-		addIsland( map, xCoord, yCoord, 1, true, TILE_GRASS_ID);
-	}
-	
-	for (unsigned i = 0; i * 3 < grass_group_count_ * 2; i++) {
-		// Координаты текущего центра
+        
+        addIsland( map, xCoord, yCoord, 1, true, TILE_GRASS_ID);
+    }
+    
+    for (unsigned i = 0; i * 3 < grass_group_count_ * 2; i++) {
+        // Координаты текущего центра
         double xCoord = grassCentreDistribution(mtGenerator);
         double yCoord = grassCentreDistribution(mtGenerator);
-		
-		addIsland( map, xCoord, yCoord, 0.3, true, TILE_WATER_ID);
-	}
-	
-	for (unsigned i = 0; i < grass_group_count_ * 4; i++) {
-		// Координаты текущего центра
+        
+        addIsland( map, xCoord, yCoord, 0.3, true, TILE_WATER_ID);
+    }
+    
+    for (unsigned i = 0; i < grass_group_count_ * 4; i++) {
+        // Координаты текущего центра
         double xCoord = grassCentreDistribution(mtGenerator);
         double yCoord = grassCentreDistribution(mtGenerator);
-		
-		addIsland( map, xCoord, yCoord, 1.0 / 7.0, false, TILE_GRASS_ID);
-	}
-	
-	// Smoothing in large scales
-	//if (map.getWidth() > 50 && map.getHeight() > 50) {
-		for (int i = 0; i <  map.getHeight() * map.getWidth() * 15; i++ ) {
-				double xCoord = grassCentreDistribution(mtGenerator);
-				double yCoord = grassCentreDistribution(mtGenerator);
-				int xGenerated = static_cast< int >(xCoord * mapHeight);
-				int yGenerated = static_cast< int >(yCoord * mapWidth);
-				
-				int tile_type = map.at( xGenerated, yGenerated ).getID();
-				int neightbors = 0;
-				if (xGenerated > 0 && map.at( xGenerated - 1, yGenerated ).getID() != tile_type)
-					neightbors++;
-				if (yGenerated > 0 && map.at( xGenerated, yGenerated - 1 ).getID() != tile_type)
-					neightbors++;
-				if (xGenerated + 1 < map.getHeight() && map.at( xGenerated + 1, yGenerated ).getID() != tile_type)
-					neightbors++;
-				if (yGenerated + 1 < map.getWidth() && map.at( xGenerated, yGenerated + 1 ).getID() != tile_type)
-					neightbors++;
-				
-				if (neightbors >= 3 ) {
-					if (tile_type == TILE_GRASS_ID)
-						map.at( xGenerated, yGenerated ).setID(TILE_WATER_ID);
-					else if (tile_type == TILE_WATER_ID)
-						map.at( xGenerated, yGenerated ).setID(TILE_GRASS_ID);
-				}
-			}
-	//}
+        
+        addIsland( map, xCoord, yCoord, 1.0 / 7.0, false, TILE_GRASS_ID);
+    }
+    
+    // Smoothing in large scales
+    //if (map.getWidth() > 50 && map.getHeight() > 50) {
+        for (int i = 0; i <  map.getHeight() * map.getWidth() * 15; i++ ) {
+                double xCoord = grassCentreDistribution(mtGenerator);
+                double yCoord = grassCentreDistribution(mtGenerator);
+                int xGenerated = static_cast< int >(xCoord * mapHeight);
+                int yGenerated = static_cast< int >(yCoord * mapWidth);
+                
+                int tile_type = map.at( xGenerated, yGenerated ).getID();
+                int neightbors = 0;
+                if (xGenerated > 0 && map.at( xGenerated - 1, yGenerated ).getID() != tile_type)
+                    neightbors++;
+                if (yGenerated > 0 && map.at( xGenerated, yGenerated - 1 ).getID() != tile_type)
+                    neightbors++;
+                if (xGenerated + 1 < map.getHeight() && map.at( xGenerated + 1, yGenerated ).getID() != tile_type)
+                    neightbors++;
+                if (yGenerated + 1 < map.getWidth() && map.at( xGenerated, yGenerated + 1 ).getID() != tile_type)
+                    neightbors++;
+                
+                if (neightbors >= 3 ) {
+                    if (tile_type == TILE_GRASS_ID)
+                        map.at( xGenerated, yGenerated ).setID(TILE_WATER_ID);
+                    else if (tile_type == TILE_WATER_ID)
+                        map.at( xGenerated, yGenerated ).setID(TILE_GRASS_ID);
+                }
+            }
+    //}
     GenerateMap::fancyEdges(map);
 }
 
 
 void GenerateComplexMap::addIsland ( Matrix< Tile >& map, 
-									 double xCoord, double yCoord, 
-									 double dispersionParameter, 
-									 bool independent, int tile_type_id) {
-	
-		std::uniform_real_distribution< double >  grassDispersionDistribution(grass_dispersion_min_ * dispersionParameter, 
-																				grass_dispersion_max_ * dispersionParameter);
-		
-		std::normal_distribution< double > xGrassDistribution(xCoord, grassDispersionDistribution(mtGenerator));
+                                     double xCoord, double yCoord, 
+                                     double dispersionParameter, 
+                                     bool independent, int tile_type_id) {
+    
+        std::uniform_real_distribution< double >  grassDispersionDistribution(grass_dispersion_min_ * dispersionParameter, 
+                                                                                grass_dispersion_max_ * dispersionParameter);
+        
+        std::normal_distribution< double > xGrassDistribution(xCoord, grassDispersionDistribution(mtGenerator));
         std::normal_distribution< double > yGrassDistribution(yCoord, grassDispersionDistribution(mtGenerator));
         
-		unsigned mapHeight = map.getHeight(), mapWidth = map.getWidth();
-		
+        unsigned mapHeight = map.getHeight(), mapWidth = map.getWidth();
+        
         for (unsigned j = 0; (double)j * grass_density_ < (double)(mapHeight * mapWidth); j++) {
             
             if (independent && j == 0) {
@@ -265,7 +265,7 @@ void GenerateComplexMap::addIsland ( Matrix< Tile >& map,
 /////////////////////////////////////////////////////////////////////////////////////
 
 GenerateConnetedMap::GenerateConnetedMap ( unsigned int grassGroupCount, double grassDispersionMin, double grassDispersionMax, double grassDensity ) :
-	GenerateMap(), 
+    GenerateMap(), 
     grass_group_count_(grassGroupCount), grass_dispersion_min_(grassDispersionMin), grass_dispersion_max_(grassDispersionMax), grass_density_(grassDensity) {
     
 }

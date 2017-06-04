@@ -21,7 +21,7 @@ private:
     std::shared_ptr<const ModelManager> model_manager_;
     Matrix< int > cache_;
     std::vector< int > color_;
-	bool is_cache_full_;
+    bool is_cache_full_;
     
     void initializationStage( Matrix< Tile >& map, std::vector< Entity >& En );
     void huntingStage( Matrix< Tile >& map, std::vector< Entity >& En );

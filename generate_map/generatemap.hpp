@@ -54,7 +54,7 @@ public:
 
 class GenerateComplexMap : public GenerateMap {
 private:
-	void addIsland ( Matrix< Tile >& map, double xCoord, double yCoord, double dispersionParameter, bool independent, int tile_type_id);
+    void addIsland ( Matrix< Tile >& map, double xCoord, double yCoord, double dispersionParameter, bool independent, int tile_type_id);
 // Карта со сложными контурами имеющаяя высокий уровень связности.
 protected:
     unsigned    grass_group_count_;        // Количество островков "травы"
