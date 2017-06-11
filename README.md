@@ -14,10 +14,10 @@ We wanted to create a user-friendly simulator of *Biological System*. The main p
 
 ## Dependencies
 
-| Library                                    | Usage                              |
-| ------------------------------------------ |------------------------------------|
-| [Qt](http://wiki.qt.io/Main)               | Widget interface                   |
-| [SFML](https://www.sfml-dev.org/)          | In-game graphics                   |
-| [sol2](https://github.com/ThePhD/sol2)     | LUA wrapper for config loading     |
-| [QCustomPlot](http://qcustomplot.com/)     | Plotting statistics                |
-| [Lua 5.3+](https://www.lua.org/)           | Config writing                     |      
+| Library                                    | Usage                              | Included   |
+| ------------------------------------------ |------------------------------------|:----------:|
+| [Qt](http://wiki.qt.io/Main)               | Widget interface                   |  -         |
+| [SFML 2.3+](https://www.sfml-dev.org/)     | In-game graphics                   |  -         |
+| [sol2](https://github.com/ThePhD/sol2)     | LUA wrapper for config loading     |  +         |
+| [QCustomPlot](http://qcustomplot.com/)     | Plotting statistics                |  +         |
+| [Lua 5.3+](https://www.lua.org/)           | Config writing                     |  -         |
